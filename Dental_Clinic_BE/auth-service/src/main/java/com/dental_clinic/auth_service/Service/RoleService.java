@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 
 
 @Service
@@ -19,7 +20,7 @@ public class RoleService {
 
     public Role getRoleById(Long id) {
         for(Role role:getAllRoles()) {
-            if(role.getId() == (id)) return role;
+            if(Objects.equals(role.getId(), id)) return role;
         }
         return null;
     }
@@ -28,8 +29,7 @@ public class RoleService {
         for(Role role:getAllRoles()) {
             if(role.getName().equalsIgnoreCase(name)) return role;
         }
-        return null;
+        throw new RuntimeException("Vai trò không khả dụng. (không phân biệt hoa thường)");
     }
-
 }
 

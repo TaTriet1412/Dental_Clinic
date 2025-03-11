@@ -27,7 +27,7 @@ public class SecurityConfig  {
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(authz -> authz
                         // Allow access to /auth/register and /auth/login without JWT
-                        .requestMatchers( "/auth/login")
+                        .requestMatchers( "/auth/**")
                             .permitAll()
                         .requestMatchers(HttpMethod.GET, "/images/**")
                             .permitAll()

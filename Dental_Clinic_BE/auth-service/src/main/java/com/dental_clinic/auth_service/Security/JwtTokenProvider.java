@@ -25,6 +25,13 @@ public class JwtTokenProvider {
 
 
     public String generateToken(User user){
+        String redisKey = "TOKEN_" + user.getEmail();
+        String existingToken = (String) redisTemplate.opsForValue().get(redisKey);
+
+        if (existingToken != null) {
+            return existingToken; // Trả về token cũ nếu còn thời hạn
+        }
+
         Key signingKey = new SecretKeySpec(JWT_SECRET.getBytes(),
                 SignatureAlgorithm.HS512.getJcaName());
         String token = Jwts.builder()

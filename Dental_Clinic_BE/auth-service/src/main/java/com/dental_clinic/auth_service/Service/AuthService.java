@@ -10,6 +10,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -33,6 +34,8 @@ public class AuthService {
                 if (!user.is_active()){
                     throw new RuntimeException("Tài khoản đã bị khóa");
                 }
+                user.setLast_login(LocalDateTime.now());
+                userRepository.save(user);
                 return user;
             }
         }
@@ -55,6 +58,10 @@ public class AuthService {
         }
     }
 
+    public static boolean isValidEmail(String email) {
+        return email != null && VariableUtils.EMAIL_PATTERN.matcher(email).matches();
+    }
+
     public User createAccount(CreateAccountInfo userInfo) {
         if (userService.existsByEmail(userInfo.getEmail())) {
             throw new RuntimeException("Email đã tồn tại");
@@ -62,15 +69,20 @@ public class AuthService {
         else if (userService.existsByPhone(userInfo.getPhone())) {
             throw new RuntimeException("Số điện thoại đã tồn tại");
         }
+        if(!isValidEmail(userInfo.getEmail())) {
+            throw new RuntimeException("Email không hợp lệ");
+        }
         return userRepository.save(
                 User.builder()
-                        .role(roleService.getRoleByName(userInfo.getRole()))
+                        .role(roleService.getRoleByName(userInfo.getRole().toUpperCase()))
                         .email(userInfo.getEmail())
                         .password(passwordEncoder.encode(userInfo.getPassword()))
                         .name(userInfo.getName())
                         .birthday(userInfo.getBirthDate())
                         .phone(userInfo.getPhone())
+                        .address(userInfo.getAddress())
                         .is_active(true)
+                        .salary(userInfo.getSalary())
                         .img(VariableUtils.DEFAULT_AVATAR)
                         .build()
         );

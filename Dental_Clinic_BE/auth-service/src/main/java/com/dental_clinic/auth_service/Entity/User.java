@@ -3,11 +3,10 @@ package com.dental_clinic.auth_service.Entity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.UUID;
 
 @Entity
 @Table(name = "user")
@@ -48,7 +47,8 @@ public class User {
     @Column
     private Integer salary;
 
-    @Column
+    @Column(name="created_at")
+    @CreationTimestamp
     private LocalDateTime created_at;
 
     @Column
@@ -62,10 +62,5 @@ public class User {
 
     @Column
     private boolean is_active;
-
-    @PrePersist protected void onCreate() {
-        LocalDateTime localDateTime = created_at == null ? LocalDateTime.now() : created_at;
-    }
-
 
 }

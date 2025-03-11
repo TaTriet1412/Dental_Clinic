@@ -2,6 +2,7 @@ package com.dental_clinic.auth_service.DTO;
 
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import jakarta.validation.constraints.Pattern;
 import lombok.*;
 
 import java.time.LocalDate;
@@ -12,12 +13,13 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @NoArgsConstructor
 public class CreateAccountInfo {
-    private Long id;
     private String email;
     private String role;
     private String password;
     private String name;
+    private String address;
     @JsonProperty("birthday")
     private LocalDate birthDate;
     private String phone;
+    private Integer salary;
 }
