@@ -1,0 +1,9 @@
+server:
+  port: 8088
+
+spring:
+  cloud:
+    client:
+      hostname: localhost
+  profiles:
+    active: native
