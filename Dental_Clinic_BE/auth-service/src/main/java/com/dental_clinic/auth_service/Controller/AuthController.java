@@ -2,6 +2,7 @@ package com.dental_clinic.auth_service.Controller;
 
 import com.dental_clinic.auth_service.DTO.CreateAccountInfo;
 import com.dental_clinic.auth_service.DTO.LoginRequest;
+import com.dental_clinic.auth_service.DTO.LogoutRequest;
 import com.dental_clinic.auth_service.Entity.User;
 import com.dental_clinic.auth_service.Security.JwtResponse;
 import com.dental_clinic.auth_service.Security.JwtTokenProvider;
@@ -43,6 +44,12 @@ public class AuthController {
     public ResponseEntity<?> register(@RequestBody CreateAccountInfo userInfo) {
         authService.createAccount(userInfo);
         return ResponseEntity.ok(gson.toJson("Đăng ký thành công"));
+    }
+
+    @PostMapping("/logout")
+    public ResponseEntity<?> logout(@RequestBody LogoutRequest logoutDTO) {
+        authService.logout(logoutDTO.getEmail());
+        return ResponseEntity.ok(gson.toJson("Đăng xuất thành công"));
     }
 
 }

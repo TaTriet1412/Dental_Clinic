@@ -1,15 +1,14 @@
 package com.dental_clinic.auth_service.Service;
 
 import com.dental_clinic.auth_service.DTO.CreateAccountInfo;
-import com.dental_clinic.auth_service.Entity.Role;
 import com.dental_clinic.auth_service.Entity.User;
 import com.dental_clinic.auth_service.Repository.UserRepository;
+import com.dental_clinic.auth_service.Security.JwtTokenProvider;
 import com.dental_clinic.auth_service.Utils.VariableUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -21,6 +20,8 @@ public class AuthService {
     private UserService userService;
     @Autowired
     private RoleService roleService;
+    @Autowired
+    private JwtTokenProvider jwtTokenProvider;
 
     private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder(12);
 
@@ -62,7 +63,7 @@ public class AuthService {
         return email != null && VariableUtils.EMAIL_PATTERN.matcher(email).matches();
     }
 
-    public User createAccount(CreateAccountInfo userInfo) {
+    public void createAccount(CreateAccountInfo userInfo) {
         if (userService.existsByEmail(userInfo.getEmail())) {
             throw new RuntimeException("Email đã tồn tại");
         }
@@ -72,7 +73,7 @@ public class AuthService {
         if(!isValidEmail(userInfo.getEmail())) {
             throw new RuntimeException("Email không hợp lệ");
         }
-        return userRepository.save(
+        userRepository.save(
                 User.builder()
                         .role(roleService.getRoleByName(userInfo.getRole().toUpperCase()))
                         .email(userInfo.getEmail())
@@ -86,5 +87,12 @@ public class AuthService {
                         .img(VariableUtils.DEFAULT_AVATAR)
                         .build()
         );
+    }
+
+    public void logout(String email) {
+        User user = userService.getUserByEmail(email);
+        jwtTokenProvider.logout(email);
+        user.set_active(false);
+        userRepository.save(user);
     }
 }

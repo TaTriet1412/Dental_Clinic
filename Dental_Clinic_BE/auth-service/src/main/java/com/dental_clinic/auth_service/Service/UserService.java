@@ -16,6 +16,13 @@ public class UserService {
         return userRepository.findAll();
     }
 
+    public User getUserByEmail(String email) {
+        for (User user: getUsers()) {
+            if(user.getEmail().equals(email)) return user;
+        }
+        throw  new RuntimeException("Không tồn tại email này!");
+    }
+
     public boolean existsByEmail(String email) {
         for(User user:getUsers()) {
             if(user.getEmail().equals(email)) {
