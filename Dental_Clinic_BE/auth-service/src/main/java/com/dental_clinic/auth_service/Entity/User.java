@@ -63,4 +63,7 @@ public class User {
     @Column
     private boolean is_active;
 
+    @Column
+    private boolean is_ban;
+
 }

@@ -4,6 +4,7 @@ import com.dental_clinic.auth_service.DTO.CreateAccountInfo;
 import com.dental_clinic.auth_service.Entity.User;
 import com.dental_clinic.auth_service.Repository.UserRepository;
 import com.dental_clinic.auth_service.Security.JwtTokenProvider;
+import com.dental_clinic.auth_service.Utils.FieldUtils;
 import com.dental_clinic.auth_service.Utils.VariableUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -32,7 +33,7 @@ public class AuthService {
         for(User user:userService.getUsers()){
             if((user.getEmail().equals(userId) || user.getPhone().equals(userId)) &&
                     passwordEncoder.matches(password,user.getPassword())){
-                if (!user.is_active()){
+                if (user.is_ban()){
                     throw new RuntimeException("Tài khoản đã bị khóa");
                 }
                 user.setLast_login(LocalDateTime.now());
@@ -59,10 +60,6 @@ public class AuthService {
         }
     }
 
-    public static boolean isValidEmail(String email) {
-        return email != null && VariableUtils.EMAIL_PATTERN.matcher(email).matches();
-    }
-
     public void createAccount(CreateAccountInfo userInfo) {
         if (userService.existsByEmail(userInfo.getEmail())) {
             throw new RuntimeException("Email đã tồn tại");
@@ -70,7 +67,7 @@ public class AuthService {
         else if (userService.existsByPhone(userInfo.getPhone())) {
             throw new RuntimeException("Số điện thoại đã tồn tại");
         }
-        if(!isValidEmail(userInfo.getEmail())) {
+        if(!FieldUtils.isValidEmail(userInfo.getEmail())) {
             throw new RuntimeException("Email không hợp lệ");
         }
         userRepository.save(

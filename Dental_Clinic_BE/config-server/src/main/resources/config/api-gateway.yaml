@@ -6,6 +6,7 @@ eureka:
     preferIpAddress: true
     hostname: localhost
   client:
+    registry-fetch-interval-seconds: 5
     register-with-eureka: true
     fetch-registry: true
     serviceUrl:
@@ -24,10 +25,10 @@ spring:
           uri: lb://auth-service
           predicates:
             - Path=/auth/**
-#        - id: department-service
-#          uri: lb://department-service
-#          predicates:
-#            - Path=/department/**
+        - id: dental-service
+          uri: lb://dental-service
+          predicates:
+            - Path=/dental/**
 
 
 management:
