@@ -84,6 +84,8 @@ public class DentalService {
         if(request.getRevenue() < request.getCost())
             throw new RuntimeException("Chi phí không được lớn hơn giá sản phẩm");
 
+        if(!categoryService.isAbleByCategoryId(request.getCategoryId()))
+            throw new RuntimeException("Phân loại '" + request.getCategoryId() + "'" + " đã đóng");
         if(dentalRepository.existsByName(request.getName()))
             throw new RuntimeException("Đã tồn tại dịch vụ '" + request.getName() + "'");
 
@@ -120,6 +122,9 @@ public class DentalService {
 
         FieldUtils.checkNumberIsIntegerAndNotNegative(req.getCost());
         FieldUtils.checkNumberIsIntegerAndNotNegative(req.getRevenue());
+
+        if(!categoryService.isAbleByCategoryId(id))
+            throw new RuntimeException("Phân loại '" + id + "'" + " đã đóng");
         if(req.getRevenue() < req.getCost())
             throw new RuntimeException("Chi phí không được lớn hơn giá sản phẩm");
 
@@ -135,5 +140,10 @@ public class DentalService {
         dental.setAble(req.isAble());
 
         return dentalRepository.save(dental);
+    }
+
+    //    Kiểm tra able của dental
+    public boolean isAbleByDentalId(String id) {
+        return getById(id).isAble();
     }
 }

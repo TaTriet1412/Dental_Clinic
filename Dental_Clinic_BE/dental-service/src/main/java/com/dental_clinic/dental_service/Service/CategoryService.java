@@ -92,4 +92,9 @@ public class CategoryService {
         categoryRepository.delete(category);
     }
 
+//    Kiểm tra able của category
+    public boolean isAbleByCategoryId(String id) {
+        return getById(id).isAble();
+    }
+
 }

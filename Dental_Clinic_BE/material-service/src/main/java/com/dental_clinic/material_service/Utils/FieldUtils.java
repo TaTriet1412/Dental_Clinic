@@ -1,12 +1,19 @@
-package com.dental_clinic.dental_service.Utils;
+package com.dental_clinic.material_service.Utils;
 
-import org.bson.types.ObjectId;
+
+import java.time.LocalDate;
+import java.util.List;
 
 public class FieldUtils {
     public static void checkFieldIsEmptyOrNull(Object object,String message) {
         if(object == null)
             throw new RuntimeException(message + " không được để trống");
         if(object instanceof String && ((String) object).isBlank())
+            throw new RuntimeException(message + " không được là chuỗi rỗng");
+    }
+
+    public static void checkStrEmpty(String str,String message) {
+        if(str.isBlank())
             throw new RuntimeException(message + " không được là chuỗi rỗng");
     }
 
@@ -17,11 +24,12 @@ public class FieldUtils {
             throw new RuntimeException("Số không được âm");
     }
 
-    public static void checkObjectId(String id) {
-        // Xác thực đúng định dạng ObjectId không
-        if (!ObjectId.isValid(id)) {
-            throw new IllegalArgumentException("Sai định dạng ObjectId: " + id);
-        }
+    public static void checkListEmpty(List<?> list, String nameList) {
+        if(list.isEmpty())
+            throw new RuntimeException("Mảng '" + nameList + "' phải có ít nhất 1 phần tử");
+    }
 
+    public static boolean isLocalDateMoreThanToday(LocalDate currDate) {
+        return currDate.isAfter(LocalDate.now());
     }
 }
