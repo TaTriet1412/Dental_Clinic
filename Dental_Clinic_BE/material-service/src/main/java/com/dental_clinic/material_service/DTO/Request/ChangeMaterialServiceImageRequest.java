@@ -1,4 +1,4 @@
-package com.dental_clinic.material_service.DTO;
+package com.dental_clinic.material_service.DTO.Request;
 
 import lombok.Data;
 import lombok.Getter;

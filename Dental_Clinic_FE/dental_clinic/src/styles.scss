@@ -1,1 +1,33 @@
 /* You can add global styles to this file, and also import other style files */
+@import "@angular/material/prebuilt-themes/indigo-pink.css"; // Hoặc theme bạn đã chọn
+
+html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; background-color: #f4f7f6; } // Thêm màu nền nhẹ
+
+// Tùy chỉnh màu cho Snackbar (dùng panelClass đã thêm trong component)
+.snackbar-success {
+  background-color: #4CAF50; // Xanh lá
+  color: white;
+  button { // Nút đóng
+    color: white !important;
+    opacity: 0.8;
+  }
+}
+
+.snackbar-error {
+  background-color: #f44336; // Đỏ
+  color: white;
+   button { // Nút đóng
+    color: white !important;
+    opacity: 0.8;
+  }
+}
+
+// Có thể thêm một số tùy chỉnh chung cho FullCalendar ở đây
+// Ví dụ: Làm nổi bật ngày hôm nay
+// .fc .fc-daygrid-day.fc-day-today {
+//   background-color: rgba(255, 235, 59, 0.15); // Vàng nhạt
+// }
+// .fc .fc-timegrid-col.fc-day-today {
+//    background-color: rgba(255, 235, 59, 0.1);
+// }

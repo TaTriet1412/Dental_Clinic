@@ -1,7 +1,7 @@
 package com.dental_clinic.material_service.Controller;
 
-import com.dental_clinic.material_service.DTO.CreateCategoryDTO;
-import com.dental_clinic.material_service.DTO.UpdateCategoryDTO;
+import com.dental_clinic.material_service.DTO.Request.CreateCategory;
+import com.dental_clinic.material_service.DTO.Request.UpdateCategory;
 import com.dental_clinic.material_service.Entity.Category;
 import com.dental_clinic.material_service.Service.CategoryService;
 import lombok.RequiredArgsConstructor;
@@ -32,14 +32,14 @@ public class CategoryController {
     }
 
     @PostMapping
-    public ResponseEntity<Category> createCategory(@RequestBody CreateCategoryDTO categoryDTO) {
+    public ResponseEntity<Category> createCategory(@RequestBody CreateCategory categoryDTO) {
         return new ResponseEntity<>(categoryService.createCategory(categoryDTO),HttpStatus.CREATED);
     }
 
     @PutMapping("{id}")
-    public ResponseEntity<Category> updateCategory(@RequestBody UpdateCategoryDTO updateCategoryDTO,
+    public ResponseEntity<Category> updateCategory(@RequestBody UpdateCategory updateCategory,
                                             @PathVariable Long id) {
-        Category category =  categoryService.updateCategory(updateCategoryDTO,id);
+        Category category =  categoryService.updateCategory(updateCategory,id);
         return new ResponseEntity<>(category,HttpStatus.OK);
     }
 

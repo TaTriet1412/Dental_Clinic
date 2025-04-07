@@ -1,9 +1,9 @@
-package com.dental_clinic.material_service.DTO;
+package com.dental_clinic.material_service.DTO.Request;
 
 import lombok.Getter;
 
 @Getter
-public class UpdateCategoryDTO {
+public class UpdateCategory {
     private String name;
     private String note;
     private String description;

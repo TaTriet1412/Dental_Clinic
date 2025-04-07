@@ -1,0 +1,31 @@
+.schedule-page-container {
+    padding: 20px;
+    font-family: Arial, Helvetica, sans-serif; // Hoặc font bạn muốn
+  }
+  
+  .calendar-container {
+    max-width: 1200px; // Giới hạn chiều rộng tối đa
+    margin: 20px auto; // Căn giữa và tạo khoảng cách
+    background-color: #fff;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  }
+  
+  // Tùy chỉnh sâu hơn vào FullCalendar nếu cần (dùng selector cụ thể hoặc ::ng-deep)
+  // Ví dụ:
+  // :host ::ng-deep .fc-event { // Áp dụng cho component này
+  //   cursor: pointer !important;
+  //   font-size: 0.85em;
+  // }
+  
+  // :host ::ng-deep .fc-timeline-event {
+  //    border-radius: 4px;
+  //    padding: 5px 8px;
+  //    margin-bottom: 3px;
+  // }
+  
+  // :host ::ng-deep .fc-resource-area-header { // Style cột nhân viên
+  //    background-color: #f8f9fa;
+  //    font-weight: 600;
+  // }

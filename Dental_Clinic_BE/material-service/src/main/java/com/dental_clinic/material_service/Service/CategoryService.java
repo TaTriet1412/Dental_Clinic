@@ -1,7 +1,7 @@
 package com.dental_clinic.material_service.Service;
 
-import com.dental_clinic.material_service.DTO.CreateCategoryDTO;
-import com.dental_clinic.material_service.DTO.UpdateCategoryDTO;
+import com.dental_clinic.material_service.DTO.Request.CreateCategory;
+import com.dental_clinic.material_service.DTO.Request.UpdateCategory;
 import com.dental_clinic.material_service.Entity.Category;
 import com.dental_clinic.material_service.Repository.CategoryRepository;
 import com.dental_clinic.material_service.Utils.FieldUtils;
@@ -48,48 +48,48 @@ public class CategoryService {
 
 
     //    Tạo phân loại mới
-    public Category createCategory(CreateCategoryDTO createCategoryDTO){
+    public Category createCategory(CreateCategory createCategory){
 //        Kiểm tra trường thông tin có sai định dạng không
-        FieldUtils.checkFieldIsEmptyOrNull(createCategoryDTO.name(),"Họ tên");
-        FieldUtils.checkFieldIsEmptyOrNull(createCategoryDTO.description(),"Mô tả");
-        FieldUtils.checkFieldIsEmptyOrNull(createCategoryDTO.note(),"Ghi chú");
-        if (isNameExists(createCategoryDTO.name()) )
+        FieldUtils.checkFieldIsEmptyOrNull(createCategory.name(),"Họ tên");
+        FieldUtils.checkFieldIsEmptyOrNull(createCategory.description(),"Mô tả");
+        FieldUtils.checkFieldIsEmptyOrNull(createCategory.note(),"Ghi chú");
+        if (isNameExists(createCategory.name()) )
             throw new
                     RuntimeException("Đã tồn tại phân loại vật liệu '" +
-                                        createCategoryDTO.name() + "'");
+                                        createCategory.name() + "'");
 
 //        Tiến hành lưu vào db
         return categoryRepository.save(
                 Category.builder()
-                        .name(createCategoryDTO.name())
-                        .note(createCategoryDTO.note())
+                        .name(createCategory.name())
+                        .note(createCategory.note())
                         .created_at(LocalDateTime.now())
-                        .description(createCategoryDTO.description())
+                        .description(createCategory.description())
                         .able(true)
                         .build());
     }
 
     //    Thay đổi trường thông tin
-    public Category updateCategory(UpdateCategoryDTO updateCategoryDTO, Long id) {
+    public Category updateCategory(UpdateCategory updateCategory, Long id) {
 //        Tìm kiếm phân loại vật liệu được gọi qua id
         Category category = getById(id);
 
         //        Kiểm tra trường thông tin có sai định dạng không
-        FieldUtils.checkFieldIsEmptyOrNull(updateCategoryDTO.getName(),"Tên phân loại");
-        FieldUtils.checkFieldIsEmptyOrNull(updateCategoryDTO.getNote(),"Ghi chú");
-        FieldUtils.checkFieldIsEmptyOrNull(updateCategoryDTO.getDescription(),"Mô tả");
-        FieldUtils.checkFieldIsEmptyOrNull(updateCategoryDTO.isAble(),"Trạng thái");
+        FieldUtils.checkFieldIsEmptyOrNull(updateCategory.getName(),"Tên phân loại");
+        FieldUtils.checkFieldIsEmptyOrNull(updateCategory.getNote(),"Ghi chú");
+        FieldUtils.checkFieldIsEmptyOrNull(updateCategory.getDescription(),"Mô tả");
+        FieldUtils.checkFieldIsEmptyOrNull(updateCategory.isAble(),"Trạng thái");
 
 
-        if(isNameExistsExcludingOldName(updateCategoryDTO.getName(), category.getId()))
+        if(isNameExistsExcludingOldName(updateCategory.getName(), category.getId()))
             throw new RuntimeException("Đã tồn tại phân loại vật liệu '" +
-                                            updateCategoryDTO.getName() + "'");
+                                            updateCategory.getName() + "'");
 
         //        Cập nhật category
-        category.setAble(updateCategoryDTO.isAble());
-        category.setNote(updateCategoryDTO.getNote());
-        category.setName(updateCategoryDTO.getName());
-        category.setDescription(updateCategoryDTO.getDescription());
+        category.setAble(updateCategory.isAble());
+        category.setNote(updateCategory.getNote());
+        category.setName(updateCategory.getName());
+        category.setDescription(updateCategory.getDescription());
         return categoryRepository.save(category);
     }
 
@@ -97,7 +97,7 @@ public class CategoryService {
         //        Tìm kiếm phân loại vật liệu được gọi qua id
         Category category = getById(id);
 
-        // Kiểm tra liệu category có được tham chiếu đến bởi dental entity nào không
+        // Kiểm tra liệu category có được tham chiếu đến bởi material entity nào không
         if (materialService.isCategoryInUse(id))
             throw new RuntimeException
                     ("Phân loại với " + id +

@@ -25,8 +25,8 @@ public class ConsumableMaterial {
     @ManyToMany
     @JoinTable(
             name = "ingredient_consumable_material",
-            joinColumns = @JoinColumn(name = "ingredient_id"),
-            inverseJoinColumns = @JoinColumn(name = "con_mat_id")
+            joinColumns = @JoinColumn(name = "con_mat_id"),
+            inverseJoinColumns = @JoinColumn(name = "ingredient_id")
     )
     private List<Ingredient> ingredientList;
 
