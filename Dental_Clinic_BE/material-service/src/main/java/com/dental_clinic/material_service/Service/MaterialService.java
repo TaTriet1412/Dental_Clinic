@@ -3,7 +3,6 @@ package com.dental_clinic.material_service.Service;
 import com.dental_clinic.material_service.DTO.Request.ChangeMaterialServiceImageRequest;
 import com.dental_clinic.material_service.DTO.Request.*;
 import com.dental_clinic.material_service.DTO.Response.ConsumableUpdateRes;
-import com.dental_clinic.material_service.DTO.Response.FixedRes;
 import com.dental_clinic.material_service.DTO.Response.FixedUpdateRes;
 import com.dental_clinic.material_service.DTO.Response.MedicineUpdateRes;
 import com.dental_clinic.material_service.Entity.*;
@@ -174,7 +173,7 @@ public class MaterialService {
                 request.func()
         );
 
-        List<Ingredient> ingredientList = ingredientService.getListIngredientByListId(request.ingreIdList());
+        List<Ingredient> ingredientList = ingredientService.getListIngredientByListIdHasAble(request.ingreIdList());
 
         Material savedMaterial = buildAndSaveMaterial(
                 request.categoryId(),
@@ -216,7 +215,7 @@ public class MaterialService {
             throw new RuntimeException("Chi phí không được lớn hơn giá vật liệu");
 
 
-        List<Ingredient> ingredientList = ingredientService.getListIngredientByListId(request.ingreIdList());
+        List<Ingredient> ingredientList = ingredientService.getListIngredientByListIdHasAble(request.ingreIdList());
 
         Material savedMaterial = buildAndSaveMaterial(
                 request.categoryId(),
@@ -343,7 +342,7 @@ public class MaterialService {
 
         request.ingreIdList().ifPresent(ingreList -> {
             List<Ingredient> ingredientList =
-                    ingredientService.getListIngredientByListId(ingreList);
+                    ingredientService.getListIngredientByListIdHasAble(ingreList);
             consumableMaterialService.updateIngredientForConMaterial
                     (ingredientList,material.getId());
         });
@@ -435,7 +434,7 @@ public class MaterialService {
 
         request.ingreIdList().ifPresent(ingreList -> {
             List<Ingredient> ingredientList =
-                    ingredientService.getListIngredientByListId(ingreList);
+                    ingredientService.getListIngredientByListIdHasAble(ingreList);
             consumableMaterialService.updateIngredientForConMaterial
                     (ingredientList,material.getId());
         });

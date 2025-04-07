@@ -22,10 +22,12 @@ public class IngredientService {
         return ingredientRepository.findAll();
     }
 
-    public List<Ingredient> getListIngredientByListId(List<Long> idList) {
+    public List<Ingredient> getListIngredientByListIdHasAble(List<Long> idList) {
         List<Ingredient> resultList = new ArrayList<>();
         for (Long id:idList) {
             Ingredient ingredient = getById(id);
+            if(!ingredient.isAble())
+                throw  new RuntimeException("Không còn hỗ trợ thành phần có id = " + ingredient.getName());
             resultList.add(ingredient);
         }
 
