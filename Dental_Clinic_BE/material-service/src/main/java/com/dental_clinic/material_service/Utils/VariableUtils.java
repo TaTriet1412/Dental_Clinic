@@ -10,7 +10,7 @@ public class VariableUtils {
     public static final String IMAGE_NA = "template/image_state_not_available.jpg";
 
     public static final String UPLOAD_DIR_ROOT = "../material-service/uploads";
-    public static final String UPLOAD_DIR_MATERIAL_SERVICE = "uploads/material_services";
+    public static final String UPLOAD_DIR_MATERIAL_SERVICE = "../material-service/uploads/material_services/";
     public static final String UPLOAD_DIR_MATERIAL_SERVICE_POSTFIX = "material_services/";
 
     public static final int TYPE_UPLOAD_MATERIAL_SERVICE = 1;

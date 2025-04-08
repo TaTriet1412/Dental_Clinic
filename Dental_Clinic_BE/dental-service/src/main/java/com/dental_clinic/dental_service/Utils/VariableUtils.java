@@ -6,11 +6,11 @@ import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 
 public class VariableUtils {
-    public static final String DEFAULT_SERVICE = "template/blank_service.png";
+    public static final String DEFAULT_DENTAL_SERVICE = "template/blank_service.png";
     public static final String IMAGE_NA = "template/image_state_not_available.jpg";
 
     public static final String UPLOAD_DIR_ROOT = "../dental-service/uploads";
-    public static final String UPLOAD_DIR_DENTAL_SERVICE = "uploads/dental_services";
+    public static final String UPLOAD_DIR_DENTAL_SERVICE = "../dental-service/uploads/dental_services";
     public static final String UPLOAD_DIR_DENTAL_SERVICE_POSTFIX = "dental_services/";
 
     public static final int TYPE_UPLOAD_DENTAL_SERVICE = 1;

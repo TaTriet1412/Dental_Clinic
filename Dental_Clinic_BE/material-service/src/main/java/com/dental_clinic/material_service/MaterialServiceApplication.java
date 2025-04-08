@@ -1,13 +1,20 @@
 package com.dental_clinic.material_service;
 
+import com.dental_clinic.material_service.Config.ScheduledTasks;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.ApplicationContext;
+import org.springframework.scheduling.annotation.EnableScheduling;
 
 @SpringBootApplication
+@EnableScheduling
 public class MaterialServiceApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(MaterialServiceApplication.class, args);
+		ApplicationContext applicationContext = SpringApplication.run(MaterialServiceApplication.class, args);
+
+		ScheduledTasks scheduledTasks = applicationContext.getBean(ScheduledTasks.class);
+		scheduledTasks.deleteUnusedImages();
 	}
 
 }

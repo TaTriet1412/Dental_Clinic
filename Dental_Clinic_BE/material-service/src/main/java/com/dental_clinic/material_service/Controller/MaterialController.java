@@ -2,10 +2,7 @@ package com.dental_clinic.material_service.Controller;
 
 import com.dental_clinic.material_service.DTO.Request.*;
 import com.dental_clinic.material_service.DTO.Response.*;
-import com.dental_clinic.material_service.Service.ConsumableMaterialService;
-import com.dental_clinic.material_service.Service.FixedMaterialService;
-import com.dental_clinic.material_service.Service.MaterialService;
-import com.dental_clinic.material_service.Service.MedicineService;
+import com.dental_clinic.material_service.Service.*;
 import com.google.gson.Gson;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -31,6 +28,7 @@ public class MaterialController {
     ConsumableMaterialService consumableMaterialService;
     @Autowired
     MedicineService medicineService;
+
 
     Gson gson;
 
@@ -131,4 +129,12 @@ public class MaterialController {
         MedicineUpdateRes result = materialService.updateMedicine(req);
         return ResponseEntity.ok(result);
     }
+
+//    Đổi ảnh
+    @PutMapping(value = "/change-img", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<?> changeImg(@ModelAttribute ChangeMaterialServiceImageRequest request) {
+        materialService.changeImg(request);
+        return new ResponseEntity<>(gson.toJson("Thay đổi thành công"), HttpStatus.OK);
+    }
+
 }

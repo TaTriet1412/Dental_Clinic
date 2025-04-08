@@ -15,8 +15,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import static com.dental_clinic.dental_service.Utils.VariableUtils.*;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 
 @Service
@@ -58,7 +61,7 @@ public class DentalService {
             // Lưu file vào server
             String fileName = ImageUtils.saveFileServer(file, TYPE_UPLOAD_DENTAL_SERVICE);
             // Xóa file cũ
-            if (!dental_service.getImg().equals(VariableUtils.DEFAULT_SERVICE)) {
+            if (!dental_service.getImg().equals(VariableUtils.DEFAULT_DENTAL_SERVICE)) {
                 ImageUtils.deleteFileServer(dental_service.getImg());
             }
             // Cập nhật đường dẫn file mới vào database
@@ -102,7 +105,7 @@ public class DentalService {
                 .description(request.getDescription())
                 .unit(request.getUnit())
                 .cared_actor(request.getCared_actor())
-                .img(DEFAULT_SERVICE)
+                .img(DEFAULT_DENTAL_SERVICE)
                 .build();
 
         return dentalRepository.save(dental);
@@ -145,5 +148,54 @@ public class DentalService {
     //    Kiểm tra able của dental
     public boolean isAbleByDentalId(String id) {
         return getById(id).isAble();
+    }
+
+
+
+    //    Scan và xóa hình ảnh không còn tham chiếu trong database
+    public void SYSTEM_scanAndDeleteUnusedImgs() {
+        new Thread(() -> {
+            List<String> listImgs = dentalRepository.findAllImg().stream()
+                    .filter(img -> img != null && !img.equals(DEFAULT_DENTAL_SERVICE))
+                    .toList();
+            Path uploadDir = Path.of(UPLOAD_DIR_DENTAL_SERVICE);
+            try {
+                // Lấy danh sách tất cả các tệp trong thư mục uploads/material_services
+                List<Path> allFiles = Files.walk(uploadDir)
+                        .filter(Files::isRegularFile) // Chỉ lấy các tệp, không lấy thư mục
+                        .toList();
+
+                // Xóa tệp trên server nếu không nằm trong listImgs
+                for (Path file : allFiles) {
+                    String fileName = file.getFileName().toString();
+                    // Kiểm tra xem tệp có nằm trong listImgs không
+                    if (!listImgs.contains(VariableUtils.UPLOAD_DIR_DENTAL_SERVICE_POSTFIX + fileName)) {
+                        Files.delete(file);
+                        System.out.println(VariableUtils.getServerScanPrefix() + "Delete unused material img " + file);
+                    }
+                }
+
+                // Đổi tệp trên database nếu không nằm trong server
+                for (String img : listImgs) {
+                    // An toàn hơn khi tách lấy tên file
+                    String fileName = img.substring(img.lastIndexOf("/") + 1);
+                    Path imgPath = uploadDir.resolve(fileName);
+
+                    if (!Files.exists(imgPath)) {
+                        Optional<Dental> dental = dentalRepository.findByImg(img);
+                        dental.ifPresent(d -> {
+                            d.setImg(DEFAULT_DENTAL_SERVICE);
+                            dentalRepository.save(d);
+                            System.out.println(VariableUtils.getServerScanPrefix() +
+                                    "Changed img of dental " + d.getId() + " to default in DB");
+                        });
+                    }
+                }
+                System.out.println(">>>\n" + VariableUtils.getServerStatPrefix() + "Scan and delete unused dental img completed\n<<<");
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }).start();
     }
 }
