@@ -8,6 +8,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.GenericGenerator;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -25,7 +27,8 @@ public class Role {
     @Column(unique = true)
     private String name;
 
-    @OneToOne(mappedBy = "role", fetch = FetchType.LAZY) // liên kết với Product, để bi-directional relationship
+    @OneToMany(mappedBy = "role", fetch = FetchType.LAZY)
     @JsonIgnore
-    private User user;
+    private List<User> users = new ArrayList<>();
+
 }

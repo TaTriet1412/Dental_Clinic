@@ -32,22 +32,6 @@ public class SecurityConfig  {
                         .requestMatchers(HttpMethod.GET, "/images/**")
                             .permitAll()
 
-                        // Chỉ ADMIN có quyền quản lý user
-                        .requestMatchers("/admin/**")
-                            .hasRole("ADMIN")
-
-                        // USER & ADMIN có thể tạo bài viết
-                        .requestMatchers(HttpMethod.POST, "/posts/**")
-                            .hasAnyRole("USER", "ADMIN")
-
-                        // GUEST có thể xem danh sách bài viết
-                        .requestMatchers(HttpMethod.GET, "/posts/**")
-                            .hasAnyRole("GUEST", "USER", "ADMIN")
-
-                        // Secure the API endpoints that require JWT
-                        .requestMatchers("/api/**")
-                            .authenticated()  // Protect /api/** endpoints
-
                         // Any other request should be authenticated
                         .anyRequest().authenticated()
                 )

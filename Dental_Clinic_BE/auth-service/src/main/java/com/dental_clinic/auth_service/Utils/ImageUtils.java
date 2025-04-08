@@ -1,4 +1,4 @@
-package com.dental_clinic.material_service.Utils;
+package com.dental_clinic.auth_service.Utils;
 
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
@@ -34,7 +34,7 @@ public class ImageUtils {
 
     public static void deleteFileServer(String fileName) throws IOException {
         if(fileName.isBlank()) return;
-        Path uploadDir = Paths.get("../material-service/uploads");
+        Path uploadDir = Paths.get("../auth-service/uploads");
         Path filePath = Paths.get(uploadDir.toString(), fileName);
         Files.deleteIfExists(filePath);
     }

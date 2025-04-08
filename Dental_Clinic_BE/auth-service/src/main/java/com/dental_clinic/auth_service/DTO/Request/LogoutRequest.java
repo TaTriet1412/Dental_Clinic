@@ -1,4 +1,4 @@
-package com.dental_clinic.auth_service.DTO;
+package com.dental_clinic.auth_service.DTO.Request;
 
 import jakarta.validation.constraints.NotEmpty;
 import lombok.Getter;

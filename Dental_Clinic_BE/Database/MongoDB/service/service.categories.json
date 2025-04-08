@@ -1,0 +1,300 @@
+[{
+  "_id": {
+    "$oid": "67d20ef23e89a0de896f2744"
+  },
+  "name": "Khám tổng quát",
+  "description": "Chẩn đoán tình trạng răng hàm hiện tại, đưa ra giải pháp khắc phục",
+  "able": true,
+  "note": "Khám chi tiết, đưa ra lời khuyên cho bệnh nhân",
+  "created_at": {
+    "$date": "2025-03-12T22:47:14.972Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "67d20ef23e89a0de896f2745"
+  },
+  "name": "Nhổ răng",
+  "description": "Thực hiện nhổ bỏ răng bị hư tổn hoặc mọc sai vị trí",
+  "able": true,
+  "note": "Nhổ răng an toàn, ít đau, hồi phục nhanh",
+  "created_at": {
+    "$date": "2025-03-12T22:47:14.972Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "67d20ef23e89a0de896f2746"
+  },
+  "name": "Tiểu phẫu thuật",
+  "description": "Can thiệp phẫu thuật nhỏ trong nha khoa",
+  "able": true,
+  "note": "Thực hiện bởi bác sĩ có kinh nghiệm, an toàn cho bệnh nhân",
+  "created_at": {
+    "$date": "2025-03-12T22:47:14.972Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "67d20ef23e89a0de896f2747"
+  },
+  "name": "Nha chu",
+  "description": "Điều trị các bệnh lý về nướu và mô nha chu",
+  "able": true,
+  "note": "Giúp ngăn ngừa và điều trị viêm nha chu",
+  "created_at": {
+    "$date": "2025-03-12T22:47:14.972Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "67d20ef23e89a0de896f2748"
+  },
+  "name": "Chữa răng - Nội nha",
+  "description": "Điều trị sâu răng và các bệnh lý liên quan đến tủy răng",
+  "able": true,
+  "note": "Giúp bảo tồn răng thật tối đa",
+  "created_at": {
+    "$date": "2025-03-12T22:47:14.972Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "67d20ef23e89a0de896f2749"
+  },
+  "name": "Chữa tủy",
+  "description": "Điều trị viêm tủy và bảo vệ răng",
+  "able": true,
+  "note": "Sử dụng công nghệ hiện đại, ít đau, an toàn",
+  "created_at": {
+    "$date": "2025-03-12T22:47:14.972Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "67d20ef23e89a0de896f274a"
+  },
+  "name": "Phục hình tháo lắp",
+  "description": "Làm răng giả tháo lắp để phục hồi chức năng nhai",
+  "able": true,
+  "note": "Thiết kế phù hợp, thoải mái khi sử dụng",
+  "created_at": {
+    "$date": "2025-03-12T22:47:14.972Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "67d20ef23e89a0de896f274b"
+  },
+  "name": "Sửa chữa hàm",
+  "description": "Điều chỉnh hoặc sửa chữa hàm giả",
+  "able": true,
+  "note": "Đảm bảo phù hợp và thoải mái khi sử dụng",
+  "created_at": {
+    "$date": "2025-03-12T22:47:14.972Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "67d20ef23e89a0de896f274c"
+  },
+  "name": "Điều trị tiền phục hình",
+  "description": "Chuẩn bị răng và mô nướu trước khi phục hình",
+  "able": true,
+  "note": "Đảm bảo răng sẵn sàng cho phục hình tốt nhất",
+  "created_at": {
+    "$date": "2025-03-12T22:47:14.972Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "67d20ef23e89a0de896f274d"
+  },
+  "name": "Phục hình cố định",
+  "description": "Làm răng giả cố định như cầu răng, mão răng",
+  "able": true,
+  "note": "Chắc chắn, thẩm mỹ và bền lâu",
+  "created_at": {
+    "$date": "2025-03-12T22:47:14.972Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "67d20ef23e89a0de896f274e"
+  },
+  "name": "Điều trị răng sữa",
+  "description": "Chăm sóc và điều trị răng sữa cho trẻ em",
+  "able": true,
+  "note": "Dành cho trẻ em, giúp bảo vệ răng miệng từ sớm",
+  "created_at": {
+    "$date": "2025-03-12T22:47:14.972Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "67d20ef23e89a0de896f274f"
+  },
+  "name": "Chỉnh hình răng mặt",
+  "description": "Niềng răng, chỉnh nha để điều chỉnh khớp cắn",
+  "able": true,
+  "note": "Giúp răng thẳng đều, khớp cắn chuẩn",
+  "created_at": {
+    "$date": "2025-03-12T22:47:14.972Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "67d20ef23e89a0de896f2750"
+  },
+  "name": "Nha công cộng",
+  "description": "Chương trình chăm sóc răng miệng cộng đồng",
+  "able": true,
+  "note": "Tư vấn và điều trị cho cộng đồng",
+  "created_at": {
+    "$date": "2025-03-12T22:47:14.972Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "67d20ef23e89a0de896f2751"
+  },
+  "name": "Điều trị loạn năng hệ thống nhai",
+  "description": "Điều trị các rối loạn nhai",
+  "able": true,
+  "note": "Cải thiện chức năng nhai và giảm đau",
+  "created_at": {
+    "$date": "2025-03-12T22:47:14.972Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "67d20ef23e89a0de896f2752"
+  },
+  "name": "X-quang răng",
+  "description": "Chụp X-quang để kiểm tra tình trạng răng miệng",
+  "able": true,
+  "note": "Hỗ trợ chẩn đoán chính xác hơn",
+  "created_at": {
+    "$date": "2025-03-12T22:47:14.972Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "67d20ef23e89a0de896f2753"
+  },
+  "name": "Răng sứ dán",
+  "description": "Mặt dán sứ Veneer giúp răng trắng đẹp tự nhiên",
+  "able": true,
+  "note": "Không mài răng nhiều, bảo tồn răng thật",
+  "created_at": {
+    "$date": "2025-03-12T22:47:14.972Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "67d20ef23e89a0de896f2754"
+  },
+  "name": "Hàm phủ tháo lắp",
+  "description": "Hàm giả phủ trên trụ Implant hoặc răng thật",
+  "able": true,
+  "note": "Giúp ăn nhai tốt hơn, dễ tháo lắp vệ sinh",
+  "created_at": {
+    "$date": "2025-03-12T22:47:14.972Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "67d20ef23e89a0de896f2755"
+  },
+  "name": "Hàm cố định bắt vít",
+  "description": "Hàm giả cố định trên Implant bằng vít",
+  "able": true,
+  "note": "Giúp ăn nhai chắc chắn, không cần tháo lắp",
+  "created_at": {
+    "$date": "2025-03-12T22:47:14.972Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "67d20ef23e89a0de896f2756"
+  },
+  "name": "Phục hình tạm tức thì toàn hàm",
+  "description": "Làm răng giả tạm thời ngay sau khi nhổ răng",
+  "able": true,
+  "note": "Giúp bệnh nhân có răng ngay sau phẫu thuật",
+  "created_at": {
+    "$date": "2025-03-12T22:47:14.972Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "67d20ef23e89a0de896f2757"
+  },
+  "name": "Cấy ghép 1 trụ Implant",
+  "description": "Trồng răng bằng 1 trụ Implant",
+  "able": true,
+  "note": "Giải pháp phục hồi răng mất hiệu quả",
+  "created_at": {
+    "$date": "2025-03-12T22:47:14.972Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "67d20ef23e89a0de896f2758"
+  },
+  "name": "Màng, xương tổng hợp",
+  "description": "Sử dụng vật liệu nhân tạo để ghép xương",
+  "able": true,
+  "note": "Hỗ trợ cấy ghép Implant hiệu quả",
+  "created_at": {
+    "$date": "2025-03-12T22:47:14.972Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "67d20ef23e89a0de896f2759"
+  },
+  "name": "Màng, xương tự thân",
+  "description": "Ghép xương từ chính cơ thể bệnh nhân",
+  "able": true,
+  "note": "Tăng tỷ lệ thành công khi cấy ghép Implant",
+  "created_at": {
+    "$date": "2025-03-12T22:47:14.972Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "67d20ef23e89a0de896f275a"
+  },
+  "name": "Nâng xoang",
+  "description": "Phẫu thuật nâng xoang để cấy ghép Implant",
+  "able": true,
+  "note": "Tạo điều kiện thuận lợi cho cấy ghép răng",
+  "created_at": {
+    "$date": "2025-03-12T22:47:14.972Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "67d20ef23e89a0de896f275b"
+  },
+  "name": "Chụp CT CONE BEAM",
+  "description": "Chụp CT 3D để đánh giá cấu trúc răng và xương hàm",
+  "able": true,
+  "note": "Cung cấp hình ảnh 3D rõ nét, hỗ trợ chẩn đoán chính xác",
+  "created_at": {
+    "$date": "2025-03-12T22:47:14.972Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "67d20ef23e89a0de896f275c"
+  },
+  "name": "Máng Hướng Dẫn / in Sọ Mặt",
+  "description": "Dụng cụ hỗ trợ phẫu thuật hoặc điều trị chỉnh nha",
+  "able": true,
+  "note": "Giúp thực hiện các thủ thuật chính xác hơn",
+  "created_at": {
+    "$date": "2025-03-12T22:47:14.972Z"
+  }
+}]
