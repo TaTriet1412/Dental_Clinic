@@ -14,8 +14,8 @@ CREATE TABLE dentist (
     id BIGINT PRIMARY KEY AUTO_INCREMENT,
     specialty TEXT(200) NOT NULL,
     experienceYear INT NOT NULL,
-    facId BIGINT NOT NULL,
-    FOREIGN KEY (facId) REFERENCES faculty(id)
+    fac_id BIGINT NOT NULL,
+    FOREIGN KEY (fac_id) REFERENCES faculty(id)
 );
 
 -- Dữ liệu mẫu cho bảng faculty
@@ -28,7 +28,7 @@ INSERT INTO faculty (name, description) VALUES
 ('Nhổ răng và tiểu phẩu', 'Chuyên về thực hiện nhổ răng (bao gồm răng khôn) và các tiểu phẫu thuật đơn giản trong khoang miệng.');
 
 -- Dữ liệu mẫu cho bảng dentist
-INSERT INTO dentist (specialty, experienceYear, facId) VALUES
+INSERT INTO dentist (specialty, experienceYear, fac_id) VALUES
 ('Răng trẻ em', 2, 5),          
 ('Phục Hình', 20, 4),        
 ('Nha chu', 10, 1),           
