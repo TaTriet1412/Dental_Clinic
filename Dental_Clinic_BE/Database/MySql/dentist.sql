@@ -12,7 +12,7 @@ CREATE TABLE faculty (
     description LONGTEXT NOT NULL,        -- Mô tả về khoa
     email VARCHAR(255) UNIQUE,                   -- Địa chỉ email liên hệ
     phone_number VARCHAR(15) UNIQUE,             -- Số điện thoại liên hệ
-    status BIT DEFAULT b'1', -- Trạng thái của khoa
+    able BIT DEFAULT b'1', -- Trạng thái của khoa
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP -- Thời gian tạo
 );
 
