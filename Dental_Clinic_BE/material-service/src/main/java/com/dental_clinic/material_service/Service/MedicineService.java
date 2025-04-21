@@ -1,8 +1,8 @@
 package com.dental_clinic.material_service.Service;
 
-import com.dental_clinic.material_service.DTO.Response.ConsumableRes;
+import com.dental_clinic.common_lib.exception.AppException;
+import com.dental_clinic.common_lib.exception.ErrorCode;
 import com.dental_clinic.material_service.DTO.Response.MedicineRes;
-import com.dental_clinic.material_service.Entity.ConsumableMaterial;
 import com.dental_clinic.material_service.Entity.Material;
 import com.dental_clinic.material_service.Entity.Medicine;
 import com.dental_clinic.material_service.Repository.MedicineRepository;
@@ -15,17 +15,21 @@ import java.util.Objects;
 
 @Service
 public class MedicineService {
+    private final MedicineRepository medicineRepository;
+    private final ConsumableMaterialService consumableMaterialService;
+
     @Autowired
-    private MedicineRepository medicineRepository;
-    @Autowired
-    private static ConsumableMaterialService consumableMaterialService;
+    public MedicineService(MedicineRepository medicineRepository, ConsumableMaterialService consumableMaterialService) {
+        this.medicineRepository = medicineRepository;
+        this.consumableMaterialService = consumableMaterialService;
+    }
 
     public List<Medicine> getAll() {
         return medicineRepository.findAll();
     }
 
     public Medicine getById(Long id) {
-        return medicineRepository.findById(id).orElseThrow(() -> new RuntimeException("Không tìm thấy thuốc có id = '" + id + "'"));
+        return medicineRepository.findById(id).orElseThrow(() -> new AppException(ErrorCode.NOT_FOUND,"Không tìm thấy thuốc có id = '" + id + "'"));
     }
 
     public boolean isMedicine(Long id) {

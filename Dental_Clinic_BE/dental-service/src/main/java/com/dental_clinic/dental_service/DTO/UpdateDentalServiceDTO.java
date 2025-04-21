@@ -2,13 +2,14 @@ package com.dental_clinic.dental_service.DTO;
 
 import lombok.Getter;
 
+import java.util.Optional;
+
 @Getter
 public class UpdateDentalServiceDTO {
-    private String name;
-    private Integer cost;
-    private Integer revenue;
-    private String cared_actor;
-    private String description;
-    private String unit;
-    private boolean able;
+    Optional<String> name;
+    Optional<Integer> cost;
+    Optional<Integer> revenue;
+    Optional<String> cared_actor;
+    Optional<String> description;
+    Optional<String> unit;
 }

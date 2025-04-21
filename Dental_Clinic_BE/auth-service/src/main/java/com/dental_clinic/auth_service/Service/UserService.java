@@ -1,5 +1,8 @@
 package com.dental_clinic.auth_service.Service;
 
+import com.dental_clinic.common_lib.exception.AppException;
+import com.dental_clinic.common_lib.exception.ErrorCode;
+
 import com.dental_clinic.auth_service.DTO.Request.ChangeAuthServiceImageRequest;
 import com.dental_clinic.auth_service.DTO.Request.UpdateAccount;
 import com.dental_clinic.auth_service.DTO.Response.AccountUpdateRes;
@@ -21,8 +24,12 @@ import java.util.Optional;
 
 @Service
 public class UserService {
+    private final UserRepository userRepository;
+
     @Autowired
-    private UserRepository userRepository;
+    public UserService(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
 
     public List<User> getUsers(){
         return userRepository.findAll();
@@ -30,38 +37,36 @@ public class UserService {
 
     public User getById(Long id) {
         return userRepository.findById(id).orElseThrow(
-                () -> new RuntimeException("Không tìm thấy tài khoản có id = '" + id + "'"));
+                () -> new AppException(ErrorCode.NOT_FOUND, "Không tìm thấy tài khoản có id = '" + id + "'"));
     }
 
     public User getUserByEmail(String email) {
-        for (User user: getUsers()) {
-            if(user.getEmail().equals(email)) return user;
-        }
-        throw  new RuntimeException("Không tồn tại email này!");
+        return (User) userRepository.findByEmail(email)
+                .orElseThrow(() -> new AppException(ErrorCode.NOT_FOUND, "Không tồn tại email này!"));
     }
 
     public AccountUpdateRes updateAccountInfo(UpdateAccount req) {
         User u = getById(req.userId());
 
         req.email().ifPresent(email -> {
-            FieldUtils.checkStrEmpty(email, "Đối tượng sử dụng");
+            FieldUtils.checkStrEmpty(email, "Email");
             if(userRepository.existsByEmailAndIdNot(email, req.userId()))
-                throw new RuntimeException("Đã tồn tại email này");
+                throw new AppException(ErrorCode.EXISTED_DATA, "Đã tồn tại email này");
             if(!FieldUtils.isValidEmail(email)) {
-                throw new RuntimeException("Email không hợp lệ");
+                throw new AppException(ErrorCode.INVALID_REQUEST, "Email không hợp lệ");
             }
             u.setEmail(email);
         });
         req.name().ifPresent(name -> {
             FieldUtils.checkStrEmpty(name, "Họ tên");
             if(userRepository.existsByNameAndIdNot(name, req.userId()))
-                throw new RuntimeException("Đã tồn tại tên này");
+                throw new AppException(ErrorCode.EXISTED_DATA, "Đã tồn tại tên này");
             u.setName(name);
         });
         req.phone().ifPresent(phone -> {
             FieldUtils.checkNumberIsIntegerAndNotNegative(phone);
             if(userRepository.existsByPhoneAndIdNot(phone, req.userId()))
-                throw new RuntimeException("Đã tồn tại số điện thoại này");
+                throw new AppException(ErrorCode.EXISTED_DATA, "Đã tồn tại số điện thoại này");
             u.setPhone(phone);
         });
         req.address().ifPresent(address -> {
@@ -76,7 +81,7 @@ public class UserService {
 
         req.birthday().ifPresent(birthday -> {
             if (birthday.isAfter(LocalDate.now())) {
-                throw new RuntimeException("Ngày sinh không hợp lệ");
+                throw new AppException(ErrorCode.INVALID_REQUEST, "Ngày sinh không hợp lệ");
             }
             u.setBirthday(birthday);
         });
@@ -99,7 +104,7 @@ public class UserService {
         // Kiểm tra vật liệu tồn tại không
         User user = userRepository.findById(
                 request.userId()).orElseThrow(
-                () ->  new RuntimeException("Tài khoản không tồn tại"));
+                () -> new AppException(ErrorCode.NOT_FOUND, "Tài khoản không tồn tại"));
         // Kiểm tra file hợp lệ
         MultipartFile file = request.image();
         ImageUtils.checkImageFile(file);
@@ -107,7 +112,7 @@ public class UserService {
         try {
             ImageUtils.createUploadDirIfNotExists(VariableUtils.TYPE_UPLOAD_AUTH_SERVICE);
         } catch (IOException e) {
-            throw new RuntimeException("Lỗi khi tạo thư mục upload: " + e.getMessage());
+            throw new AppException(ErrorCode.FILE_ERROR, "Lỗi khi tạo thư mục upload: " + e.getMessage());
         }
         // Thực hiện thay đổi material service img
         try {
@@ -121,7 +126,7 @@ public class UserService {
             user.setImg(fileName);
             userRepository.save(user);
         } catch (IOException e) {
-            throw new RuntimeException("Lỗi khi lưu tập tin: " + e.getMessage());
+            throw new AppException(ErrorCode.FILE_ERROR, "Lỗi khi lưu tập tin: " + e.getMessage());
         }
     }
 

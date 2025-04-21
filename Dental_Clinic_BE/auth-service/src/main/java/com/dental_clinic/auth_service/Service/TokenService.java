@@ -8,10 +8,15 @@ import java.util.concurrent.TimeUnit;
 
 @Service
 public class TokenService {
-    @Autowired
-    private RedisTemplate<String, Object> redisTemplate;
+    private final RedisTemplate<String, Object> redisTemplate;
 
     private static final long EXPIRATION_TIME = 2; // Token hết hạn trong 2 ngày
+
+    @Autowired
+    public TokenService(RedisTemplate<String, Object> redisTemplate) {
+        this.redisTemplate = redisTemplate;
+    }
+
     public void saveToken(String token, String email) {
         redisTemplate.opsForValue().set(token,email,EXPIRATION_TIME, TimeUnit.DAYS);
     }

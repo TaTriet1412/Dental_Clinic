@@ -1,5 +1,6 @@
 package com.dental_clinic.material_service.Controller;
 
+import com.dental_clinic.common_lib.dto.response.ApiResponse;
 import com.dental_clinic.material_service.DTO.Request.CreateCategory;
 import com.dental_clinic.material_service.DTO.Request.UpdateCategory;
 import com.dental_clinic.material_service.Entity.Category;
@@ -17,36 +18,69 @@ import java.util.List;
 @RequiredArgsConstructor
 @RequestMapping("/material/category")
 public class CategoryController {
-    @Autowired
     private CategoryService categoryService;
 
+    @Autowired
+    public CategoryController(CategoryService categoryService) {
+        this.categoryService = categoryService;
+    }
+
     @GetMapping
-    public ResponseEntity<List<Category>> getAllCategory(){
+    public ApiResponse<Object> getAllCategory(){
         List<Category> categoryList = categoryService.getAllCategories();
-        return new ResponseEntity<>(categoryList, HttpStatus.OK);
+        return ApiResponse.builder()
+                .result(categoryList)
+                .apiCode(200)
+                .message("Lấy danh sách danh mục thành công!")
+                .build();
     }
 
     @GetMapping("{id}")
-    public ResponseEntity<Category> getCategoryById(@PathVariable Long id){
-        return new ResponseEntity<>(categoryService.getById(id), HttpStatus.OK);
+    public ApiResponse<Object> getCategoryById(@PathVariable Long id){
+        return ApiResponse.builder()
+                .result(categoryService.getById(id))
+                .apiCode(200)
+                .message("Lấy danh mục thành công!")
+                .build();
     }
 
-    @PostMapping
-    public ResponseEntity<Category> createCategory(@RequestBody CreateCategory categoryDTO) {
-        return new ResponseEntity<>(categoryService.createCategory(categoryDTO),HttpStatus.CREATED);
-    }
+    @ResponseStatus(HttpStatus.CREATED)
+   @PostMapping
+   public ApiResponse<Object> createCategory(@RequestBody CreateCategory categoryDTO) {
+       return ApiResponse.builder()
+               .result(categoryService.createCategory(categoryDTO))
+               .apiCode(201)
+               .message("Tạo danh mục thành công!")
+               .build();
+   }
 
-    @PutMapping("{id}")
-    public ResponseEntity<Category> updateCategory(@RequestBody UpdateCategory updateCategory,
-                                            @PathVariable Long id) {
-        Category category =  categoryService.updateCategory(updateCategory,id);
-        return new ResponseEntity<>(category,HttpStatus.OK);
-    }
+   @PutMapping("{id}")
+   public ApiResponse<Object> updateCategory(@RequestBody UpdateCategory updateCategory,
+                                       @PathVariable Long id) {
+       return ApiResponse.builder()
+               .result(categoryService.updateCategory(updateCategory, id))
+               .apiCode(200)
+               .message("Cập nhật danh mục thành công!")
+               .build();
+   }
 
-    @DeleteMapping("{id}")
-    public ResponseEntity<?> deleteCategory(@PathVariable Long id) {
-        categoryService.deleteCategory(id);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-    }
+   @DeleteMapping("{id}")
+   public ApiResponse<Object> deleteCategory(@PathVariable Long id) {
+       categoryService.deleteCategory(id);
+       return ApiResponse.builder()
+               .result(null)
+               .apiCode(200)
+               .message("Xóa danh mục thành công!")
+               .build();
+   }
 
+   @PatchMapping("{id}/able")
+    public ApiResponse<Object> ableCategory(@PathVariable Long id) {
+         Category category = categoryService.toggleAble(id);
+         return ApiResponse.builder()
+                .result(category)
+                .apiCode(200)
+                .message(category.isAble() ? "Đã kích hoạt danh mục" : "Đã khóa danh mục")
+                .build();
+    }
 }

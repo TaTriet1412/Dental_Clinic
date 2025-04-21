@@ -3,10 +3,12 @@ package com.dental_clinic.material_service;
 import com.dental_clinic.material_service.Config.ScheduledTasks;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 import org.springframework.context.ApplicationContext;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
 @SpringBootApplication
+@EnableDiscoveryClient
 @EnableScheduling
 public class MaterialServiceApplication {
 

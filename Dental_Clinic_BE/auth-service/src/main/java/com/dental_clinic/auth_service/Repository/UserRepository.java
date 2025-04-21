@@ -19,4 +19,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
     Optional<User> findByImg(String imgUrl);
     @Query("SELECT u.img FROM User u")
     List<String> findAllImg();
+    void deleteByEmail(String email);
+
+    Optional<Object> findByEmail(String email);
 }

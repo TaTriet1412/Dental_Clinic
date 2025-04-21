@@ -1,5 +1,8 @@
 package com.dental_clinic.dental_service.Service;
 
+import com.dental_clinic.common_lib.exception.AppException;
+import com.dental_clinic.common_lib.exception.ErrorCode;
+
 import com.dental_clinic.dental_service.DTO.CreateCategoryDTO;
 import com.dental_clinic.dental_service.DTO.UpdateCategoryDTO;
 import com.dental_clinic.dental_service.Entity.Category;
@@ -11,23 +14,28 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class CategoryService {
+    private final CategoryRepository categoryRepository;
+    private final DentalService dentalService;
+
     @Autowired
-    private CategoryRepository categoryRepository;
-    @Autowired
-    private DentalService dentalService;
+    public CategoryService(CategoryRepository categoryRepository, DentalService dentalService) {
+        this.categoryRepository = categoryRepository;
+        this.dentalService = dentalService;
+    }
 
 
-//   Lấy tất cả các phân loại dịch vụ
+    //   Lấy tất cả các phân loại dịch vụ
     public List<Category> getAllCategories(){
         return categoryRepository.findAll();
     }
 
 //    Lấy phân loại dịch vụ theo id
     public Category getById(String id){
-        return categoryRepository.findById(id).orElseThrow(() -> new RuntimeException("Không tìm thấy phân loại dịch vụ có id = '" + id + "'"));
+        return categoryRepository.findById(id).orElseThrow(() -> new AppException(ErrorCode.NOT_FOUND, "Không tìm thấy phân loại dịch vụ có id = '" + id + "'"));
     }
 
 //    Kiểm tra tên tồn tại chưa
@@ -42,11 +50,8 @@ public class CategoryService {
 
 //    Tạo phân loại mới
     public Category createCategory(CreateCategoryDTO createCategoryDTO){
-//        Kiểm tra trường thông tin có sai định dạng không
-        FieldUtils.checkFieldIsEmptyOrNull(createCategoryDTO.getName(),"Họ tên");
-        FieldUtils.checkFieldIsEmptyOrNull(createCategoryDTO.getNote(),"Ghi chú");
         if (isNameExists(createCategoryDTO.getName()) )
-            throw new RuntimeException("Đã tồn tại phân loại dịch vụ '" + createCategoryDTO.getName() + "'");
+            throw new AppException(ErrorCode.EXISTED_DATA, "Đã tồn tại phân loại dịch vụ '" + createCategoryDTO.getName() + "'");
 
 //        Tiến hành lưu vào db
        return categoryRepository.save(
@@ -60,41 +65,42 @@ public class CategoryService {
 
 //    Thay đổi trường thông tin
     public Category updateCategory(UpdateCategoryDTO updateCategoryDTO, String id) {
-//        Tìm kiếm phân loại dịch vụ được gọi qua id
         Category category = getById(id);
 
-        //        Kiểm tra trường thông tin có sai định dạng không
-        FieldUtils.checkFieldIsEmptyOrNull(updateCategoryDTO.getName(),"Tên phân loại");
-        FieldUtils.checkFieldIsEmptyOrNull(updateCategoryDTO.getNote(),"Ghi chú");
-        FieldUtils.checkFieldIsEmptyOrNull(updateCategoryDTO.isAble(),"Trạng thái");
+        updateCategoryDTO.getName().ifPresent(name -> {
+            FieldUtils.checkFieldIsEmptyOrNull(name, "Tên phân loại");
+            if (isNameExistsExcludingOldName(name, category.getId()))
+                throw new AppException(ErrorCode.EXISTED_DATA, "Đã tồn tại phân loại dịch vụ '" + name + "'");
+            category.setName(name);
+        });
 
-
-        if(isNameExistsExcludingOldName(updateCategoryDTO.getName(), category.getId()))
-            throw new RuntimeException("Đã tồn tại phân loại dịch vụ '" + updateCategoryDTO.getName() + "'");
-
-        //        Cập nhật category
-        category.setAble(updateCategoryDTO.isAble());
-        category.setNote(updateCategoryDTO.getNote());
-        category.setName(updateCategoryDTO.getName());
+        updateCategoryDTO.getNote().ifPresent(note -> {
+            FieldUtils.checkFieldIsEmptyOrNull(note, "Ghi chú");
+            category.setNote(note);
+        });
+        
         return categoryRepository.save(category);
     }
 
     public void deleteCategory(String id) {
-        //        Tìm kiếm phân loại dịch vụ được gọi qua id
         Category category = getById(id);
 
         // Kiểm tra liệu category có được tham chiếu đến bởi dental entity nào không
         if (dentalService.isCategoryInUse(id))
-            throw new RuntimeException
-                    ("Phân loại với " + id + " còn đang được sử dụng bởi dịch vụ nào đó. Nên không thể xóa phân loại này");
+            throw new AppException(ErrorCode.INVALID_REQUEST,
+                    "Phân loại với " + id + " còn đang được sử dụng bởi dịch vụ nào đó. Nên không thể xóa phân loại này");
 
-//        Xóa thành công
         categoryRepository.delete(category);
     }
 
-//    Kiểm tra able của category
+    public Category toggleAble(String id) {
+        Category category = getById(id);
+        category.setAble(!category.getAble());
+        return categoryRepository.save(category);
+    }
+
     public boolean isAbleByCategoryId(String id) {
-        return getById(id).isAble();
+        return getById(id).getAble();
     }
 
 }

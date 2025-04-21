@@ -1,5 +1,7 @@
 package com.dental_clinic.auth_service.Utils;
 
+import com.dental_clinic.common_lib.exception.AppException;
+import com.dental_clinic.common_lib.exception.ErrorCode;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -17,11 +19,11 @@ public class ImageUtils {
         String fileName = StringUtils.cleanPath(Objects.requireNonNull(file.getOriginalFilename()));
         // Kiểm tra tên file
         if (fileName.contains("..")) {
-            throw new IllegalArgumentException("tên tập tin chứa ký tự không hợp lệ");
+            throw new AppException(ErrorCode.INVALID_REQUEST,"tên tập tin chứa ký tự không hợp lệ");
         }
         // Kiểm tra tên file rỗng
         if (fileName.isBlank()) {
-            throw new IllegalArgumentException("Tên tập tin rỗng");
+            throw new AppException(ErrorCode.INVALID_REQUEST,"Tên tập tin rỗng");
         }
         // Tạo tên file mới để tránh trùng lặp
         String uniqueFileName = VariableUtils.getStringFromUploadType(uploadType) + "/" + UUID.randomUUID() + fileName.substring(fileName.lastIndexOf("."));

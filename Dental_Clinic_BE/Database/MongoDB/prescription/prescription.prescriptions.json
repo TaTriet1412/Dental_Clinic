@@ -1,0 +1,2016 @@
+[{
+  "_id": {
+    "$oid": "6804fd27f6f438ca1b3fc7ac"
+  },
+  "pat_id": 12,
+  "den_id": 5,
+  "created_at": "2025-03-28T07:38:32.337Z",
+  "note": "Không dùng khi đói",
+  "total_price": 1650,
+  "medicines": [
+    {
+      "med_id": 55,
+      "quantity_medicine": 1
+    },
+    {
+      "med_id": 60,
+      "quantity_medicine": 3
+    }
+  ]
+},
+{
+  "_id": {
+    "$oid": "6804fd27f6f438ca1b3fc7ad"
+  },
+  "pat_id": 6,
+  "den_id": 11,
+  "created_at": "2025-04-18T09:09:24.032Z",
+  "note": "Uống với nhiều nước",
+  "total_price": 800,
+  "medicines": [
+    {
+      "med_id": 57,
+      "quantity_medicine": 1
+    }
+  ]
+},
+{
+  "_id": {
+    "$oid": "6804fd27f6f438ca1b3fc7ae"
+  },
+  "pat_id": 19,
+  "den_id": 2,
+  "created_at": "2025-03-06T21:17:26.998Z",
+  "note": "Uống với nhiều nước",
+  "total_price": 960,
+  "medicines": [
+    {
+      "med_id": 62,
+      "quantity_medicine": 1
+    }
+  ]
+},
+{
+  "_id": {
+    "$oid": "6804fd27f6f438ca1b3fc7af"
+  },
+  "pat_id": 20,
+  "den_id": 2,
+  "created_at": "2025-02-28T01:11:20.657Z",
+  "note": "Không dùng khi đói",
+  "total_price": 2560,
+  "medicines": [
+    {
+      "med_id": 53,
+      "quantity_medicine": 2
+    },
+    {
+      "med_id": 61,
+      "quantity_medicine": 2
+    }
+  ]
+},
+{
+  "_id": {
+    "$oid": "6804fd27f6f438ca1b3fc7b0"
+  },
+  "pat_id": 9,
+  "den_id": 1,
+  "created_at": "2025-04-13T00:13:51.894Z",
+  "note": "Dặn uống sau ăn",
+  "total_price": 2100,
+  "medicines": [
+    {
+      "med_id": 52,
+      "quantity_medicine": 1
+    },
+    {
+      "med_id": 56,
+      "quantity_medicine": 1
+    },
+    {
+      "med_id": 60,
+      "quantity_medicine": 2
+    }
+  ]
+},
+{
+  "_id": {
+    "$oid": "6804fd27f6f438ca1b3fc7b1"
+  },
+  "pat_id": 8,
+  "den_id": 11,
+  "created_at": "2025-03-21T22:32:13.683Z",
+  "note": "Dặn uống sau ăn",
+  "total_price": 1800,
+  "medicines": [
+    {
+      "med_id": 56,
+      "quantity_medicine": 3
+    }
+  ]
+},
+{
+  "_id": {
+    "$oid": "6804fd27f6f438ca1b3fc7b2"
+  },
+  "pat_id": 7,
+  "den_id": 1,
+  "created_at": "2025-02-21T10:05:44.873Z",
+  "note": "Dặn uống sau ăn",
+  "total_price": 4680,
+  "medicines": [
+    {
+      "med_id": 58,
+      "quantity_medicine": 3
+    },
+    {
+      "med_id": 61,
+      "quantity_medicine": 1
+    }
+  ]
+},
+{
+  "_id": {
+    "$oid": "6804fd27f6f438ca1b3fc7b3"
+  },
+  "pat_id": 2,
+  "den_id": 5,
+  "created_at": "2025-02-23T05:15:14.424Z",
+  "note": "Không dùng khi đói",
+  "total_price": 4040,
+  "medicines": [
+    {
+      "med_id": 56,
+      "quantity_medicine": 3
+    },
+    {
+      "med_id": 51,
+      "quantity_medicine": 1
+    },
+    {
+      "med_id": 61,
+      "quantity_medicine": 3
+    }
+  ]
+},
+{
+  "_id": {
+    "$oid": "6804fd27f6f438ca1b3fc7b4"
+  },
+  "pat_id": 7,
+  "den_id": 7,
+  "created_at": "2025-03-26T02:57:31.363Z",
+  "note": "Dặn uống sau ăn",
+  "total_price": 1800,
+  "medicines": [
+    {
+      "med_id": 55,
+      "quantity_medicine": 3
+    }
+  ]
+},
+{
+  "_id": {
+    "$oid": "6804fd27f6f438ca1b3fc7b5"
+  },
+  "pat_id": 17,
+  "den_id": 6,
+  "created_at": "2025-04-07T20:46:08.146Z",
+  "note": "Uống với nhiều nước",
+  "total_price": 400,
+  "medicines": [
+    {
+      "med_id": 59,
+      "quantity_medicine": 1
+    }
+  ]
+},
+{
+  "_id": {
+    "$oid": "6804fd27f6f438ca1b3fc7b6"
+  },
+  "pat_id": 15,
+  "den_id": 7,
+  "created_at": "2025-03-08T04:31:39.441Z",
+  "note": "Dặn uống sau ăn",
+  "total_price": 1760,
+  "medicines": [
+    {
+      "med_id": 61,
+      "quantity_medicine": 2
+    },
+    {
+      "med_id": 51,
+      "quantity_medicine": 1
+    }
+  ]
+},
+{
+  "_id": {
+    "$oid": "6804fd27f6f438ca1b3fc7b7"
+  },
+  "pat_id": 19,
+  "den_id": 3,
+  "created_at": "2025-03-06T09:39:31.803Z",
+  "note": "Uống với nhiều nước",
+  "total_price": 2000,
+  "medicines": [
+    {
+      "med_id": 55,
+      "quantity_medicine": 2
+    },
+    {
+      "med_id": 52,
+      "quantity_medicine": 1
+    }
+  ]
+},
+{
+  "_id": {
+    "$oid": "6804fd27f6f438ca1b3fc7b8"
+  },
+  "pat_id": 15,
+  "den_id": 11,
+  "created_at": "2025-04-03T12:07:12.778Z",
+  "note": "Không dùng khi đói",
+  "total_price": 1200,
+  "medicines": [
+    {
+      "med_id": 56,
+      "quantity_medicine": 2
+    }
+  ]
+},
+{
+  "_id": {
+    "$oid": "6804fd27f6f438ca1b3fc7b9"
+  },
+  "pat_id": 3,
+  "den_id": 4,
+  "created_at": "2025-03-11T23:01:03.822Z",
+  "note": "Uống sau khi ăn no",
+  "total_price": 3360,
+  "medicines": [
+    {
+      "med_id": 62,
+      "quantity_medicine": 1
+    },
+    {
+      "med_id": 53,
+      "quantity_medicine": 3
+    }
+  ]
+},
+{
+  "_id": {
+    "$oid": "6804fd27f6f438ca1b3fc7ba"
+  },
+  "pat_id": 6,
+  "den_id": 2,
+  "created_at": "2025-03-28T22:22:06.850Z",
+  "note": "Uống với nhiều nước",
+  "total_price": 2800,
+  "medicines": [
+    {
+      "med_id": 58,
+      "quantity_medicine": 2
+    }
+  ]
+},
+{
+  "_id": {
+    "$oid": "6804fd27f6f438ca1b3fc7bb"
+  },
+  "pat_id": 8,
+  "den_id": 6,
+  "created_at": "2025-03-19T10:14:19.800Z",
+  "note": "Không dùng khi đói",
+  "total_price": 3400,
+  "medicines": [
+    {
+      "med_id": 56,
+      "quantity_medicine": 3
+    },
+    {
+      "med_id": 54,
+      "quantity_medicine": 2
+    }
+  ]
+},
+{
+  "_id": {
+    "$oid": "6804fd27f6f438ca1b3fc7bc"
+  },
+  "pat_id": 17,
+  "den_id": 8,
+  "created_at": "2025-04-10T00:59:39.987Z",
+  "note": "Uống với nhiều nước",
+  "total_price": 3040,
+  "medicines": [
+    {
+      "med_id": 52,
+      "quantity_medicine": 2
+    },
+    {
+      "med_id": 61,
+      "quantity_medicine": 3
+    }
+  ]
+},
+{
+  "_id": {
+    "$oid": "6804fd27f6f438ca1b3fc7bd"
+  },
+  "pat_id": 10,
+  "den_id": 8,
+  "created_at": "2025-03-23T13:50:36.722Z",
+  "note": "Dùng thuốc sau bữa ăn",
+  "total_price": 2250,
+  "medicines": [
+    {
+      "med_id": 56,
+      "quantity_medicine": 2
+    },
+    {
+      "med_id": 60,
+      "quantity_medicine": 3
+    }
+  ]
+},
+{
+  "_id": {
+    "$oid": "6804fd27f6f438ca1b3fc7be"
+  },
+  "pat_id": 8,
+  "den_id": 10,
+  "created_at": "2025-04-03T15:55:56.763Z",
+  "note": "Uống với nhiều nước",
+  "total_price": 3600,
+  "medicines": [
+    {
+      "med_id": 57,
+      "quantity_medicine": 3
+    },
+    {
+      "med_id": 55,
+      "quantity_medicine": 2
+    }
+  ]
+},
+{
+  "_id": {
+    "$oid": "6804fd27f6f438ca1b3fc7bf"
+  },
+  "pat_id": 8,
+  "den_id": 4,
+  "created_at": "2025-04-19T06:45:03.788Z",
+  "note": "Uống sau khi ăn no",
+  "total_price": 960,
+  "medicines": [
+    {
+      "med_id": 61,
+      "quantity_medicine": 2
+    }
+  ]
+},
+{
+  "_id": {
+    "$oid": "6804fd27f6f438ca1b3fc7c0"
+  },
+  "pat_id": 5,
+  "den_id": 7,
+  "created_at": "2025-04-12T21:19:43.227Z",
+  "note": "Uống với nhiều nước",
+  "total_price": 5000,
+  "medicines": [
+    {
+      "med_id": 59,
+      "quantity_medicine": 2
+    },
+    {
+      "med_id": 58,
+      "quantity_medicine": 3
+    }
+  ]
+},
+{
+  "_id": {
+    "$oid": "6804fd27f6f438ca1b3fc7c1"
+  },
+  "pat_id": 1,
+  "den_id": 1,
+  "created_at": "2025-03-03T02:01:51.041Z",
+  "note": "Không dùng khi đói",
+  "total_price": 2000,
+  "medicines": [
+    {
+      "med_id": 52,
+      "quantity_medicine": 1
+    },
+    {
+      "med_id": 55,
+      "quantity_medicine": 2
+    }
+  ]
+},
+{
+  "_id": {
+    "$oid": "6804fd27f6f438ca1b3fc7c2"
+  },
+  "pat_id": 11,
+  "den_id": 6,
+  "created_at": "2025-03-20T09:05:32.735Z",
+  "note": "Uống với nhiều nước",
+  "total_price": 4200,
+  "medicines": [
+    {
+      "med_id": 58,
+      "quantity_medicine": 3
+    }
+  ]
+},
+{
+  "_id": {
+    "$oid": "6804fd27f6f438ca1b3fc7c3"
+  },
+  "pat_id": 7,
+  "den_id": 7,
+  "created_at": "2025-03-27T14:18:58.094Z",
+  "note": "Dặn uống sau ăn",
+  "total_price": 2000,
+  "medicines": [
+    {
+      "med_id": 51,
+      "quantity_medicine": 1
+    },
+    {
+      "med_id": 56,
+      "quantity_medicine": 2
+    }
+  ]
+},
+{
+  "_id": {
+    "$oid": "6804fd27f6f438ca1b3fc7c4"
+  },
+  "pat_id": 4,
+  "den_id": 8,
+  "created_at": "2025-04-06T16:32:03.173Z",
+  "note": "Uống với nhiều nước",
+  "total_price": 2500,
+  "medicines": [
+    {
+      "med_id": 60,
+      "quantity_medicine": 2
+    },
+    {
+      "med_id": 55,
+      "quantity_medicine": 3
+    }
+  ]
+},
+{
+  "_id": {
+    "$oid": "6804fd27f6f438ca1b3fc7c5"
+  },
+  "pat_id": 15,
+  "den_id": 1,
+  "created_at": "2025-04-14T10:04:28.337Z",
+  "note": "Uống với nhiều nước",
+  "total_price": 2560,
+  "medicines": [
+    {
+      "med_id": 57,
+      "quantity_medicine": 2
+    },
+    {
+      "med_id": 61,
+      "quantity_medicine": 2
+    }
+  ]
+},
+{
+  "_id": {
+    "$oid": "6804fd27f6f438ca1b3fc7c6"
+  },
+  "pat_id": 4,
+  "den_id": 6,
+  "created_at": "2025-04-18T20:07:41.113Z",
+  "note": "Dùng thuốc sau bữa ăn",
+  "total_price": 1950,
+  "medicines": [
+    {
+      "med_id": 60,
+      "quantity_medicine": 1
+    },
+    {
+      "med_id": 52,
+      "quantity_medicine": 2
+    }
+  ]
+},
+{
+  "_id": {
+    "$oid": "6804fd27f6f438ca1b3fc7c7"
+  },
+  "pat_id": 17,
+  "den_id": 10,
+  "created_at": "2025-03-19T11:57:33.999Z",
+  "note": "Không dùng khi đói",
+  "total_price": 6330,
+  "medicines": [
+    {
+      "med_id": 62,
+      "quantity_medicine": 3
+    },
+    {
+      "med_id": 60,
+      "quantity_medicine": 3
+    },
+    {
+      "med_id": 54,
+      "quantity_medicine": 3
+    }
+  ]
+},
+{
+  "_id": {
+    "$oid": "6804fd27f6f438ca1b3fc7c8"
+  },
+  "pat_id": 1,
+  "den_id": 3,
+  "created_at": "2025-04-19T12:30:07.440Z",
+  "note": "Uống sau khi ăn no",
+  "total_price": 5280,
+  "medicines": [
+    {
+      "med_id": 52,
+      "quantity_medicine": 3
+    },
+    {
+      "med_id": 62,
+      "quantity_medicine": 3
+    }
+  ]
+},
+{
+  "_id": {
+    "$oid": "6804fd27f6f438ca1b3fc7c9"
+  },
+  "pat_id": 16,
+  "den_id": 3,
+  "created_at": "2025-04-19T19:15:36.753Z",
+  "note": "Uống với nhiều nước",
+  "total_price": 3640,
+  "medicines": [
+    {
+      "med_id": 61,
+      "quantity_medicine": 3
+    },
+    {
+      "med_id": 55,
+      "quantity_medicine": 1
+    },
+    {
+      "med_id": 52,
+      "quantity_medicine": 2
+    }
+  ]
+},
+{
+  "_id": {
+    "$oid": "6804fd27f6f438ca1b3fc7ca"
+  },
+  "pat_id": 19,
+  "den_id": 10,
+  "created_at": "2025-04-07T23:55:31.464Z",
+  "note": "Dùng thuốc sau bữa ăn",
+  "total_price": 6120,
+  "medicines": [
+    {
+      "med_id": 62,
+      "quantity_medicine": 1
+    },
+    {
+      "med_id": 58,
+      "quantity_medicine": 3
+    },
+    {
+      "med_id": 61,
+      "quantity_medicine": 2
+    }
+  ]
+},
+{
+  "_id": {
+    "$oid": "6804fd27f6f438ca1b3fc7cb"
+  },
+  "pat_id": 1,
+  "den_id": 3,
+  "created_at": "2025-03-20T12:24:35.922Z",
+  "note": "Không dùng khi đói",
+  "total_price": 1600,
+  "medicines": [
+    {
+      "med_id": 59,
+      "quantity_medicine": 2
+    },
+    {
+      "med_id": 57,
+      "quantity_medicine": 1
+    }
+  ]
+},
+{
+  "_id": {
+    "$oid": "6804fd27f6f438ca1b3fc7cc"
+  },
+  "pat_id": 16,
+  "den_id": 12,
+  "created_at": "2025-03-25T08:00:55.794Z",
+  "note": "Uống sau khi ăn no",
+  "total_price": 1600,
+  "medicines": [
+    {
+      "med_id": 54,
+      "quantity_medicine": 2
+    }
+  ]
+},
+{
+  "_id": {
+    "$oid": "6804fd27f6f438ca1b3fc7cd"
+  },
+  "pat_id": 8,
+  "den_id": 1,
+  "created_at": "2025-03-20T08:15:25.574Z",
+  "note": "Uống sau khi ăn no",
+  "total_price": 4800,
+  "medicines": [
+    {
+      "med_id": 52,
+      "quantity_medicine": 3
+    },
+    {
+      "med_id": 53,
+      "quantity_medicine": 3
+    }
+  ]
+},
+{
+  "_id": {
+    "$oid": "6804fd27f6f438ca1b3fc7ce"
+  },
+  "pat_id": 13,
+  "den_id": 4,
+  "created_at": "2025-03-20T22:28:32.128Z",
+  "note": "Không dùng khi đói",
+  "total_price": 2800,
+  "medicines": [
+    {
+      "med_id": 53,
+      "quantity_medicine": 3
+    },
+    {
+      "med_id": 59,
+      "quantity_medicine": 1
+    }
+  ]
+},
+{
+  "_id": {
+    "$oid": "6804fd27f6f438ca1b3fc7cf"
+  },
+  "pat_id": 7,
+  "den_id": 10,
+  "created_at": "2025-04-02T17:59:44.398Z",
+  "note": "Dặn uống sau ăn",
+  "total_price": 3590,
+  "medicines": [
+    {
+      "med_id": 61,
+      "quantity_medicine": 3
+    },
+    {
+      "med_id": 60,
+      "quantity_medicine": 1
+    },
+    {
+      "med_id": 55,
+      "quantity_medicine": 3
+    }
+  ]
+},
+{
+  "_id": {
+    "$oid": "6804fd27f6f438ca1b3fc7d0"
+  },
+  "pat_id": 16,
+  "den_id": 3,
+  "created_at": "2025-03-11T15:46:06.057Z",
+  "note": "Dặn uống sau ăn",
+  "total_price": 2880,
+  "medicines": [
+    {
+      "med_id": 62,
+      "quantity_medicine": 3
+    }
+  ]
+},
+{
+  "_id": {
+    "$oid": "6804fd27f6f438ca1b3fc7d1"
+  },
+  "pat_id": 1,
+  "den_id": 8,
+  "created_at": "2025-02-25T04:07:14.233Z",
+  "note": "Không dùng khi đói",
+  "total_price": 1200,
+  "medicines": [
+    {
+      "med_id": 52,
+      "quantity_medicine": 1
+    },
+    {
+      "med_id": 59,
+      "quantity_medicine": 1
+    }
+  ]
+},
+{
+  "_id": {
+    "$oid": "6804fd27f6f438ca1b3fc7d2"
+  },
+  "pat_id": 6,
+  "den_id": 9,
+  "created_at": "2025-03-01T20:17:55.089Z",
+  "note": "Uống sau khi ăn no",
+  "total_price": 5320,
+  "medicines": [
+    {
+      "med_id": 56,
+      "quantity_medicine": 3
+    },
+    {
+      "med_id": 57,
+      "quantity_medicine": 2
+    },
+    {
+      "med_id": 62,
+      "quantity_medicine": 2
+    }
+  ]
+},
+{
+  "_id": {
+    "$oid": "6804fd27f6f438ca1b3fc7d3"
+  },
+  "pat_id": 7,
+  "den_id": 2,
+  "created_at": "2025-04-13T06:14:40.477Z",
+  "note": "Không dùng khi đói",
+  "total_price": 5000,
+  "medicines": [
+    {
+      "med_id": 53,
+      "quantity_medicine": 1
+    },
+    {
+      "med_id": 58,
+      "quantity_medicine": 3
+    }
+  ]
+},
+{
+  "_id": {
+    "$oid": "6804fd27f6f438ca1b3fc7d4"
+  },
+  "pat_id": 13,
+  "den_id": 2,
+  "created_at": "2025-03-26T16:31:14.806Z",
+  "note": "Không dùng khi đói",
+  "total_price": 5600,
+  "medicines": [
+    {
+      "med_id": 59,
+      "quantity_medicine": 2
+    },
+    {
+      "med_id": 54,
+      "quantity_medicine": 3
+    },
+    {
+      "med_id": 51,
+      "quantity_medicine": 3
+    }
+  ]
+},
+{
+  "_id": {
+    "$oid": "6804fd27f6f438ca1b3fc7d5"
+  },
+  "pat_id": 14,
+  "den_id": 8,
+  "created_at": "2025-02-24T19:12:20.545Z",
+  "note": "Dùng thuốc sau bữa ăn",
+  "total_price": 2000,
+  "medicines": [
+    {
+      "med_id": 54,
+      "quantity_medicine": 2
+    },
+    {
+      "med_id": 59,
+      "quantity_medicine": 1
+    }
+  ]
+},
+{
+  "_id": {
+    "$oid": "6804fd27f6f438ca1b3fc7d6"
+  },
+  "pat_id": 17,
+  "den_id": 8,
+  "created_at": "2025-03-04T22:08:00.106Z",
+  "note": "Uống sau khi ăn no",
+  "total_price": 6000,
+  "medicines": [
+    {
+      "med_id": 59,
+      "quantity_medicine": 3
+    },
+    {
+      "med_id": 52,
+      "quantity_medicine": 3
+    },
+    {
+      "med_id": 54,
+      "quantity_medicine": 3
+    }
+  ]
+},
+{
+  "_id": {
+    "$oid": "6804fd27f6f438ca1b3fc7d7"
+  },
+  "pat_id": 14,
+  "den_id": 12,
+  "created_at": "2025-03-03T22:51:11.699Z",
+  "note": "Dùng thuốc sau bữa ăn",
+  "total_price": 1920,
+  "medicines": [
+    {
+      "med_id": 62,
+      "quantity_medicine": 2
+    }
+  ]
+},
+{
+  "_id": {
+    "$oid": "6804fd27f6f438ca1b3fc7d8"
+  },
+  "pat_id": 4,
+  "den_id": 10,
+  "created_at": "2025-03-31T20:59:03.212Z",
+  "note": "Dùng thuốc sau bữa ăn",
+  "total_price": 5680,
+  "medicines": [
+    {
+      "med_id": 59,
+      "quantity_medicine": 3
+    },
+    {
+      "med_id": 62,
+      "quantity_medicine": 3
+    },
+    {
+      "med_id": 53,
+      "quantity_medicine": 2
+    }
+  ]
+},
+{
+  "_id": {
+    "$oid": "6804fd27f6f438ca1b3fc7d9"
+  },
+  "pat_id": 1,
+  "den_id": 2,
+  "created_at": "2025-03-24T17:16:51.820Z",
+  "note": "Uống sau khi ăn no",
+  "total_price": 2300,
+  "medicines": [
+    {
+      "med_id": 53,
+      "quantity_medicine": 2
+    },
+    {
+      "med_id": 60,
+      "quantity_medicine": 2
+    }
+  ]
+},
+{
+  "_id": {
+    "$oid": "6804fd27f6f438ca1b3fc7da"
+  },
+  "pat_id": 11,
+  "den_id": 12,
+  "created_at": "2025-04-05T00:33:41.365Z",
+  "note": "Uống với nhiều nước",
+  "total_price": 4400,
+  "medicines": [
+    {
+      "med_id": 58,
+      "quantity_medicine": 2
+    },
+    {
+      "med_id": 57,
+      "quantity_medicine": 2
+    }
+  ]
+},
+{
+  "_id": {
+    "$oid": "6804fd27f6f438ca1b3fc7db"
+  },
+  "pat_id": 6,
+  "den_id": 3,
+  "created_at": "2025-03-04T23:19:14.417Z",
+  "note": "Dặn uống sau ăn",
+  "total_price": 1440,
+  "medicines": [
+    {
+      "med_id": 61,
+      "quantity_medicine": 3
+    }
+  ]
+},
+{
+  "_id": {
+    "$oid": "6804fd27f6f438ca1b3fc7dc"
+  },
+  "pat_id": 13,
+  "den_id": 6,
+  "created_at": "2025-02-23T07:11:21.225Z",
+  "note": "Uống với nhiều nước",
+  "total_price": 3000,
+  "medicines": [
+    {
+      "med_id": 57,
+      "quantity_medicine": 3
+    },
+    {
+      "med_id": 56,
+      "quantity_medicine": 1
+    }
+  ]
+},
+{
+  "_id": {
+    "$oid": "6804fd27f6f438ca1b3fc7dd"
+  },
+  "pat_id": 14,
+  "den_id": 6,
+  "created_at": "2025-03-21T05:37:03.136Z",
+  "note": "Dùng thuốc sau bữa ăn",
+  "total_price": 400,
+  "medicines": [
+    {
+      "med_id": 59,
+      "quantity_medicine": 1
+    }
+  ]
+},
+{
+  "_id": {
+    "$oid": "6804fd27f6f438ca1b3fc7de"
+  },
+  "pat_id": 11,
+  "den_id": 3,
+  "created_at": "2025-03-13T09:35:55.097Z",
+  "note": "Dặn uống sau ăn",
+  "total_price": 6000,
+  "medicines": [
+    {
+      "med_id": 59,
+      "quantity_medicine": 3
+    },
+    {
+      "med_id": 54,
+      "quantity_medicine": 3
+    },
+    {
+      "med_id": 53,
+      "quantity_medicine": 3
+    }
+  ]
+},
+{
+  "_id": {
+    "$oid": "6804fd27f6f438ca1b3fc7df"
+  },
+  "pat_id": 14,
+  "den_id": 11,
+  "created_at": "2025-04-07T06:18:39.213Z",
+  "note": "Dặn uống sau ăn",
+  "total_price": 4280,
+  "medicines": [
+    {
+      "med_id": 58,
+      "quantity_medicine": 1
+    },
+    {
+      "med_id": 62,
+      "quantity_medicine": 3
+    }
+  ]
+},
+{
+  "_id": {
+    "$oid": "6804fd27f6f438ca1b3fc7e0"
+  },
+  "pat_id": 11,
+  "den_id": 6,
+  "created_at": "2025-03-08T10:22:07.780Z",
+  "note": "Không dùng khi đói",
+  "total_price": 2200,
+  "medicines": [
+    {
+      "med_id": 57,
+      "quantity_medicine": 2
+    },
+    {
+      "med_id": 56,
+      "quantity_medicine": 1
+    }
+  ]
+},
+{
+  "_id": {
+    "$oid": "6804fd27f6f438ca1b3fc7e1"
+  },
+  "pat_id": 18,
+  "den_id": 5,
+  "created_at": "2025-03-05T19:02:38.006Z",
+  "note": "Không dùng khi đói",
+  "total_price": 2280,
+  "medicines": [
+    {
+      "med_id": 61,
+      "quantity_medicine": 1
+    },
+    {
+      "med_id": 55,
+      "quantity_medicine": 3
+    }
+  ]
+},
+{
+  "_id": {
+    "$oid": "6804fd27f6f438ca1b3fc7e2"
+  },
+  "pat_id": 13,
+  "den_id": 12,
+  "created_at": "2025-04-03T23:56:53.635Z",
+  "note": "Uống với nhiều nước",
+  "total_price": 3600,
+  "medicines": [
+    {
+      "med_id": 59,
+      "quantity_medicine": 1
+    },
+    {
+      "med_id": 56,
+      "quantity_medicine": 3
+    },
+    {
+      "med_id": 58,
+      "quantity_medicine": 1
+    }
+  ]
+},
+{
+  "_id": {
+    "$oid": "6804fd27f6f438ca1b3fc7e3"
+  },
+  "pat_id": 6,
+  "den_id": 7,
+  "created_at": "2025-03-12T18:00:54.993Z",
+  "note": "Uống với nhiều nước",
+  "total_price": 4400,
+  "medicines": [
+    {
+      "med_id": 58,
+      "quantity_medicine": 2
+    },
+    {
+      "med_id": 52,
+      "quantity_medicine": 2
+    }
+  ]
+},
+{
+  "_id": {
+    "$oid": "6804fd27f6f438ca1b3fc7e4"
+  },
+  "pat_id": 8,
+  "den_id": 4,
+  "created_at": "2025-04-06T05:07:58.802Z",
+  "note": "Dùng thuốc sau bữa ăn",
+  "total_price": 6720,
+  "medicines": [
+    {
+      "med_id": 57,
+      "quantity_medicine": 3
+    },
+    {
+      "med_id": 61,
+      "quantity_medicine": 3
+    },
+    {
+      "med_id": 62,
+      "quantity_medicine": 3
+    }
+  ]
+},
+{
+  "_id": {
+    "$oid": "6804fd27f6f438ca1b3fc7e5"
+  },
+  "pat_id": 20,
+  "den_id": 8,
+  "created_at": "2025-02-24T16:51:10.853Z",
+  "note": "Không dùng khi đói",
+  "total_price": 5200,
+  "medicines": [
+    {
+      "med_id": 58,
+      "quantity_medicine": 3
+    },
+    {
+      "med_id": 55,
+      "quantity_medicine": 1
+    },
+    {
+      "med_id": 59,
+      "quantity_medicine": 1
+    }
+  ]
+},
+{
+  "_id": {
+    "$oid": "6804fd27f6f438ca1b3fc7e6"
+  },
+  "pat_id": 7,
+  "den_id": 6,
+  "created_at": "2025-03-12T14:21:31.922Z",
+  "note": "Dùng thuốc sau bữa ăn",
+  "total_price": 1200,
+  "medicines": [
+    {
+      "med_id": 55,
+      "quantity_medicine": 1
+    },
+    {
+      "med_id": 56,
+      "quantity_medicine": 1
+    }
+  ]
+},
+{
+  "_id": {
+    "$oid": "6804fd27f6f438ca1b3fc7e7"
+  },
+  "pat_id": 8,
+  "den_id": 6,
+  "created_at": "2025-02-25T00:50:02.381Z",
+  "note": "Uống với nhiều nước",
+  "total_price": 3760,
+  "medicines": [
+    {
+      "med_id": 61,
+      "quantity_medicine": 2
+    },
+    {
+      "med_id": 58,
+      "quantity_medicine": 2
+    }
+  ]
+},
+{
+  "_id": {
+    "$oid": "6804fd27f6f438ca1b3fc7e8"
+  },
+  "pat_id": 1,
+  "den_id": 9,
+  "created_at": "2025-04-05T19:16:46.083Z",
+  "note": "Dặn uống sau ăn",
+  "total_price": 3400,
+  "medicines": [
+    {
+      "med_id": 55,
+      "quantity_medicine": 3
+    },
+    {
+      "med_id": 54,
+      "quantity_medicine": 2
+    }
+  ]
+},
+{
+  "_id": {
+    "$oid": "6804fd27f6f438ca1b3fc7e9"
+  },
+  "pat_id": 9,
+  "den_id": 9,
+  "created_at": "2025-03-20T14:51:43.902Z",
+  "note": "Dặn uống sau ăn",
+  "total_price": 4960,
+  "medicines": [
+    {
+      "med_id": 53,
+      "quantity_medicine": 3
+    },
+    {
+      "med_id": 54,
+      "quantity_medicine": 2
+    },
+    {
+      "med_id": 62,
+      "quantity_medicine": 1
+    }
+  ]
+},
+{
+  "_id": {
+    "$oid": "6804fd27f6f438ca1b3fc7ea"
+  },
+  "pat_id": 19,
+  "den_id": 6,
+  "created_at": "2025-03-23T14:35:18.286Z",
+  "note": "Dặn uống sau ăn",
+  "total_price": 1600,
+  "medicines": [
+    {
+      "med_id": 56,
+      "quantity_medicine": 2
+    },
+    {
+      "med_id": 59,
+      "quantity_medicine": 1
+    }
+  ]
+},
+{
+  "_id": {
+    "$oid": "6804fd27f6f438ca1b3fc7eb"
+  },
+  "pat_id": 11,
+  "den_id": 1,
+  "created_at": "2025-04-16T10:25:00.668Z",
+  "note": "Dặn uống sau ăn",
+  "total_price": 4600,
+  "medicines": [
+    {
+      "med_id": 57,
+      "quantity_medicine": 2
+    },
+    {
+      "med_id": 58,
+      "quantity_medicine": 1
+    },
+    {
+      "med_id": 51,
+      "quantity_medicine": 2
+    }
+  ]
+},
+{
+  "_id": {
+    "$oid": "6804fd27f6f438ca1b3fc7ec"
+  },
+  "pat_id": 15,
+  "den_id": 11,
+  "created_at": "2025-03-23T14:17:10.398Z",
+  "note": "Dùng thuốc sau bữa ăn",
+  "total_price": 6480,
+  "medicines": [
+    {
+      "med_id": 53,
+      "quantity_medicine": 3
+    },
+    {
+      "med_id": 62,
+      "quantity_medicine": 3
+    },
+    {
+      "med_id": 56,
+      "quantity_medicine": 2
+    }
+  ]
+},
+{
+  "_id": {
+    "$oid": "6804fd27f6f438ca1b3fc7ed"
+  },
+  "pat_id": 19,
+  "den_id": 10,
+  "created_at": "2025-04-04T04:37:44.414Z",
+  "note": "Uống sau khi ăn no",
+  "total_price": 6480,
+  "medicines": [
+    {
+      "med_id": 62,
+      "quantity_medicine": 3
+    },
+    {
+      "med_id": 59,
+      "quantity_medicine": 3
+    },
+    {
+      "med_id": 51,
+      "quantity_medicine": 3
+    }
+  ]
+},
+{
+  "_id": {
+    "$oid": "6804fd27f6f438ca1b3fc7ee"
+  },
+  "pat_id": 14,
+  "den_id": 12,
+  "created_at": "2025-03-13T21:34:01.009Z",
+  "note": "Uống với nhiều nước",
+  "total_price": 6120,
+  "medicines": [
+    {
+      "med_id": 54,
+      "quantity_medicine": 3
+    },
+    {
+      "med_id": 62,
+      "quantity_medicine": 2
+    },
+    {
+      "med_id": 55,
+      "quantity_medicine": 3
+    }
+  ]
+},
+{
+  "_id": {
+    "$oid": "6804fd27f6f438ca1b3fc7ef"
+  },
+  "pat_id": 13,
+  "den_id": 7,
+  "created_at": "2025-04-07T21:17:21.372Z",
+  "note": "Dặn uống sau ăn",
+  "total_price": 1800,
+  "medicines": [
+    {
+      "med_id": 55,
+      "quantity_medicine": 3
+    }
+  ]
+},
+{
+  "_id": {
+    "$oid": "6804fd27f6f438ca1b3fc7f0"
+  },
+  "pat_id": 2,
+  "den_id": 10,
+  "created_at": "2025-03-18T15:27:25.767Z",
+  "note": "Uống với nhiều nước",
+  "total_price": 3200,
+  "medicines": [
+    {
+      "med_id": 59,
+      "quantity_medicine": 3
+    },
+    {
+      "med_id": 58,
+      "quantity_medicine": 1
+    },
+    {
+      "med_id": 56,
+      "quantity_medicine": 1
+    }
+  ]
+},
+{
+  "_id": {
+    "$oid": "6804fd27f6f438ca1b3fc7f1"
+  },
+  "pat_id": 5,
+  "den_id": 7,
+  "created_at": "2025-03-10T06:08:48.885Z",
+  "note": "Dặn uống sau ăn",
+  "total_price": 1440,
+  "medicines": [
+    {
+      "med_id": 61,
+      "quantity_medicine": 3
+    }
+  ]
+},
+{
+  "_id": {
+    "$oid": "6804fd27f6f438ca1b3fc7f2"
+  },
+  "pat_id": 16,
+  "den_id": 1,
+  "created_at": "2025-04-15T02:20:21.141Z",
+  "note": "Dặn uống sau ăn",
+  "total_price": 4400,
+  "medicines": [
+    {
+      "med_id": 57,
+      "quantity_medicine": 2
+    },
+    {
+      "med_id": 58,
+      "quantity_medicine": 2
+    }
+  ]
+},
+{
+  "_id": {
+    "$oid": "6804fd27f6f438ca1b3fc7f3"
+  },
+  "pat_id": 5,
+  "den_id": 1,
+  "created_at": "2025-04-07T15:45:59.812Z",
+  "note": "Uống với nhiều nước",
+  "total_price": 2400,
+  "medicines": [
+    {
+      "med_id": 51,
+      "quantity_medicine": 3
+    }
+  ]
+},
+{
+  "_id": {
+    "$oid": "6804fd27f6f438ca1b3fc7f4"
+  },
+  "pat_id": 2,
+  "den_id": 12,
+  "created_at": "2025-03-30T13:15:10.681Z",
+  "note": "Không dùng khi đói",
+  "total_price": 3160,
+  "medicines": [
+    {
+      "med_id": 55,
+      "quantity_medicine": 1
+    },
+    {
+      "med_id": 54,
+      "quantity_medicine": 2
+    },
+    {
+      "med_id": 61,
+      "quantity_medicine": 2
+    }
+  ]
+},
+{
+  "_id": {
+    "$oid": "6804fd27f6f438ca1b3fc7f5"
+  },
+  "pat_id": 18,
+  "den_id": 2,
+  "created_at": "2025-03-04T12:58:28.736Z",
+  "note": "Uống sau khi ăn no",
+  "total_price": 2280,
+  "medicines": [
+    {
+      "med_id": 56,
+      "quantity_medicine": 3
+    },
+    {
+      "med_id": 61,
+      "quantity_medicine": 1
+    }
+  ]
+},
+{
+  "_id": {
+    "$oid": "6804fd27f6f438ca1b3fc7f6"
+  },
+  "pat_id": 5,
+  "den_id": 7,
+  "created_at": "2025-03-10T16:19:02.297Z",
+  "note": "Uống sau khi ăn no",
+  "total_price": 4000,
+  "medicines": [
+    {
+      "med_id": 54,
+      "quantity_medicine": 3
+    },
+    {
+      "med_id": 57,
+      "quantity_medicine": 2
+    }
+  ]
+},
+{
+  "_id": {
+    "$oid": "6804fd27f6f438ca1b3fc7f7"
+  },
+  "pat_id": 17,
+  "den_id": 12,
+  "created_at": "2025-03-29T03:27:24.659Z",
+  "note": "Dặn uống sau ăn",
+  "total_price": 1400,
+  "medicines": [
+    {
+      "med_id": 58,
+      "quantity_medicine": 1
+    }
+  ]
+},
+{
+  "_id": {
+    "$oid": "6804fd27f6f438ca1b3fc7f8"
+  },
+  "pat_id": 4,
+  "den_id": 12,
+  "created_at": "2025-02-27T21:40:25.015Z",
+  "note": "Uống sau khi ăn no",
+  "total_price": 5280,
+  "medicines": [
+    {
+      "med_id": 62,
+      "quantity_medicine": 3
+    },
+    {
+      "med_id": 53,
+      "quantity_medicine": 2
+    },
+    {
+      "med_id": 59,
+      "quantity_medicine": 2
+    }
+  ]
+},
+{
+  "_id": {
+    "$oid": "6804fd27f6f438ca1b3fc7f9"
+  },
+  "pat_id": 16,
+  "den_id": 8,
+  "created_at": "2025-04-01T06:42:21.698Z",
+  "note": "Dặn uống sau ăn",
+  "total_price": 1920,
+  "medicines": [
+    {
+      "med_id": 62,
+      "quantity_medicine": 2
+    }
+  ]
+},
+{
+  "_id": {
+    "$oid": "6804fd27f6f438ca1b3fc7fa"
+  },
+  "pat_id": 14,
+  "den_id": 5,
+  "created_at": "2025-03-19T08:24:32.043Z",
+  "note": "Dùng thuốc sau bữa ăn",
+  "total_price": 3000,
+  "medicines": [
+    {
+      "med_id": 59,
+      "quantity_medicine": 3
+    },
+    {
+      "med_id": 56,
+      "quantity_medicine": 3
+    }
+  ]
+},
+{
+  "_id": {
+    "$oid": "6804fd27f6f438ca1b3fc7fb"
+  },
+  "pat_id": 11,
+  "den_id": 6,
+  "created_at": "2025-02-25T01:10:49.879Z",
+  "note": "Uống với nhiều nước",
+  "total_price": 3000,
+  "medicines": [
+    {
+      "med_id": 57,
+      "quantity_medicine": 2
+    },
+    {
+      "med_id": 58,
+      "quantity_medicine": 1
+    }
+  ]
+},
+{
+  "_id": {
+    "$oid": "6804fd27f6f438ca1b3fc7fc"
+  },
+  "pat_id": 3,
+  "den_id": 8,
+  "created_at": "2025-04-01T19:55:06.977Z",
+  "note": "Uống với nhiều nước",
+  "total_price": 2720,
+  "medicines": [
+    {
+      "med_id": 59,
+      "quantity_medicine": 2
+    },
+    {
+      "med_id": 62,
+      "quantity_medicine": 2
+    }
+  ]
+},
+{
+  "_id": {
+    "$oid": "6804fd27f6f438ca1b3fc7fd"
+  },
+  "pat_id": 9,
+  "den_id": 9,
+  "created_at": "2025-04-16T23:47:26.016Z",
+  "note": "Uống sau khi ăn no",
+  "total_price": 480,
+  "medicines": [
+    {
+      "med_id": 61,
+      "quantity_medicine": 1
+    }
+  ]
+},
+{
+  "_id": {
+    "$oid": "6804fd27f6f438ca1b3fc7fe"
+  },
+  "pat_id": 18,
+  "den_id": 12,
+  "created_at": "2025-03-12T00:29:10.190Z",
+  "note": "Uống với nhiều nước",
+  "total_price": 4200,
+  "medicines": [
+    {
+      "med_id": 53,
+      "quantity_medicine": 3
+    },
+    {
+      "med_id": 56,
+      "quantity_medicine": 1
+    },
+    {
+      "med_id": 55,
+      "quantity_medicine": 2
+    }
+  ]
+},
+{
+  "_id": {
+    "$oid": "6804fd27f6f438ca1b3fc7ff"
+  },
+  "pat_id": 4,
+  "den_id": 5,
+  "created_at": "2025-03-20T19:36:52.309Z",
+  "note": "Uống sau khi ăn no",
+  "total_price": 2160,
+  "medicines": [
+    {
+      "med_id": 56,
+      "quantity_medicine": 2
+    },
+    {
+      "med_id": 61,
+      "quantity_medicine": 2
+    }
+  ]
+},
+{
+  "_id": {
+    "$oid": "6804fd27f6f438ca1b3fc800"
+  },
+  "pat_id": 19,
+  "den_id": 5,
+  "created_at": "2025-03-16T08:15:40.162Z",
+  "note": "Uống với nhiều nước",
+  "total_price": 2600,
+  "medicines": [
+    {
+      "med_id": 55,
+      "quantity_medicine": 3
+    },
+    {
+      "med_id": 59,
+      "quantity_medicine": 2
+    }
+  ]
+},
+{
+  "_id": {
+    "$oid": "6804fd27f6f438ca1b3fc801"
+  },
+  "pat_id": 9,
+  "den_id": 5,
+  "created_at": "2025-02-27T00:26:46.264Z",
+  "note": "Uống với nhiều nước",
+  "total_price": 1200,
+  "medicines": [
+    {
+      "med_id": 59,
+      "quantity_medicine": 3
+    }
+  ]
+},
+{
+  "_id": {
+    "$oid": "6804fd27f6f438ca1b3fc802"
+  },
+  "pat_id": 14,
+  "den_id": 12,
+  "created_at": "2025-04-15T20:47:23.455Z",
+  "note": "Dùng thuốc sau bữa ăn",
+  "total_price": 1750,
+  "medicines": [
+    {
+      "med_id": 55,
+      "quantity_medicine": 1
+    },
+    {
+      "med_id": 59,
+      "quantity_medicine": 2
+    },
+    {
+      "med_id": 60,
+      "quantity_medicine": 1
+    }
+  ]
+},
+{
+  "_id": {
+    "$oid": "6804fd27f6f438ca1b3fc803"
+  },
+  "pat_id": 17,
+  "den_id": 4,
+  "created_at": "2025-03-15T19:31:13.058Z",
+  "note": "Dặn uống sau ăn",
+  "total_price": 700,
+  "medicines": [
+    {
+      "med_id": 60,
+      "quantity_medicine": 2
+    }
+  ]
+},
+{
+  "_id": {
+    "$oid": "6804fd27f6f438ca1b3fc804"
+  },
+  "pat_id": 18,
+  "den_id": 7,
+  "created_at": "2025-02-26T13:54:45.291Z",
+  "note": "Dặn uống sau ăn",
+  "total_price": 2670,
+  "medicines": [
+    {
+      "med_id": 62,
+      "quantity_medicine": 2
+    },
+    {
+      "med_id": 60,
+      "quantity_medicine": 1
+    },
+    {
+      "med_id": 59,
+      "quantity_medicine": 1
+    }
+  ]
+},
+{
+  "_id": {
+    "$oid": "6804fd27f6f438ca1b3fc805"
+  },
+  "pat_id": 9,
+  "den_id": 11,
+  "created_at": "2025-04-04T17:04:50.424Z",
+  "note": "Dùng thuốc sau bữa ăn",
+  "total_price": 3160,
+  "medicines": [
+    {
+      "med_id": 51,
+      "quantity_medicine": 2
+    },
+    {
+      "med_id": 61,
+      "quantity_medicine": 2
+    },
+    {
+      "med_id": 56,
+      "quantity_medicine": 1
+    }
+  ]
+},
+{
+  "_id": {
+    "$oid": "6804fd27f6f438ca1b3fc806"
+  },
+  "pat_id": 16,
+  "den_id": 10,
+  "created_at": "2025-02-28T22:04:48.016Z",
+  "note": "Uống sau khi ăn no",
+  "total_price": 2000,
+  "medicines": [
+    {
+      "med_id": 59,
+      "quantity_medicine": 1
+    },
+    {
+      "med_id": 51,
+      "quantity_medicine": 2
+    }
+  ]
+},
+{
+  "_id": {
+    "$oid": "6804fd27f6f438ca1b3fc807"
+  },
+  "pat_id": 16,
+  "den_id": 9,
+  "created_at": "2025-04-02T12:53:55.907Z",
+  "note": "Uống sau khi ăn no",
+  "total_price": 800,
+  "medicines": [
+    {
+      "med_id": 51,
+      "quantity_medicine": 1
+    }
+  ]
+},
+{
+  "_id": {
+    "$oid": "6804fd27f6f438ca1b3fc808"
+  },
+  "pat_id": 4,
+  "den_id": 8,
+  "created_at": "2025-03-06T12:44:20.612Z",
+  "note": "Dùng thuốc sau bữa ăn",
+  "total_price": 1050,
+  "medicines": [
+    {
+      "med_id": 60,
+      "quantity_medicine": 3
+    }
+  ]
+},
+{
+  "_id": {
+    "$oid": "6804fd27f6f438ca1b3fc809"
+  },
+  "pat_id": 5,
+  "den_id": 12,
+  "created_at": "2025-03-28T02:16:34.758Z",
+  "note": "Dùng thuốc sau bữa ăn",
+  "total_price": 5800,
+  "medicines": [
+    {
+      "med_id": 54,
+      "quantity_medicine": 2
+    },
+    {
+      "med_id": 58,
+      "quantity_medicine": 3
+    }
+  ]
+},
+{
+  "_id": {
+    "$oid": "6804fd27f6f438ca1b3fc80a"
+  },
+  "pat_id": 11,
+  "den_id": 4,
+  "created_at": "2025-04-07T22:39:41.837Z",
+  "note": "Uống sau khi ăn no",
+  "total_price": 3400,
+  "medicines": [
+    {
+      "med_id": 55,
+      "quantity_medicine": 3
+    },
+    {
+      "med_id": 57,
+      "quantity_medicine": 2
+    }
+  ]
+},
+{
+  "_id": {
+    "$oid": "6804fd27f6f438ca1b3fc80b"
+  },
+  "pat_id": 19,
+  "den_id": 4,
+  "created_at": "2025-04-18T12:56:34.290Z",
+  "note": "Uống với nhiều nước",
+  "total_price": 2400,
+  "medicines": [
+    {
+      "med_id": 52,
+      "quantity_medicine": 2
+    },
+    {
+      "med_id": 53,
+      "quantity_medicine": 1
+    }
+  ]
+},
+{
+  "_id": {
+    "$oid": "6804fd27f6f438ca1b3fc80c"
+  },
+  "pat_id": 20,
+  "den_id": 2,
+  "created_at": "2025-03-15T15:32:09.068Z",
+  "note": "Uống với nhiều nước",
+  "total_price": 3040,
+  "medicines": [
+    {
+      "med_id": 61,
+      "quantity_medicine": 3
+    },
+    {
+      "med_id": 52,
+      "quantity_medicine": 2
+    }
+  ]
+},
+{
+  "_id": {
+    "$oid": "6804fd27f6f438ca1b3fc80d"
+  },
+  "pat_id": 6,
+  "den_id": 4,
+  "created_at": "2025-03-03T12:19:05.574Z",
+  "note": "Uống sau khi ăn no",
+  "total_price": 3200,
+  "medicines": [
+    {
+      "med_id": 53,
+      "quantity_medicine": 1
+    },
+    {
+      "med_id": 51,
+      "quantity_medicine": 2
+    },
+    {
+      "med_id": 54,
+      "quantity_medicine": 1
+    }
+  ]
+},
+{
+  "_id": {
+    "$oid": "6804fd27f6f438ca1b3fc80e"
+  },
+  "pat_id": 15,
+  "den_id": 3,
+  "created_at": "2025-03-03T22:03:35.818Z",
+  "note": "Uống sau khi ăn no",
+  "total_price": 2800,
+  "medicines": [
+    {
+      "med_id": 59,
+      "quantity_medicine": 1
+    },
+    {
+      "med_id": 57,
+      "quantity_medicine": 3
+    }
+  ]
+},
+{
+  "_id": {
+    "$oid": "6804fd27f6f438ca1b3fc80f"
+  },
+  "pat_id": 6,
+  "den_id": 9,
+  "created_at": "2025-03-02T08:11:50.543Z",
+  "note": "Uống sau khi ăn no",
+  "total_price": 4900,
+  "medicines": [
+    {
+      "med_id": 55,
+      "quantity_medicine": 3
+    },
+    {
+      "med_id": 60,
+      "quantity_medicine": 2
+    },
+    {
+      "med_id": 53,
+      "quantity_medicine": 3
+    }
+  ]
+}]

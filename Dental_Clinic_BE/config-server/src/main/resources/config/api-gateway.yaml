@@ -33,6 +33,10 @@ spring:
           uri: lb://material-service
           predicates:
             - Path=/material/**
+        - id: dentist-service
+          uri: lb://dentist-service
+          predicates:
+            - Path=/dentist/**
 
 
 management:

@@ -1,5 +1,7 @@
 package com.dental_clinic.material_service.Service;
 
+import com.dental_clinic.common_lib.exception.AppException;
+import com.dental_clinic.common_lib.exception.ErrorCode;
 import com.dental_clinic.material_service.DTO.Request.ChangeMaterialServiceImageRequest;
 import com.dental_clinic.material_service.DTO.Request.*;
 import com.dental_clinic.material_service.DTO.Response.ConsumableUpdateRes;
@@ -31,32 +33,35 @@ import static com.dental_clinic.material_service.Utils.VariableUtils.TYPE_UPLOAD
 
 @Service
 public class MaterialService {
-    @Autowired
-    private MaterialRepository materialRepository;
+    private final MaterialRepository materialRepository;
 
-    @Autowired
-    private MedicineRepository medicineRepository;
+    private final MedicineRepository medicineRepository;
 
-    @Autowired
     @Lazy
-    private CategoryService categoryService;
+    private final CategoryService categoryService;
+
+    @Lazy
+    private final FixedMaterialService fixedMaterialService;
+
+    @Lazy
+    private final ConsumableMaterialService consumableMaterialService;
+
+    @Lazy
+    private final MedicineService medicineService;
+
+    @Lazy
+    private final IngredientService ingredientService;
 
     @Autowired
-    @Lazy
-    private FixedMaterialService fixedMaterialService;
-
-    @Autowired
-    @Lazy
-    private ConsumableMaterialService consumableMaterialService;
-
-    @Autowired
-    @Lazy
-    private MedicineService medicineService;
-
-    @Autowired
-    @Lazy
-    private IngredientService ingredientService;
-
+    public MaterialService(MaterialRepository materialRepository, MedicineRepository medicineRepository, CategoryService categoryService, FixedMaterialService fixedMaterialService, ConsumableMaterialService consumableMaterialService, MedicineService medicineService, IngredientService ingredientService) {
+        this.materialRepository = materialRepository;
+        this.medicineRepository = medicineRepository;
+        this.categoryService = categoryService;
+        this.fixedMaterialService = fixedMaterialService;
+        this.consumableMaterialService = consumableMaterialService;
+        this.medicineService = medicineService;
+        this.ingredientService = ingredientService;
+    }
 
 
     public boolean isCategoryInUse(Long id) {
@@ -70,7 +75,7 @@ public class MaterialService {
 
     public Material getById(Long id) {
         return materialRepository.findById(id).orElseThrow(
-                () -> new RuntimeException("Không tìm thấy vật liệu có id = '" + id + "'"));
+                () -> new AppException(ErrorCode.NOT_FOUND,"Không tìm thấy vật liệu có id = '" + id + "'"));
     }
 
     //    Đổi ảnh cho vật liệu
@@ -78,7 +83,7 @@ public class MaterialService {
         // Kiểm tra vật liệu tồn tại không
         Material material_service = materialRepository.findById(
                 request.materialId()).orElseThrow(
-                        () ->  new RuntimeException("Vật liệu không tồn tại"));
+                        () ->  new AppException(ErrorCode.NOT_FOUND,"Vật liệu không tồn tại"));
         // Kiểm tra file hợp lệ
         MultipartFile file = request.image();
         ImageUtils.checkImageFile(file);
@@ -86,7 +91,7 @@ public class MaterialService {
         try {
             ImageUtils.createUploadDirIfNotExists(TYPE_UPLOAD_MATERIAL_SERVICE);
         } catch (IOException e) {
-            throw new RuntimeException("Lỗi khi tạo thư mục upload: " + e.getMessage());
+            throw new AppException(ErrorCode.FILE_ERROR,"Lỗi khi tạo thư mục upload: " + e.getMessage());
         }
         // Thực hiện thay đổi material service img
         try {
@@ -100,7 +105,7 @@ public class MaterialService {
             material_service.setImg(fileName);
             materialRepository.save(material_service);
         } catch (IOException e) {
-            throw new RuntimeException("Lỗi khi lưu tập tin: " + e.getMessage());
+            throw new AppException(ErrorCode.FILE_ERROR,"Lỗi khi lưu tập tin: " + e.getMessage());
         }
     }
 
@@ -114,12 +119,12 @@ public class MaterialService {
 
         FieldUtils.checkNumberIsIntegerAndNotNegative(quantity);
         if (!categoryService.isAbleByCategoryId(categoryId))
-            throw new RuntimeException("Phân loại '" + categoryId + "'" + " đã đóng");
+            throw new AppException(ErrorCode.DATA_OFF,"Phân loại '" + categoryId + "'" + " đã đóng");
         if (materialRepository.existsByName(name))
-            throw new RuntimeException("Đã tồn tại vật liệu '" + name + "'");
+            throw new AppException(ErrorCode.EXISTED_DATA,"Đã tồn tại vật liệu '" + name + "'");
 
         if(FieldUtils.isLocalDateMoreThanToday(mfgDate)) {
-            throw new RuntimeException("Ngày sản xuất không được vượt quá hôm nay");
+            throw new AppException(ErrorCode.INVALID_REQUEST,"Ngày sản xuất không được vượt quá hôm nay");
         }
     }
 
@@ -215,7 +220,7 @@ public class MaterialService {
         FieldUtils.checkNumberIsIntegerAndNotNegative(request.cost());
 
         if(request.revenue() < request.cost())
-            throw new RuntimeException("Chi phí không được lớn hơn giá vật liệu");
+            throw new AppException(ErrorCode.INVALID_REQUEST,"Chi phí không được lớn hơn giá vật liệu");
 
 
         List<Ingredient> ingredientList = ingredientService.getListIngredientByListIdHasAble(request.ingreIdList());
@@ -255,18 +260,18 @@ public class MaterialService {
         boolean isAbleOfCategory = category.isAble();
 
         if (!isAbleOfCategory)
-            throw new RuntimeException("Phân loại vật liệu '" + category.getId() + "'" + " đã đóng");
+            throw new AppException(ErrorCode.DATA_OFF,"Phân loại vật liệu '" + category.getId() + "'" + " đã đóng");
         if (!isAbleOfMaterial)
-            throw new RuntimeException("Vật liệu tiêu hao '" + material.getId() + "'" + " đã đóng");
+            throw new AppException(ErrorCode.DATA_OFF,"Vật liệu tiêu hao '" + material.getId() + "'" + " đã đóng");
 
         if (!material.getCategory().getId().equals(category.getId())) {
-            throw new RuntimeException("Mã phân loại của vật liệu không khớp với dữ liệu thực");
+            throw new AppException(ErrorCode.INVALID_REQUEST,"Mã phân loại của vật liệu không khớp với dữ liệu thực");
         }
 
         request.name().ifPresent(name -> {
             FieldUtils.checkStrEmpty(name, "Tên vật liệu");
             if(materialRepository.existsByNameAndIdNot(name,request.id()))
-                throw new RuntimeException("Đã tồn tại vật liệu '" + name + "'");
+                throw new AppException(ErrorCode.EXISTED_DATA,"Đã tồn tại vật liệu '" + name + "'");
             material.setName(name);
         });
         request.unit().ifPresent(unit -> {
@@ -283,7 +288,7 @@ public class MaterialService {
         });
         request.mfg_date().ifPresent(mfgDate -> {
             if(FieldUtils.isLocalDateMoreThanToday(mfgDate))
-                throw new RuntimeException("Ngày sản xuất không được quá ngày hiện tại");
+                throw new AppException(ErrorCode.INVALID_REQUEST,"Ngày sản xuất không được quá ngày hiện tại");
         });
 
         Material m = materialRepository.save(material);
@@ -309,21 +314,21 @@ public class MaterialService {
         boolean isAbleOfCategory = category.isAble();
 
         if (!isAbleOfCategory)
-            throw new RuntimeException("Phân loại vật liệu '" + category.getId() + "'" + " đã đóng");
+            throw new AppException(ErrorCode.DATA_OFF,"Phân loại vật liệu '" + category.getId() + "'" + " đã đóng");
         if (!isAbleOfMaterial)
-            throw new RuntimeException("Vật liệu tiêu hao '" + material.getId() + "'" + " đã đóng");
+            throw new AppException(ErrorCode.DATA_OFF,"Vật liệu tiêu hao '" + material.getId() + "'" + " đã đóng");
         if(medicineService.isMedicine(material.getId()))
-            throw new RuntimeException("Chỉ hỗ trợ vật liệu tiêu hao không phải thuốc");
+            throw new AppException(ErrorCode.INVALID_REQUEST,"Chỉ hỗ trợ vật liệu tiêu hao không phải thuốc");
 
 
         if (!material.getCategory().getId().equals(category.getId())) {
-            throw new RuntimeException("Mã phân loại của vật liệu không khớp với dữ liệu thực");
+            throw new AppException(ErrorCode.INVALID_REQUEST,"Mã phân loại của vật liệu không khớp với dữ liệu thực");
         }
 
         request.name().ifPresent(name -> {
             FieldUtils.checkStrEmpty(name, "Tên vật liệu");
             if(materialRepository.existsByNameAndIdNot(name,request.id()))
-                throw new RuntimeException("Đã tồn tại vật liệu '" + name + "'");
+                throw new AppException(ErrorCode.EXISTED_DATA,"Đã tồn tại vật liệu '" + name + "'");
             material.setName(name);
         });
         request.unit().ifPresent(unit -> {
@@ -340,7 +345,7 @@ public class MaterialService {
         });
         request.mfg_date().ifPresent(mfgDate -> {
             if(FieldUtils.isLocalDateMoreThanToday(mfgDate))
-                throw new RuntimeException("Ngày sản xuất không được quá ngày hiện tại");
+                throw new AppException(ErrorCode.INVALID_REQUEST,"Ngày sản xuất không được quá ngày hiện tại");
         });
 
         request.ingreIdList().ifPresent(ingreList -> {
@@ -379,18 +384,18 @@ public class MaterialService {
         boolean isAbleOfCategory = category.isAble();
 
         if (!isAbleOfCategory)
-            throw new RuntimeException("Phân loại vật liệu '" + category.getId() + "'" + " đã đóng");
+            throw new AppException(ErrorCode.DATA_OFF,"Phân loại vật liệu '" + category.getId() + "'" + " đã đóng");
         if (!isAbleOfMaterial)
-            throw new RuntimeException("Vật liệu tiêu hao '" + material.getId() + "'" + " đã đóng");
+            throw new AppException(ErrorCode.DATA_OFF,"Vật liệu tiêu hao '" + material.getId() + "'" + " đã đóng");
 
         if (!material.getCategory().getId().equals(category.getId())) {
-            throw new RuntimeException("Mã phân loại của vật liệu không khớp với dữ liệu thực");
+            throw new AppException(ErrorCode.INVALID_REQUEST,"Mã phân loại của vật liệu không khớp với dữ liệu thực");
         }
 
         request.name().ifPresent(name -> {
             FieldUtils.checkStrEmpty(name, "Tên vật liệu");
             if(materialRepository.existsByNameAndIdNot(name,request.id()))
-                throw new RuntimeException("Đã tồn tại vật liệu '" + name + "'");
+                throw new AppException(ErrorCode.EXISTED_DATA,"Đã tồn tại vật liệu '" + name + "'");
             material.setName(name);
         });
         request.unit().ifPresent(unit -> {
@@ -407,7 +412,7 @@ public class MaterialService {
         });
         request.mfg_date().ifPresent(mfgDate -> {
             if(FieldUtils.isLocalDateMoreThanToday(mfgDate))
-                throw new RuntimeException("Ngày sản xuất không được quá ngày hiện tại");
+                throw new AppException(ErrorCode.INVALID_REQUEST,"Ngày sản xuất không được quá ngày hiện tại");
         });
 
 //        Medicine
@@ -433,7 +438,7 @@ public class MaterialService {
         });
 
         if(medicine.getRevenue() < medicine.getCost())
-            throw new RuntimeException("Chi phí không được lớn hơn giá vật liệu");
+            throw new AppException(ErrorCode.INVALID_REQUEST,"Chi phí không được lớn hơn giá vật liệu");
 
         request.ingreIdList().ifPresent(ingreList -> {
             List<Ingredient> ingredientList =
@@ -472,10 +477,10 @@ public class MaterialService {
     }
 
 //    Thay đổi able của material
-    public void toggleAbleMaterial(Long id) {
+    public Material toggleAbleMaterial(Long id) {
         Material m = getById(id);
         m.setAble(!m.isAble());
-        materialRepository.save(m);
+        return materialRepository.save(m);
     }
 
 //    Scan và xóa hình ảnh không còn tham chiếu trong database

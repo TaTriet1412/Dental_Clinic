@@ -1,9 +1,9 @@
 package com.dental_clinic.material_service.Service;
 
+import com.dental_clinic.common_lib.exception.AppException;
+import com.dental_clinic.common_lib.exception.ErrorCode;
 import com.dental_clinic.material_service.DTO.Response.ConsumableRes;
-import com.dental_clinic.material_service.DTO.Response.FixedRes;
 import com.dental_clinic.material_service.Entity.ConsumableMaterial;
-import com.dental_clinic.material_service.Entity.FixedMaterial;
 import com.dental_clinic.material_service.Entity.Ingredient;
 import com.dental_clinic.material_service.Entity.Material;
 import com.dental_clinic.material_service.Repository.ConsumableMaterialRepository;
@@ -17,19 +17,22 @@ import java.util.Objects;
 
 @Service
 public class ConsumableMaterialService {
-    @Autowired
-    private ConsumableMaterialRepository consumableMaterialRepository;
-    @Autowired
+    private final ConsumableMaterialRepository consumableMaterialRepository;
     @Lazy
-    private IngredientService ingredientService;
+    private final IngredientService ingredientService;
+    @Lazy
+    private final MedicineService medicineService;
 
     @Autowired
-    @Lazy
-    private MedicineService medicineService;
+    public ConsumableMaterialService(IngredientService ingredientService, ConsumableMaterialRepository consumableMaterialRepository, MedicineService medicineService) {
+        this.ingredientService = ingredientService;
+        this.consumableMaterialRepository = consumableMaterialRepository;
+        this.medicineService = medicineService;
+    }
 
     public ConsumableMaterial getById(Long id) {
         return consumableMaterialRepository.findById(id).orElseThrow(() ->
-                new RuntimeException("Không tìm thấy vật liệu tiêu hao có id = '" + id + "'"));
+                new AppException(ErrorCode.NOT_FOUND,"Không tìm thấy vật liệu tiêu hao có id = '" + id + "'"));
     }
 
     public List<ConsumableRes> getAllConsumableMaterial() {

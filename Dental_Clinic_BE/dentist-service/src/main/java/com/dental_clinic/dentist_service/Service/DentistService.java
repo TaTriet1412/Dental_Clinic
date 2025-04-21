@@ -1,0 +1,107 @@
+package com.dental_clinic.dentist_service.Service;
+
+import com.dental_clinic.common_lib.dto.response.ApiResponse;
+import com.dental_clinic.common_lib.exception.AppException;
+import com.dental_clinic.common_lib.exception.ErrorCode;
+import com.dental_clinic.dentist_service.Client.AccountClient;
+import com.dental_clinic.dentist_service.DTO.Client.AccountCreateRes;
+import com.dental_clinic.dentist_service.DTO.Request.CreateDentistReq;
+import com.dental_clinic.dentist_service.DTO.Request.DeleteAccount;
+import com.dental_clinic.dentist_service.DTO.Request.UpdateDentistReq;
+import com.dental_clinic.dentist_service.Entity.Dentist;
+import com.dental_clinic.dentist_service.Entity.Faculty;
+import com.dental_clinic.dentist_service.Repository.DentistRepository;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.AccessLevel;
+import lombok.experimental.FieldDefaults;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+@Service
+@FieldDefaults(level = AccessLevel.PRIVATE)
+public class DentistService {
+    final FacultyService facultyService;
+    final AccountClient accountClient;
+    final DentistRepository dentistRepository;
+    final ObjectMapper objectMapper;
+
+    @Autowired
+    public DentistService(FacultyService facultyService, AccountClient accountClient, DentistRepository dentistRepository, ObjectMapper objectMapper) {
+        this.facultyService = facultyService;
+        this.accountClient = accountClient;
+        this.dentistRepository = dentistRepository;
+        this.objectMapper = objectMapper;
+    }
+
+
+    private Dentist findById(Long dentistId) {
+        return dentistRepository.findById(dentistId)
+                .orElseThrow(() -> new AppException(ErrorCode.NOT_FOUND, "Không tìm thấy nha sĩ"));
+    }
+
+    public Dentist createDentist(CreateDentistReq request) {
+        AccountCreateRes accountCreateRes = null;
+        try {
+            // Gọi service tạo tài khoản
+            ApiResponse<Object> accountResponse = accountClient.createAccount(request.account());
+
+            if (accountResponse== null | accountResponse.getResult() == null) {
+                throw new AppException(ErrorCode.valueOf(String.valueOf(accountResponse.getApiCode())), accountResponse.getMessage());
+            }
+
+            Object result =  accountResponse.getResult();
+            accountCreateRes = objectMapper.convertValue(result, AccountCreateRes.class);
+
+            // Gọi tiếp tạo dentist
+            Faculty faculty = facultyService.findById(request.facId());
+            checkAbleFaculty(request.facId());
+
+            Dentist dentist = new Dentist();
+            dentist.setSpecialty(request.specialty());
+            dentist.setExperienceYear(request.expYear());
+            dentist.setId(accountCreateRes.getId());
+            dentist.setFaculty(faculty);
+
+            return dentistRepository.save(dentist);
+        }
+        catch (Exception ex) {
+            DeleteAccount deleteAccount = new DeleteAccount(accountCreateRes.getEmail());
+            accountClient.deleteAccount(deleteAccount);
+            if (ex instanceof AppException ) {
+                throw ex;
+            }
+            throw new AppException(ErrorCode.INTERNAL_SERVER_ERROR, "Tạo nha sĩ thất bại");
+        }
+    }
+
+    private void checkAbleFaculty(Long facId) {
+        if (!facultyService.isAbleFaculty(facId)) {
+            throw new AppException(ErrorCode.DATA_OFF, "Khoa này đã ngưng hoạt động");
+        }
+    }
+
+    public Dentist updateDentist(UpdateDentistReq request) {
+        Dentist dentist = findById(request.dentistId());
+
+        request.facId().ifPresent(facId -> {
+            if(facId <= 0)
+                throw new AppException(ErrorCode.FAIL_FORMAT_DATA, "Mã khoa không thể âm");
+            Faculty faculty = facultyService.findById(facId);
+            checkAbleFaculty(facId);
+            dentist.setFaculty(faculty);
+        });
+        request.specialty().ifPresent(specialty -> {
+            if (specialty.isBlank())
+                throw new AppException(ErrorCode.FAIL_FORMAT_DATA,"Chuyên môn không được rỗng");
+            dentist.setSpecialty(specialty);
+        });
+        request.expYear().ifPresent(experienceYear -> {
+            if(experienceYear <= 0)
+                throw new AppException(ErrorCode.FAIL_FORMAT_DATA, "Năm kinh nghiệm không thể âm");
+            dentist.setExperienceYear(experienceYear);
+        });
+
+        return dentistRepository.save(dentist);
+    }
+
+}

@@ -1,5 +1,6 @@
 package com.dental_clinic.material_service.Controller;
 
+import com.dental_clinic.common_lib.dto.response.ApiResponse;
 import com.dental_clinic.material_service.DTO.Request.CreateIngredient;
 import com.dental_clinic.material_service.DTO.Request.UpdateIngredient;
 import com.dental_clinic.material_service.DTO.Response.IngredientMultiSelectRes;
@@ -17,34 +18,55 @@ import java.util.List;
 
 @RestController
 @CrossOrigin(origins = "http://localhost:4200")
-@RequiredArgsConstructor
 @FieldDefaults(makeFinal = true, level = lombok.AccessLevel.PRIVATE)
 @RequestMapping("/material/ingredient")
 public class IngredientController {
-    @Autowired
     IngredientService ingredientService;
 
     Gson gson;
+
+    @Autowired
+    public IngredientController(IngredientService ingredientService, Gson gson) {
+        this.ingredientService = ingredientService;
+        this.gson = gson;
+    }
+
     //    Create new
+    @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("")
-    public ResponseEntity<Ingredient> createNewIngredient(@RequestBody CreateIngredient req) {
-        return new ResponseEntity<>(ingredientService.createNewIngredient(req), HttpStatus.CREATED);
+    public ApiResponse<Object> createNewIngredient(@RequestBody CreateIngredient req) {
+        return ApiResponse.builder()
+                .apiCode(201)
+                .message("Tạo mới nguyên liệu thành công")
+                .result(ingredientService.createNewIngredient(req))
+                .build();
     }
 
     //  Update
     @PutMapping("")
-    public ResponseEntity<Ingredient> updateIngredient(@RequestBody UpdateIngredient req) {
-        return  new ResponseEntity<>(ingredientService.updateIngredient(req),HttpStatus.OK);
+    public ApiResponse<Object> updateIngredient(@RequestBody UpdateIngredient req) {
+        return ApiResponse.builder()
+                .apiCode(200)
+                .message("Cập nhật nguyên liệu thành công")
+                .result(ingredientService.updateIngredient(req))
+                .build();
     }
 
     @PatchMapping("/{id}/able")
-    public ResponseEntity<?> toggleAbleIngredient(@PathVariable Long id) {
-        ingredientService.toggleAbleIngredient(id);
-        return ResponseEntity.ok(gson.toJson("Thay đổi thành công"));
+    public ApiResponse<Object> toggleAbleIngredient(@PathVariable Long id) {
+        Ingredient ingredient = ingredientService.toggleAbleIngredient(id);
+        return ApiResponse.builder()
+                .apiCode(200)
+                .message(ingredient.isAble() ? "Nguyên liệu đã được kích hoạt" : "Nguyên liệu đã bị vô hiệu hóa")
+                .build();
     }
 
     @GetMapping("/able-true")
-    public ResponseEntity<List<IngredientMultiSelectRes>> getListIngreAbleTrue () {
-        return ResponseEntity.ok(ingredientService.getIngredientAbleTrue());
+    public ApiResponse<Object> getListIngreAbleTrue() {
+        return ApiResponse.builder()
+                .apiCode(200)
+                .message("Lấy danh sách nguyên liệu thành công")
+                .result(ingredientService.getIngredientAbleTrue())
+                .build();
     }
 }

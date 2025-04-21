@@ -1,0 +1,13 @@
+spring:
+  application:
+    name: dentist-service
+  config:
+    import: "optional:configserver:http://localhost:8088"
+  datasource:
+    url: "jdbc:mysql://localhost:3306/dentist"
+    username: root
+    password: root
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true

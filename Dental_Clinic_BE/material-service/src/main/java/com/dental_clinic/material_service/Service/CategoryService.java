@@ -1,5 +1,7 @@
 package com.dental_clinic.material_service.Service;
 
+import com.dental_clinic.common_lib.exception.AppException;
+import com.dental_clinic.common_lib.exception.ErrorCode;
 import com.dental_clinic.material_service.DTO.Request.CreateCategory;
 import com.dental_clinic.material_service.DTO.Request.UpdateCategory;
 import com.dental_clinic.material_service.Entity.Category;
@@ -28,7 +30,7 @@ public class CategoryService {
     //    Lấy phân loại vật liệu theo id
     public Category getById(Long id){
         return categoryRepository.findById(id).orElseThrow(() ->
-                new RuntimeException("Không tìm thấy phân loại vật liệu có id = '" + id + "'"));
+                new AppException(ErrorCode.NOT_FOUND,"Không tìm thấy phân loại vật liệu có id = '" + id + "'"));
     }
 
     //    Kiểm tra tên tồn tại chưa
@@ -55,7 +57,7 @@ public class CategoryService {
         FieldUtils.checkFieldIsEmptyOrNull(createCategory.note(),"Ghi chú");
         if (isNameExists(createCategory.name()) )
             throw new
-                    RuntimeException("Đã tồn tại phân loại vật liệu '" +
+                    AppException(ErrorCode.EXISTED_DATA,"Đã tồn tại phân loại vật liệu '" +
                                         createCategory.name() + "'");
 
 //        Tiến hành lưu vào db
@@ -75,21 +77,24 @@ public class CategoryService {
         Category category = getById(id);
 
         //        Kiểm tra trường thông tin có sai định dạng không
-        FieldUtils.checkFieldIsEmptyOrNull(updateCategory.getName(),"Tên phân loại");
-        FieldUtils.checkFieldIsEmptyOrNull(updateCategory.getNote(),"Ghi chú");
-        FieldUtils.checkFieldIsEmptyOrNull(updateCategory.getDescription(),"Mô tả");
-        FieldUtils.checkFieldIsEmptyOrNull(updateCategory.isAble(),"Trạng thái");
+        updateCategory.name().ifPresent(name -> {
+            FieldUtils.checkFieldIsEmptyOrNull(name,"Tên phân loại");
+            if (isNameExistsExcludingOldName(name, category.getId()))
+                throw new AppException(ErrorCode.EXISTED_DATA,"Đã tồn tại phân loại vật liệu '" +
+                        name + "'");
+            category.setName(name);
+        });
 
+        updateCategory.note().ifPresent(note -> {
+            FieldUtils.checkFieldIsEmptyOrNull(note,"Ghi chú");
+            category.setNote(note);
+        });
 
-        if(isNameExistsExcludingOldName(updateCategory.getName(), category.getId()))
-            throw new RuntimeException("Đã tồn tại phân loại vật liệu '" +
-                                            updateCategory.getName() + "'");
+        updateCategory.description().ifPresent(description -> {
+            FieldUtils.checkFieldIsEmptyOrNull(description,"Mô tả");
+            category.setDescription(description);
+        });
 
-        //        Cập nhật category
-        category.setAble(updateCategory.isAble());
-        category.setNote(updateCategory.getNote());
-        category.setName(updateCategory.getName());
-        category.setDescription(updateCategory.getDescription());
         return categoryRepository.save(category);
     }
 
@@ -99,11 +104,17 @@ public class CategoryService {
 
         // Kiểm tra liệu category có được tham chiếu đến bởi material entity nào không
         if (materialService.isCategoryInUse(id))
-            throw new RuntimeException
-                    ("Phân loại với " + id +
+            throw new AppException
+                    (ErrorCode.INVALID_REQUEST,"Phân loại với " + id +
                             " còn đang được sử dụng bởi vật liệu nào đó. Nên không thể xóa phân loại này");
 
 //        Xóa thành công
         categoryRepository.delete(category);
+    }
+
+    public Category toggleAble(Long id) {
+        Category category = getById(id);
+        category.setAble(!category.isAble());
+        return categoryRepository.save(category);
     }
 }

@@ -1,5 +1,7 @@
 package com.dental_clinic.material_service.Service;
 
+import com.dental_clinic.common_lib.exception.AppException;
+import com.dental_clinic.common_lib.exception.ErrorCode;
 import com.dental_clinic.material_service.DTO.Response.FixedRes;
 import com.dental_clinic.material_service.Entity.FixedMaterial;
 import com.dental_clinic.material_service.Entity.Material;
@@ -13,12 +15,16 @@ import java.util.Objects;
 
 @Service
 public class FixedMaterialService {
+    private final FixedMaterialRepository fixedMaterialRepository;
+
     @Autowired
-    private FixedMaterialRepository fixedMaterialRepository;
+    public FixedMaterialService(FixedMaterialRepository fixedMaterialRepository) {
+        this.fixedMaterialRepository = fixedMaterialRepository;
+    }
 
     public FixedMaterial getById(Long id) {
         return fixedMaterialRepository.findById(id).orElseThrow(
-                () -> new RuntimeException("Không tìm thấy vật liệu cố định có id = '" + id + "'"));
+                () -> new AppException(ErrorCode.NOT_FOUND,"Không tìm thấy vật liệu cố định có id = '" + id + "'"));
     }
 
     public void saveNewFixedMaterial(Long materialId) {

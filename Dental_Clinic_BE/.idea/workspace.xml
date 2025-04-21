@@ -2,10 +2,11 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="82151459-3396-4eba-8106-9c297d84fa18" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/Dental_Clinic_BE.iml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/config-server/src/main/resources/config/dentist-service.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/config-server/src/main/resources/config/api-gateway.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/config-server/src/main/resources/config/api-gateway.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dentist-service/src/main/java/com/dental_clinic/dentist_service/DentistServiceApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/dentist-service/src/main/java/com/dental_clinic/dentist_service/DentistServiceApplication.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dentist-service/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/dentist-service/src/main/resources/application.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/material-service/src/main/java/com/dental_clinic/material_service/MaterialServiceApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/material-service/src/main/java/com/dental_clinic/material_service/MaterialServiceApplication.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -28,7 +29,8 @@
   "keyToString": {
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "git-widget-placeholder": "main",
-    "last_opened_file_path": "D:/CheckCode/CheckCode/Spring_Boot/MIcroservice_demo/service-registry/service-registry",
+    "kotlin-language-version-configured": "true",
+    "last_opened_file_path": "D:/College/Year3/SOA/CK/Application/Dental_Clinic/Dental_Clinic_BE",
     "settings.editor.selected.configurable": "com.poratu.idea.plugins.tomcat.setting.TomcatServersConfigurable"
   }
 }]]></component>

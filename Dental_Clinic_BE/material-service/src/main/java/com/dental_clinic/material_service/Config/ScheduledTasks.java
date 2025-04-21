@@ -2,7 +2,6 @@ package com.dental_clinic.material_service.Config;
 
 import com.dental_clinic.material_service.Service.MaterialService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 @Component @RequiredArgsConstructor

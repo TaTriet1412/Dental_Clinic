@@ -1,11 +1,10 @@
 package com.dental_clinic.material_service.DTO.Request;
 
-import lombok.Getter;
+import java.util.Optional;
 
-@Getter
-public class UpdateCategory {
-    private String name;
-    private String note;
-    private String description;
-    private boolean able;
+public record UpdateCategory(
+        Optional<String> name,
+        Optional<String> note,
+        Optional<String> description
+) {
 }
