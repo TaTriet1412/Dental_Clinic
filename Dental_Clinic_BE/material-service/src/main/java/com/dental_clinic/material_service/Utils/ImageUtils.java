@@ -44,16 +44,16 @@ public class ImageUtils {
     public static void checkImageFile(MultipartFile file) {
         // Kiểm tra file rỗng
         if (file == null) {
-            throw new RuntimeException("Tập tin không tồn tại");
+            throw new AppException(ErrorCode.INVALID_REQUEST,"Tập tin không tồn tại");
         }
         // Kiểm tra kích thước file (nax 5MB)
         if(file.getSize() > 5*1024*1024) {
-            throw new RuntimeException("Tập tin quá lớn. Kích thước tối đa là 5MB");
+            throw new AppException(ErrorCode.INVALID_REQUEST,"Tập tin quá lớn. Kích thước tối đa là 5MB");
         }
         // Kiểm tra content type
         String contentType = file.getContentType();
         if(contentType == null || !contentType.startsWith("image/")){
-            throw new RuntimeException("Tập tin không phải là hình ảnh");
+            throw new AppException(ErrorCode.INVALID_REQUEST,"Tập tin không phải là hình ảnh");
         }
     }
 
