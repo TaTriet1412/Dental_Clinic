@@ -15,9 +15,13 @@ import java.util.stream.Collectors;
 import java.time.LocalDateTime;
 import java.math.BigInteger;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 @Service
 public class PrescriptionService {
     private final PrescriptionRepository prescriptionRepository;
+    private static final Logger logger = LoggerFactory.getLogger(PrescriptionService.class);
 
     @Autowired
     public PrescriptionService(PrescriptionRepository prescriptionRepository) {
@@ -43,7 +47,12 @@ public class PrescriptionService {
 
     public Prescription createPrescription(CreatePrescriptionReq request) {
         Prescription prescription = createPrescriptionFromRequest(request);
-        return prescriptionRepository.save(prescription);
+        prescriptionRepository.save(prescription);
+
+        logger.info("Created new prescription: pat_id={}, den_id={}, note={}, medicines={}, total_price={}",
+                prescription.getPat_id(), prescription.getDen_id(), prescription.getNote(),
+                prescription.getMedicines(), prescription.getTotal_price());
+        return prescription;
     }
 
     private static Prescription createPrescriptionFromRequest(CreatePrescriptionReq request) {
@@ -86,6 +95,15 @@ public class PrescriptionService {
         Prescription prescription = findPrescriptionById(request.id());
         checkBeforeUpdatePrescription(prescription);
 
+        StringBuilder logMessage = new StringBuilder("Updated prescription id=" + request.id() + ": ");
+        boolean hasChanges = false;
+
+        Long oldPatId = prescription.getPat_id();
+        Long oldDenId = prescription.getDen_id();
+        String oldNote = prescription.getNote();
+        List<Medicine> oldMedicines = prescription.getMedicines();
+        BigInteger oldTotalPrice = prescription.getTotal_price();
+
         request.note().ifPresent(note -> {
             if (note.isBlank()) {
                 throw new AppException(ErrorCode.FAIL_FORMAT_DATA, "Ghi chú không được để trống");
@@ -123,7 +141,36 @@ public class PrescriptionService {
             prescription.setMedicines(medicines);
         });
 
-        return prescriptionRepository.save(prescription);
+        // Kiểm tra và ghi log các trường thay đổi
+        if (request.pat_id().isPresent() && !prescription.getPat_id().equals(oldPatId)) {
+            logMessage.append("pat_id from ").append(oldPatId).append(" to ").append(prescription.getPat_id()).append("\n");
+            hasChanges = true;
+        }
+        if (request.den_id().isPresent() && !prescription.getDen_id().equals(oldDenId)) {
+            logMessage.append("den_id from ").append(oldDenId).append(" to ").append(prescription.getDen_id()).append("\n");
+            hasChanges = true;
+        }
+        if (request.note().isPresent() && !prescription.getNote().equals(oldNote)) {
+            logMessage.append("note from ").append(oldNote).append(" to ").append(prescription.getNote()).append("\n");
+            hasChanges = true;
+        }
+        if (request.medicines().isPresent() && !prescription.getMedicines().equals(oldMedicines)) {
+            logMessage.append("medicines from ").append(oldMedicines).append(" to ").append(prescription.getMedicines()).append("\n");
+            hasChanges = true;
+        }
+        if (!prescription.getTotal_price().equals(oldTotalPrice)) {
+            logMessage.append("total_price from ").append(oldTotalPrice).append(" to ").append(prescription.getTotal_price()).append("\n");
+            hasChanges = true;
+        }
+
+        if (hasChanges) {
+            prescriptionRepository.save(prescription);
+            logger.info(logMessage.toString());
+        } else {
+            prescriptionRepository.save(prescription);
+        }
+
+        return prescription;
     }
 
     private static void checkBeforeUpdatePrescription(Prescription prescription) {

@@ -23,12 +23,15 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Service
 public class DentalService {
     private final DentalRepository dentalRepository;
     @Lazy
     private final CategoryService categoryService;
+    private static final Logger logger = LoggerFactory.getLogger(DentalService.class);
 
     @Autowired
     public DentalService(DentalRepository dentalRepository, CategoryService categoryService) {
@@ -103,12 +106,28 @@ public class DentalService {
                 .img(DEFAULT_DENTAL_SERVICE)
                 .build();
 
-        return dentalRepository.save(dental);
+        dentalRepository.save(dental);
+
+        logger.info("Created new dental service: name={}, cost={}, revenue={}, cared_actor={}, description={}, unit={}",
+                dental.getName(), dental.getCost(), dental.getRevenue(),
+                dental.getCared_actor(), dental.getDescription(), dental.getUnit());
+
+        return dental;
     }
 
     public Dental updateDentalService(UpdateDentalServiceDTO req, String id) {
 //        Lấy Dental cũ
         Dental dental = getById(id);
+
+        StringBuilder logMessage = new StringBuilder("Updated dental service id=" + id + ": ");
+        boolean hasChanges = false;
+
+        String oldName = dental.getName();
+        Integer oldCost = dental.getCost();
+        Integer oldRevenue = dental.getRevenue();
+        String oldCaredActor = dental.getCared_actor();
+        String oldDescription = dental.getDescription();
+        String oldUnit = dental.getUnit();
 
         req.getName().ifPresent(name -> {
             FieldUtils.checkFieldIsEmptyOrNull(name, "Tên dịch vụ");
@@ -149,7 +168,40 @@ public class DentalService {
         if (dental.getRevenue() < dental.getCost())
             throw new AppException(ErrorCode.INVALID_REQUEST, "Chi phí không được lớn hơn giá sản phẩm");
 
-        return dentalRepository.save(dental);
+        // Kiểm tra và ghi log các trường thay đổi
+        if (req.getName().isPresent() && !dental.getName().equals(oldName)) {
+            logMessage.append("name from ").append(oldName).append(" to ").append(dental.getName()).append("\n");
+            hasChanges = true;
+        }
+        if (req.getCost().isPresent() && !dental.getCost().equals(oldCost)) {
+            logMessage.append("cost from ").append(oldCost).append(" to ").append(dental.getCost()).append("\n");
+            hasChanges = true;
+        }
+        if (req.getRevenue().isPresent() && !dental.getRevenue().equals(oldRevenue)) {
+            logMessage.append("revenue from ").append(oldRevenue).append(" to ").append(dental.getRevenue()).append("\n");
+            hasChanges = true;
+        }
+        if (req.getCared_actor().isPresent() && !dental.getCared_actor().equals(oldCaredActor)) {
+            logMessage.append("cared_actor from ").append(oldCaredActor).append(" to ").append(dental.getCared_actor()).append("\n");
+            hasChanges = true;
+        }
+        if (req.getDescription().isPresent() && !dental.getDescription().equals(oldDescription)) {
+            logMessage.append("description from ").append(oldDescription).append(" to ").append(dental.getDescription()).append("\n");
+            hasChanges = true;
+        }
+        if (req.getUnit().isPresent() && !dental.getUnit().equals(oldUnit)) {
+            logMessage.append("unit from ").append(oldUnit).append(" to ").append(dental.getUnit()).append("\n");
+            hasChanges = true;
+        }
+
+        if (hasChanges) {
+            dentalRepository.save(dental);
+            logger.info(logMessage.toString());
+        } else {
+            dentalRepository.save(dental);
+        }
+
+        return dental;
     }
 
     public Dental toggleAble(String id) {

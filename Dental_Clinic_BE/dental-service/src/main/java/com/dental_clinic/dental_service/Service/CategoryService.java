@@ -16,10 +16,14 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 @Service
 public class CategoryService {
     private final CategoryRepository categoryRepository;
     private final DentalService dentalService;
+    private static final Logger logger = LoggerFactory.getLogger(CategoryService.class);
 
     @Autowired
     public CategoryService(CategoryRepository categoryRepository, DentalService dentalService) {
@@ -53,19 +57,28 @@ public class CategoryService {
         if (isNameExists(createCategoryDTO.getName()) )
             throw new AppException(ErrorCode.EXISTED_DATA, "Đã tồn tại phân loại dịch vụ '" + createCategoryDTO.getName() + "'");
 
-//        Tiến hành lưu vào db
-       return categoryRepository.save(
-               Category.builder()
+        Category category = Category.builder()
                 .name(createCategoryDTO.getName())
                 .note(createCategoryDTO.getNote())
                 .created_at(LocalDateTime.now())
                 .able(true)
                 .build());
+
+        categoryRepository.save(category);
+
+        logger.info("Created new category: name={}, note={}", category.getName(), category.getNote());
+        return category;
     }
 
 //    Thay đổi trường thông tin
     public Category updateCategory(UpdateCategoryDTO updateCategoryDTO, String id) {
         Category category = getById(id);
+
+        StringBuilder logMessage = new StringBuilder("Updated category id=" + id + ": ");
+        boolean hasChanges = false;
+
+        String oldName = category.getName();
+        String oldNote = category.getNote();
 
         updateCategoryDTO.getName().ifPresent(name -> {
             FieldUtils.checkFieldIsEmptyOrNull(name, "Tên phân loại");
@@ -78,8 +91,25 @@ public class CategoryService {
             FieldUtils.checkFieldIsEmptyOrNull(note, "Ghi chú");
             category.setNote(note);
         });
+
+        // Kiểm tra và ghi log các trường thay đổi
+        if (updateCategoryDTO.getName().isPresent() && !category.getName().equals(oldName)) {
+            logMessage.append("name from ").append(oldName).append(" to ").append(category.getName()).append("\n");
+            hasChanges = true;
+        }
+        if (updateCategoryDTO.getNote().isPresent() && !category.getNote().equals(oldNote)) {
+            logMessage.append("note from ").append(oldNote).append(" to ").append(category.getNote()).append("\n");
+            hasChanges = true;
+        }
+
+        if (hasChanges) {
+            categoryRepository.save(category);
+            logger.info(logMessage.toString());
+        } else {
+            categoryRepository.save(category);
+        }
         
-        return categoryRepository.save(category);
+        return category;
     }
 
     public void deleteCategory(String id) {
