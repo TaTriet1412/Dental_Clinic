@@ -1,6 +1,5 @@
 var hoLots = ['Nguyễn Văn', 'Trần Thị', 'Lê Hoàng', 'Phạm Minh', 'Võ Thành'];
 var tens = ['An', 'Bình', 'Châu', 'Dũng', 'Hạnh', 'Linh', 'Minh', 'Ngọc'];
-var gioiTinhs = ['Nam', 'Nữ'];
 
 function getRandomInt(min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
@@ -19,7 +18,7 @@ var patients = [];
 
 for (var i = 0; i < 20; i++) {
     var full_name = hoLots[getRandomInt(0, hoLots.length - 1)] + ' ' + tens[getRandomInt(0, tens.length - 1)];
-    var gender = gioiTinhs[getRandomInt(0, gioiTinhs.length - 1)];
+    var gender = getRandomInt(0, 1) === 0; // true = Nam, false = Nữ
     var birth_date = getRandomDate(startBirth, endBirth).toISOString().split('T')[0];
     var phone_number = '09' + getRandomInt(100000000, 999999999).toString().slice(0, 8);
     var address = `Số ${i + 1} Đường Lê Lợi, Quận ${getRandomInt(1, 12)}, TP.HCM`;
@@ -30,7 +29,7 @@ for (var i = 0; i < 20; i++) {
 
     patients.push({
         name: full_name,
-        gender: gender,
+        gender: gender, // true = Nam, false = Nữ
         birthday: birth_date,
         phone: phone_number,
         address: address,
