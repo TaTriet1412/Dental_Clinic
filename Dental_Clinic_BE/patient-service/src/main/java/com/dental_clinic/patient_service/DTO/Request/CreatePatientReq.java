@@ -9,9 +9,8 @@ public record CreatePatientReq(
         @Size(max = 100, message = "Tên bệnh nhân không được vượt quá 100 ký tự")
         String name,
 
-        @NotBlank(message = "Giới tính không được để trống")
-        @Pattern(regexp = "^(Nam|Nữ)$", message = "Giới tính phải là Nam hoặc Nữ")
-        String gender,
+        @NotNull(message = "Giới tính không được để trống")
+        Boolean gender,
 
         @NotNull(message = "Ngày sinh không được để trống")
         @Past(message = "Ngày sinh phải là ngày trong quá khứ")

@@ -15,4 +15,9 @@ public interface PatientRepository extends MongoRepository<Patient, String> {
             "{ $project: { _id: 0, img: 1 } }"
     })
     List<String> findAllImg();
+    boolean existsByPhone(String phone);
+    boolean existsByPhoneAndIdNot(String phone, String id);
+    boolean existsByEmail(String email);
+    boolean existsByEmailAndIdNot(String email, String id);
+
 }

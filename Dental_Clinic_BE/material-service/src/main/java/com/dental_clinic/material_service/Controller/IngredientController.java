@@ -7,6 +7,7 @@ import com.dental_clinic.material_service.DTO.Response.IngredientMultiSelectRes;
 import com.dental_clinic.material_service.Entity.Ingredient;
 import com.dental_clinic.material_service.Service.IngredientService;
 import com.google.gson.Gson;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,7 +35,7 @@ public class IngredientController {
     //    Create new
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("")
-    public ApiResponse<Object> createNewIngredient(@RequestBody CreateIngredient req) {
+    public ApiResponse<Object> createNewIngredient(@Valid @RequestBody CreateIngredient req) {
         return ApiResponse.builder()
                 .apiCode(201)
                 .message("Tạo mới nguyên liệu thành công")
@@ -44,7 +45,7 @@ public class IngredientController {
 
     //  Update
     @PutMapping("")
-    public ApiResponse<Object> updateIngredient(@RequestBody UpdateIngredient req) {
+    public ApiResponse<Object> updateIngredient(@Valid @RequestBody UpdateIngredient req) {
         return ApiResponse.builder()
                 .apiCode(200)
                 .message("Cập nhật nguyên liệu thành công")

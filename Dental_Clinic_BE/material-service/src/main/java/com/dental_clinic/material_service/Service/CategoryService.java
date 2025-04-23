@@ -16,11 +16,15 @@ import java.util.List;
 
 @Service
 public class CategoryService {
-    @Autowired
-    private CategoryRepository categoryRepository;
-    @Autowired
+    private final CategoryRepository categoryRepository;
     @Lazy
-    private MaterialService materialService;
+    private final MaterialService materialService;
+
+    @Autowired
+    public CategoryService(CategoryRepository categoryRepository, MaterialService materialService) {
+        this.categoryRepository = categoryRepository;
+        this.materialService = materialService;
+    }
 
     //   Lấy tất cả các phân loại vật liệu
     public List<Category> getAllCategories(){

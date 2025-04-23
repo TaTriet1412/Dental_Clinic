@@ -6,6 +6,7 @@ import com.dental_clinic.material_service.DTO.Response.*;
 import com.dental_clinic.material_service.Entity.Material;
 import com.dental_clinic.material_service.Service.*;
 import com.google.gson.Gson;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -74,7 +75,7 @@ public class MaterialController {
    //    Create new
    @ResponseStatus(HttpStatus.CREATED)
    @PostMapping("/fixed-material")
-   public ApiResponse<Object> createNewFixedMaterial(@RequestBody CreateFixedMaterial req) {
+   public ApiResponse<Object> createNewFixedMaterial(@Valid @RequestBody CreateFixedMaterial req) {
        materialService.createFixedMaterial(req);
        return ApiResponse.builder()
                .result(null)
@@ -85,7 +86,7 @@ public class MaterialController {
 
    //    Update
    @PutMapping(value = "/fixed-material")
-   public ApiResponse<Object> updateNewFixedMaterial(@RequestBody UpdateFixedMaterial req) {
+   public ApiResponse<Object> updateNewFixedMaterial(@Valid @RequestBody UpdateFixedMaterial req) {
        return ApiResponse.builder()
                .result(materialService.updateFixedMaterial(req))
                .apiCode(200)
@@ -119,7 +120,7 @@ public class MaterialController {
     //    Create new
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/consumable-material")
-    public ApiResponse<Object> createNewConsumableMaterial(@RequestBody CreateConsumableMaterial req) {
+    public ApiResponse<Object> createNewConsumableMaterial(@Valid @RequestBody CreateConsumableMaterial req) {
         materialService.createConsumableMaterial(req);
         return ApiResponse.builder()
                 .result(null)
@@ -130,7 +131,7 @@ public class MaterialController {
 
     //  Update
     @PutMapping("/consumable-material")
-    public ApiResponse<Object> updateConsumableMaterial(@RequestBody UpdateConsumableMaterial req) {
+    public ApiResponse<Object> updateConsumableMaterial(@Valid @RequestBody UpdateConsumableMaterial req) {
         return ApiResponse.builder()
                 .result(materialService.updateConsumableMaterial(req))
                 .apiCode(200)
@@ -163,7 +164,7 @@ public class MaterialController {
     //    Create new
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/consumable-material/medicine")
-    public ApiResponse<Object> createNewMedicine(@RequestBody CreateMedicine req) {
+    public ApiResponse<Object> createNewMedicine(@Valid @RequestBody CreateMedicine req) {
         materialService.createMedicine(req);
         return ApiResponse.builder()
                 .result(null)
@@ -174,7 +175,7 @@ public class MaterialController {
 
     //  Update
     @PutMapping("/consumable-material/medicine")
-    public ApiResponse<Object> updateMedicine(@RequestBody UpdateMedicine req) {
+    public ApiResponse<Object> updateMedicine(@Valid @RequestBody UpdateMedicine req) {
         return ApiResponse.builder()
                 .result(materialService.updateMedicine(req))
                 .apiCode(200)

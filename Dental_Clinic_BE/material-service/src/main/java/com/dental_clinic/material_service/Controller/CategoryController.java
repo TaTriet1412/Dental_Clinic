@@ -5,10 +5,12 @@ import com.dental_clinic.material_service.DTO.Request.CreateCategory;
 import com.dental_clinic.material_service.DTO.Request.UpdateCategory;
 import com.dental_clinic.material_service.Entity.Category;
 import com.dental_clinic.material_service.Service.CategoryService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -17,6 +19,7 @@ import java.util.List;
 @CrossOrigin(origins = "http://localhost:4200")
 @RequiredArgsConstructor
 @RequestMapping("/material/category")
+@Validated
 public class CategoryController {
     private CategoryService categoryService;
 
@@ -46,7 +49,7 @@ public class CategoryController {
 
     @ResponseStatus(HttpStatus.CREATED)
    @PostMapping
-   public ApiResponse<Object> createCategory(@RequestBody CreateCategory categoryDTO) {
+   public ApiResponse<Object> createCategory(@Valid @RequestBody CreateCategory categoryDTO) {
        return ApiResponse.builder()
                .result(categoryService.createCategory(categoryDTO))
                .apiCode(201)
@@ -55,7 +58,7 @@ public class CategoryController {
    }
 
    @PutMapping("{id}")
-   public ApiResponse<Object> updateCategory(@RequestBody UpdateCategory updateCategory,
+   public ApiResponse<Object> updateCategory(@Valid @RequestBody UpdateCategory updateCategory,
                                        @PathVariable Long id) {
        return ApiResponse.builder()
                .result(categoryService.updateCategory(updateCategory, id))

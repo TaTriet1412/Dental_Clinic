@@ -5,9 +5,11 @@ import com.dental_clinic.dental_service.DTO.UpdateCategoryDTO;
 import com.dental_clinic.dental_service.Entity.Category;
 import com.dental_clinic.dental_service.Service.CategoryService;
 import com.dental_clinic.common_lib.dto.response.ApiResponse;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -16,6 +18,7 @@ import java.util.List;
 @CrossOrigin(origins = "http://localhost:4200")
 @RequiredArgsConstructor
 @RequestMapping("/dental/category")
+@Validated
 public class CategoryController {
     private CategoryService categoryService;
 
@@ -44,7 +47,7 @@ public class CategoryController {
 
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping
-    public ApiResponse<Object> createCategory(@RequestBody CreateCategoryDTO categoryDTO) {
+    public ApiResponse<Object> createCategory(@Valid  @RequestBody CreateCategoryDTO categoryDTO) {
         return ApiResponse.builder()
                 .message("Tạo danh mục dịch vụ thành công")
                 .apiCode(HttpStatus.CREATED.value())
@@ -53,7 +56,7 @@ public class CategoryController {
     }
 
     @PutMapping("{id}")
-    public ApiResponse<Object> updateCategory(@RequestBody UpdateCategoryDTO updateCategoryDTO,
+    public ApiResponse<Object> updateCategory(@Valid @RequestBody UpdateCategoryDTO updateCategoryDTO,
                                               @PathVariable String id) {
         return ApiResponse.builder()
                 .message("Cập nhật danh mục dịch vụ thành công")

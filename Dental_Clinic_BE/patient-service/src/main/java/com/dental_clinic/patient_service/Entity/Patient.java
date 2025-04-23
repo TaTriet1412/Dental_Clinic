@@ -4,6 +4,7 @@ import lombok.*;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Document(collection="services")
@@ -15,8 +16,8 @@ public class Patient {
     @Id
     private String id;
     private String name;
-    private String gender;
-    private String birthday;
+    private Boolean gender;
+    private LocalDate birthday;
     private String phone;
     private String address;
     private String email;

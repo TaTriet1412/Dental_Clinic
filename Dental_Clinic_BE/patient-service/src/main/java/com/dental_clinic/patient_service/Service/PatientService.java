@@ -3,6 +3,8 @@ package com.dental_clinic.patient_service.Service;
 import com.dental_clinic.common_lib.exception.AppException;
 import com.dental_clinic.common_lib.exception.ErrorCode;
 import com.dental_clinic.patient_service.DTO.Request.ChangePatientImageRequest;
+import com.dental_clinic.patient_service.DTO.Request.CreatePatientReq;
+import com.dental_clinic.patient_service.DTO.Request.UpdatePatientReq;
 import com.dental_clinic.patient_service.Entity.Patient;
 import com.dental_clinic.patient_service.Repository.PatientRepository;
 import com.dental_clinic.patient_service.Utils.ImageUtils;
@@ -14,6 +16,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -24,6 +27,71 @@ public class PatientService {
     @Autowired
     public PatientService(PatientRepository patientRepository) {
         this.patientRepository = patientRepository;
+    }
+
+    //    Lấy tất cả bệnh nhân
+    public List<Patient> getAllPatients() {
+        return patientRepository.findAll();
+    }
+
+    //    Tìm kiếm bệnh nhân theo id
+    public Patient getById(String id) {
+        return patientRepository.findById(id).orElseThrow(
+                () -> new AppException(ErrorCode.NOT_FOUND, "Không tìm thấy bệnh nhân có id = '" + id + "'"));
+    }
+
+    //    Tạo bệnh nhân
+    public Patient createPatient(CreatePatientReq request) {
+        if(patientRepository.existsByPhone(request.phone())) {
+            throw new AppException(ErrorCode.EXISTED_DATA, "Số điện thoại đã tồn tại");
+        }
+        if(patientRepository.existsByEmail(request.email())) {
+            throw new AppException(ErrorCode.EXISTED_DATA, "Email đã tồn tại");
+        }
+
+        Patient patient = Patient.builder()
+                .created_at(LocalDateTime.now())
+                .img(VariableUtils.DEFAULT_PATIENT_SERVICE)
+                .address(request.address())
+                .email(request.email())
+                .name(request.name())
+                .gender(request.gender())
+                .last_visit(null)
+                .birthday(request.birthday())
+                .phone(request.phone())
+                .build();
+
+        return patientRepository.save(patient);
+    }
+
+    //    Cập nhật thông tin bệnh nhân
+    public Patient updatePatient(UpdatePatientReq request) {
+        Patient patient = getById(request.id());
+
+        request.name().ifPresent(patient::setName);
+
+        request.email().ifPresent(email -> {
+            if (patientRepository.existsByEmailAndIdNot(email, request.id()))
+                throw new AppException(ErrorCode.EXISTED_DATA, "Email đã tồn tại");
+            patient.setEmail(email);
+        });
+
+        request.phone().ifPresent(phone -> {
+            if (patientRepository.existsByPhoneAndIdNot(phone, request.id()))
+                throw new AppException(ErrorCode.EXISTED_DATA, "Số điện thoại đã tồn tại");
+            patient.setPhone(phone);
+        });
+
+        request.address().ifPresent(address -> {
+            if (address.isBlank())
+                throw new AppException(ErrorCode.INVALID_REQUEST, "Địa chỉ không được để trống");
+            patient.setAddress(address);
+        });
+
+        request.birthday().ifPresent(patient::setBirthday);
+        request.gender().ifPresent(patient::setGender);
+
+        return patientRepository.save(patient);
     }
 
 

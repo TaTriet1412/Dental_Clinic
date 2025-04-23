@@ -6,11 +6,13 @@ import com.dental_clinic.dental_service.DTO.UpdateDentalServiceDTO;
 import com.dental_clinic.dental_service.Entity.Dental;
 import com.dental_clinic.dental_service.Service.DentalService;
 import com.dental_clinic.common_lib.dto.response.ApiResponse;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -19,6 +21,7 @@ import java.util.List;
 @CrossOrigin(origins = "http://localhost:4200")
 @RequiredArgsConstructor
 @RequestMapping("/dental/service")
+@Validated
 public class DentalController {
     private DentalService dentalService;
 
@@ -48,7 +51,7 @@ public class DentalController {
 
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping
-    public ApiResponse<Object> createDentalService(@RequestBody CreateDentalServiceDTO createDentalServiceDTO) {
+    public ApiResponse<Object> createDentalService(@Valid @RequestBody CreateDentalServiceDTO createDentalServiceDTO) {
         return ApiResponse.builder()
                 .result(dentalService.createDentalService(createDentalServiceDTO))
                 .apiCode(HttpStatus.CREATED.value())
@@ -66,7 +69,7 @@ public class DentalController {
     }
 
     @PutMapping("{id}")
-    public ApiResponse<Object> updateDentalService(@RequestBody UpdateDentalServiceDTO req,
+    public ApiResponse<Object> updateDentalService(@Valid @RequestBody UpdateDentalServiceDTO req,
                                                    @PathVariable String id) {
         Dental dental = dentalService.updateDentalService(req, id);
         return ApiResponse.builder()
