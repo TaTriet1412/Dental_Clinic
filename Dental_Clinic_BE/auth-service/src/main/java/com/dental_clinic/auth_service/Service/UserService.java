@@ -63,6 +63,7 @@ public class UserService {
                 throw new AppException(ErrorCode.EXISTED_DATA, "Đã tồn tại tên này");
             u.setName(name);
         });
+
         req.phone().ifPresent(phone -> {
             FieldUtils.checkNumberIsIntegerAndNotNegative(phone);
             if(userRepository.existsByPhoneAndIdNot(phone, req.userId()))
