@@ -62,7 +62,7 @@ CREATE TABLE medicine
   id BIGINT PRIMARY KEY AUTO_INCREMENT,
   cared_actor TEXT(200) NOT NULL,
   cost INT NOT NULL check(cost>=0),
-  revenue INT NOT NULL check(revenue>=0),
+  price INT NOT NULL check(revenue>=0),
   instruction LONGTEXT NOT NULL,
   created_at DATETIME NOT NULL DEFAULT NOW(),
   able BIT NOT NULL DEFAULT 1,
@@ -246,7 +246,7 @@ INSERT INTO consumable_material (id) VALUES
 (61),
 (62);
 
-INSERT INTO medicine (id, cared_actor, cost, revenue, instruction) VALUES
+INSERT INTO medicine (id, cared_actor, cost, price, instruction) VALUES
 (51, 'Thuốc Amoxicillin chống chỉ định trong các trường hợp sau: Quá mẫn với hoạt chất, với bất kỳ Penicilin nào hoặc với bất kỳ thành phần nào của sản phẩm thuốc. Tiền sử có phản ứng quá mẫn tức thì nghiêm trọng (ví dụ như phản vệ) với một tác nhân beta-lactam khác (ví dụ như Cephalosporin, Carbapenem hoặc Monobactam).', 800, 1000, 'Amoxicillin dạng trihydrat chỉ dùng đường uống, Amoxicillin dạng muối natri chỉ dùng đường tiêm. Hấp thu Amoxicillin không bị ảnh hưởng bởi thức ăn trong dạ dày, do đó có thể uống trước hoặc sau bữa ăn. Bột pha hỗn dịch khi dùng có thể trộn với sữa, nước quả, nước và uống ngay lập tức sau khi trộn.'),
 (52, 'Thuốc Amoxicillin chống chỉ định trong các trường hợp sau: Quá mẫn với hoạt chất, với bất kỳ Penicilin nào hoặc với bất kỳ thành phần nào của sản phẩm thuốc. Tiền sử có phản ứng quá mẫn tức thì nghiêm trọng (ví dụ như phản vệ) với một tác nhân beta-lactam khác (ví dụ như Cephalosporin, Carbapenem hoặc Monobactam).', 800, 1000, 'Amoxicillin dạng trihydrat chỉ dùng đường uống, Amoxicillin dạng muối natri chỉ dùng đường tiêm. Hấp thu Amoxicillin không bị ảnh hưởng bởi thức ăn trong dạ dày, do đó có thể uống trước hoặc sau bữa ăn. Bột pha hỗn dịch khi dùng có thể trộn với sữa, nước quả, nước và uống ngay lập tức sau khi trộn.'),
 (53, 'Thuốc Amoxicillin chống chỉ định trong các trường hợp sau: Quá mẫn với hoạt chất, với bất kỳ Penicilin nào hoặc với bất kỳ thành phần nào của sản phẩm thuốc. Tiền sử có phản ứng quá mẫn tức thì nghiêm trọng (ví dụ như phản vệ) với một tác nhân beta-lactam khác (ví dụ như Cephalosporin, Carbapenem hoặc Monobactam).', 800, 1000, 'Amoxicillin dạng trihydrat chỉ dùng đường uống, Amoxicillin dạng muối natri chỉ dùng đường tiêm. Hấp thu Amoxicillin không bị ảnh hưởng bởi thức ăn trong dạ dày, do đó có thể uống trước hoặc sau bữa ăn. Bột pha hỗn dịch khi dùng có thể trộn với sữa, nước quả, nước và uống ngay lập tức sau khi trộn.'),
