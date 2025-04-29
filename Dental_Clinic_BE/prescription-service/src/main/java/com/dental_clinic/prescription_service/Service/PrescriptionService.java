@@ -19,7 +19,6 @@ import java.math.BigInteger;
 @Service
 public class PrescriptionService {
     private final PrescriptionRepository prescriptionRepository;
-    private final PrescriptionLogRepository prescriptionLogRepository;
 
     @Autowired
     public PrescriptionService(PrescriptionRepository prescriptionRepository) {
@@ -52,16 +51,6 @@ public class PrescriptionService {
     public Prescription createPrescription(CreatePrescriptionReq request) {
         Prescription prescription = createPrescriptionFromRequest(request);
         prescriptionRepository.save(prescription);
-
-        // Ghi log vào Prescription_Log
-        PrescriptionLog log = new PrescriptionLog();
-        log.setPrescriptionId(prescription.getId());
-        log.setAction("CREATE");
-        log.setMessage(String.format("Created new prescription: pat_id=%d, den_id=%d, note=%s, medicines=%s, total_price=%s",
-                prescription.getPat_id(), prescription.getDen_id(), prescription.getNote(),
-                prescription.getMedicines(), prescription.getTotal_price()));
-        log.setCreatedAt(LocalDateTime.now());
-        prescriptionLogRepository.save(log);
 
         return prescription;
     }
@@ -192,18 +181,8 @@ public class PrescriptionService {
             hasChanges = true;
         }
 
-        if (hasChanges) {
-            prescriptionRepository.save(prescription);
-            // Ghi log vào Prescription_Log
-            PrescriptionLog log = new PrescriptionLog();
-            log.setPrescriptionId(prescription.getId());
-            log.setAction("UPDATE");
-            log.setMessage(logMessage.toString());
-            log.setCreatedAt(LocalDateTime.now());
-            prescriptionLogRepository.save(log);
-        } else {
-            prescriptionRepository.save(prescription);
-        }
+
+        prescriptionRepository.save(prescription);
 
         return prescription;
     }

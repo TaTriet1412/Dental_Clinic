@@ -28,7 +28,6 @@ import java.util.Optional;
 public class DentalService {
     private final DentalRepository dentalRepository;
     private final CategoryService categoryService;
-    private final ServiceLogRepository serviceLogRepository;
 
     @Autowired
     @Lazy
@@ -120,34 +119,11 @@ public class DentalService {
 
         dentalRepository.save(dental);
 
-
-        // Ghi log vào Service_Log
-        ServiceLog log = new ServiceLog();
-        log.setEntityType("Dental");
-        log.setEntityId(dental.getId());
-        log.setAction("CREATE");
-        log.setMessage(String.format("Created new dental service: name=%s, cost=%d, revenue=%d, cared_actor=%s, description=%s, unit=%s",
-                dental.getName(), dental.getCost(), dental.getRevenue(),
-                dental.getCared_actor(), dental.getDescription(), dental.getUnit()));
-        log.setCreatedAt(LocalDateTime.now());
-        serviceLogRepository.save(log);
-
         return dental;
     }
 
     public Dental updateDentalService(UpdateDentalServiceDTO req, String id) {
-//        Lấy Dental cũ
         Dental dental = getById(id);
-
-        StringBuilder logMessage = new StringBuilder("Updated dental service id=" + id + ": ");
-        boolean hasChanges = false;
-
-        String oldName = dental.getName();
-        Integer oldCost = dental.getCost();
-        Integer oldRevenue = dental.getRevenue();
-        String oldCaredActor = dental.getCared_actor();
-        String oldDescription = dental.getDescription();
-        String oldUnit = dental.getUnit();
 
         req.getName().ifPresent(name -> {
             FieldUtils.checkFieldIsEmptyOrNull(name, "Tên dịch vụ");
@@ -188,45 +164,7 @@ public class DentalService {
         if (dental.getPrice() < dental.getCost())
             throw new AppException(ErrorCode.INVALID_REQUEST, "Chi phí không được lớn hơn giá sản phẩm");
 
-        // Kiểm tra và ghi log các trường thay đổi
-        if (req.getName().isPresent() && !dental.getName().equals(oldName)) {
-            logMessage.append("name from ").append(oldName).append(" to ").append(dental.getName()).append("\n");
-            hasChanges = true;
-        }
-        if (req.getCost().isPresent() && !dental.getCost().equals(oldCost)) {
-            logMessage.append("cost from ").append(oldCost).append(" to ").append(dental.getCost()).append("\n");
-            hasChanges = true;
-        }
-        if (req.getRevenue().isPresent() && !dental.getRevenue().equals(oldRevenue)) {
-            logMessage.append("revenue from ").append(oldRevenue).append(" to ").append(dental.getRevenue()).append("\n");
-            hasChanges = true;
-        }
-        if (req.getCared_actor().isPresent() && !dental.getCared_actor().equals(oldCaredActor)) {
-            logMessage.append("cared_actor from ").append(oldCaredActor).append(" to ").append(dental.getCared_actor()).append("\n");
-            hasChanges = true;
-        }
-        if (req.getDescription().isPresent() && !dental.getDescription().equals(oldDescription)) {
-            logMessage.append("description from ").append(oldDescription).append(" to ").append(dental.getDescription()).append("\n");
-            hasChanges = true;
-        }
-        if (req.getUnit().isPresent() && !dental.getUnit().equals(oldUnit)) {
-            logMessage.append("unit from ").append(oldUnit).append(" to ").append(dental.getUnit()).append("\n");
-            hasChanges = true;
-        }
-
-        if (hasChanges) {
-            dentalRepository.save(dental);
-            // Ghi log vào Service_Log
-            ServiceLog log = new ServiceLog();
-            log.setEntityType("Dental");
-            log.setEntityId(dental.getId());
-            log.setAction("UPDATE");
-            log.setMessage(logMessage.toString());
-            log.setCreatedAt(LocalDateTime.now());
-            serviceLogRepository.save(log);
-        } else {
-            dentalRepository.save(dental);
-        }
+        dentalRepository.save(dental);
 
         return dental;
     }

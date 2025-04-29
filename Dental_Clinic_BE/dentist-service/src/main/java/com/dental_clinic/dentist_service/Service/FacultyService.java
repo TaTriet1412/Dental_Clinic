@@ -16,7 +16,6 @@ import java.util.List;
 @Service
 public class FacultyService {
     private final FacultyRepository facultyRepository;
-    private final FacultyLogRepository facultyLogRepository;
 
     @Autowired
     public FacultyService(FacultyRepository facultyRepository) {
@@ -54,15 +53,6 @@ public class FacultyService {
         faculty.setCreatedAt(LocalDateTime.now());
 
         facultyRepository.save(faculty);
-
-        // Ghi log vào Faculty_Log
-        FacultyLog log = new FacultyLog();
-        log.setFaculty(faculty);
-        log.setAction("CREATE");
-        log.setMessage(String.format("Created new faculty: name=%s, description=%s, email=%s, phone_number=%s",
-                faculty.getName(), faculty.getDescription(), faculty.getEmail(), faculty.getPhoneNumber()));
-        log.setCreatedAt(LocalDateTime.now());
-        facultyLogRepository.save(log);
 
         return faculty;
     }
@@ -127,18 +117,7 @@ public class FacultyService {
             hasChanges = true;
         }
 
-        if (hasChanges) {
-            facultyRepository.save(faculty);
-            // Ghi log vào Faculty_Log
-            FacultyLog log = new FacultyLog();
-            log.setFaculty(faculty);
-            log.setAction("UPDATE");
-            log.setMessage(logMessage.toString());
-            log.setCreatedAt(LocalDateTime.now());
-            facultyLogRepository.save(log);
-        } else {
-            facultyRepository.save(faculty);
-        }
+        facultyRepository.save(faculty);
 
         return faculty;
     }

@@ -20,7 +20,6 @@ import java.util.List;
 public class CategoryService {
     private final CategoryRepository categoryRepository;
     private final DentalService dentalService;
-    private final CategoryLogRepository categoryLogRepository;
 
     @Autowired
     @Lazy
@@ -60,18 +59,9 @@ public class CategoryService {
                 .note(createCategoryDTO.getNote())
                 .created_at(LocalDateTime.now())
                 .able(true)
-                .build());
+                .build();
 
         categoryRepository.save(category);
-
-        // Ghi log vào Category_Log
-        CategoryLog log = new CategoryLog();
-        log.setCategory(category);
-        log.setAction("CREATE");
-        log.setMessage(String.format("Created new category: name=%s, note=%s", category.getName(), category.getNote()));
-        log.setCreatedAt(LocalDateTime.now());
-        categoryLogRepository.save(log);
-
         return category;
     }
 
@@ -80,7 +70,6 @@ public class CategoryService {
         Category category = getById(id);
 
         StringBuilder logMessage = new StringBuilder("Updated category id=" + id + ": ");
-        boolean hasChanges = false;
 
         String oldName = category.getName();
         String oldNote = category.getNote();
@@ -97,29 +86,9 @@ public class CategoryService {
             category.setNote(note);
         });
 
-        // Kiểm tra và ghi log các trường thay đổi
-        if (updateCategoryDTO.getName().isPresent() && !category.getName().equals(oldName)) {
-            logMessage.append("name from ").append(oldName).append(" to ").append(category.getName()).append("\n");
-            hasChanges = true;
-        }
-        if (updateCategoryDTO.getNote().isPresent() && !category.getNote().equals(oldNote)) {
-            logMessage.append("note from ").append(oldNote).append(" to ").append(category.getNote()).append("\n");
-            hasChanges = true;
-        }
 
-        if (hasChanges) {
-            categoryRepository.save(category);
-            // Ghi log vào Category_Log
-            CategoryLog log = new CategoryLog();
-            log.setCategory(category);
-            log.setAction("UPDATE");
-            log.setMessage(logMessage.toString());
-            log.setCreatedAt(LocalDateTime.now());
-            categoryLogRepository.save(log);
-        } else {
-            categoryRepository.save(category);
-        }
-        
+        categoryRepository.save(category);
+
         return category;
     }
 
