@@ -16,6 +16,7 @@ import java.util.List;
 @Service
 public class FacultyService {
     private final FacultyRepository facultyRepository;
+    private final FacultyLogRepository facultyLogRepository;
 
     @Autowired
     public FacultyService(FacultyRepository facultyRepository) {
@@ -52,11 +53,30 @@ public class FacultyService {
         faculty.setPhoneNumber(req.phoneNumber());
         faculty.setCreatedAt(LocalDateTime.now());
 
-        return facultyRepository.save(faculty);
+        facultyRepository.save(faculty);
+
+        // Ghi log vào Faculty_Log
+        FacultyLog log = new FacultyLog();
+        log.setFaculty(faculty);
+        log.setAction("CREATE");
+        log.setMessage(String.format("Created new faculty: name=%s, description=%s, email=%s, phone_number=%s",
+                faculty.getName(), faculty.getDescription(), faculty.getEmail(), faculty.getPhoneNumber()));
+        log.setCreatedAt(LocalDateTime.now());
+        facultyLogRepository.save(log);
+
+        return faculty;
     }
 
     public Faculty updateFaculty(UpdateFacultyReq req) {
         Faculty faculty = findById(req.facultyId());
+
+        StringBuilder logMessage = new StringBuilder("Updated faculty id=" + req.facultyId() + ": ");
+        boolean hasChanges = false;
+
+        String oldName = faculty.getName();
+        String oldDescription = faculty.getDescription();
+        String oldEmail = faculty.getEmail();
+        String oldPhoneNumber = faculty.getPhoneNumber();
 
         req.name().ifPresent(name -> {
             if(name.isBlank())
@@ -88,7 +108,39 @@ public class FacultyService {
         });
 
         req.description().ifPresent(faculty::setDescription);
-        return facultyRepository.save(faculty);
+
+        // Kiểm tra và ghi log các trường thay đổi
+        if (req.name().isPresent() && !faculty.getName().equals(oldName)) {
+            logMessage.append("name from ").append(oldName).append(" to ").append(faculty.getName()).append("\n");
+            hasChanges = true;
+        }
+        if (req.description().isPresent() && !faculty.getDescription().equals(oldDescription)) {
+            logMessage.append("description from ").append(oldDescription).append(" to ").append(faculty.getDescription()).append("\n");
+            hasChanges = true;
+        }
+        if (req.email().isPresent() && !faculty.getEmail().equals(oldEmail)) {
+            logMessage.append("email from ").append(oldEmail).append(" to ").append(faculty.getEmail()).append("\n");
+            hasChanges = true;
+        }
+        if (req.phoneNumber().isPresent() && !faculty.getPhoneNumber().equals(oldPhoneNumber)) {
+            logMessage.append("phone_number from ").append(oldPhoneNumber).append(" to ").append(faculty.getPhoneNumber()).append("\n");
+            hasChanges = true;
+        }
+
+        if (hasChanges) {
+            facultyRepository.save(faculty);
+            // Ghi log vào Faculty_Log
+            FacultyLog log = new FacultyLog();
+            log.setFaculty(faculty);
+            log.setAction("UPDATE");
+            log.setMessage(logMessage.toString());
+            log.setCreatedAt(LocalDateTime.now());
+            facultyLogRepository.save(log);
+        } else {
+            facultyRepository.save(faculty);
+        }
+
+        return faculty;
     }
 
     public boolean toggleAble(Long id) {

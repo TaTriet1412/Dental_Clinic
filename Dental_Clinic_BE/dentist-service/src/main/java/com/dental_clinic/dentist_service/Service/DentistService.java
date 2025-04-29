@@ -24,6 +24,7 @@ public class DentistService {
     final AccountClient accountClient;
     final DentistRepository dentistRepository;
     final ObjectMapper objectMapper;
+    final DentistLogRepository dentistLogRepository;
 
     @Autowired
     public DentistService(FacultyService facultyService, AccountClient accountClient, DentistRepository dentistRepository, ObjectMapper objectMapper) {
@@ -62,7 +63,18 @@ public class DentistService {
             dentist.setId(accountCreateRes.getId());
             dentist.setFaculty(faculty);
 
-            return dentistRepository.save(dentist);
+            dentistRepository.save(dentist);
+
+            // Ghi log vào Dentist_Log
+            DentistLog log = new DentistLog();
+            log.setDentist(dentist);
+            log.setAction("CREATE");
+            log.setMessage(String.format("Created new dentist: specialty=%s, experience_year=%d, fac_id=%d",
+                    dentist.getSpecialty(), dentist.getExperienceYear(), request.facId()));
+            log.setCreatedAt(LocalDateTime.now());
+            dentistLogRepository.save(log);
+
+            return dentist;
         }
         catch (Exception ex) {
             DeleteAccount deleteAccount = new DeleteAccount(accountCreateRes.getEmail());
@@ -82,7 +94,12 @@ public class DentistService {
 
     public Dentist updateDentist(UpdateDentistReq request) {
         Dentist dentist = findById(request.dentistId());
+        StringBuilder logMessage = new StringBuilder("Updated dentist id=" + request.dentistId() + ": ");
+        boolean hasChanges = false;
 
+        String oldSpecialty = dentist.getSpecialty();
+        Integer oldExperienceYear = dentist.getExperienceYear();
+        Long oldFacId = dentist.getFaculty() != null ? dentist.getFaculty().getId() : null;
         request.facId().ifPresent(facId -> {
             if(facId <= 0)
                 throw new AppException(ErrorCode.FAIL_FORMAT_DATA, "Mã khoa không thể âm");
@@ -101,7 +118,35 @@ public class DentistService {
             dentist.setExperienceYear(experienceYear);
         });
 
-        return dentistRepository.save(dentist);
+        // Kiểm tra và ghi log các trường thay đổi
+        Long newFacId = dentist.getFaculty() != null ? dentist.getFaculty().getId() : null;
+        if (request.specialty().isPresent() && !dentist.getSpecialty().equals(oldSpecialty)) {
+            logMessage.append("specialty from ").append(oldSpecialty).append(" to ").append(dentist.getSpecialty()).append("\n");
+            hasChanges = true;
+        }
+        if (request.expYear().isPresent() && !dentist.getExperienceYear().equals(oldExperienceYear)) {
+            logMessage.append("experience_year from ").append(oldExperienceYear).append(" to ").append(dentist.getExperienceYear()).append("\n");
+            hasChanges = true;
+        }
+        if (request.facId().isPresent() && (oldFacId == null || !newFacId.equals(oldFacId))) {
+            logMessage.append("fac_id from ").append(oldFacId).append(" to ").append(newFacId).append("\n");
+            hasChanges = true;
+        }
+
+        if (hasChanges) {
+            dentistRepository.save(dentist);
+            // Ghi log vào Dentist_Log
+            DentistLog log = new DentistLog();
+            log.setDentist(dentist);
+            log.setAction("UPDATE");
+            log.setMessage(logMessage.toString());
+            log.setCreatedAt(LocalDateTime.now());
+            dentistLogRepository.save(log);
+        } else {
+            dentistRepository.save(dentist);
+        }
+
+        return dentist;
     }
 
 }

@@ -15,10 +15,12 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.List;
 
+
 @Service
 public class CategoryService {
     private final CategoryRepository categoryRepository;
     private final DentalService dentalService;
+    private final CategoryLogRepository categoryLogRepository;
 
     @Autowired
     @Lazy
@@ -53,19 +55,35 @@ public class CategoryService {
         if (isNameExists(createCategoryDTO.getName()) )
             throw new AppException(ErrorCode.EXISTED_DATA, "Đã tồn tại phân loại dịch vụ '" + createCategoryDTO.getName() + "'");
 
-//        Tiến hành lưu vào db
-       return categoryRepository.save(
-               Category.builder()
+        Category category = Category.builder()
                 .name(createCategoryDTO.getName())
                 .note(createCategoryDTO.getNote())
                 .created_at(LocalDateTime.now())
                 .able(true)
                 .build());
+
+        categoryRepository.save(category);
+
+        // Ghi log vào Category_Log
+        CategoryLog log = new CategoryLog();
+        log.setCategory(category);
+        log.setAction("CREATE");
+        log.setMessage(String.format("Created new category: name=%s, note=%s", category.getName(), category.getNote()));
+        log.setCreatedAt(LocalDateTime.now());
+        categoryLogRepository.save(log);
+
+        return category;
     }
 
 //    Thay đổi trường thông tin
     public Category updateCategory(UpdateCategoryDTO updateCategoryDTO, String id) {
         Category category = getById(id);
+
+        StringBuilder logMessage = new StringBuilder("Updated category id=" + id + ": ");
+        boolean hasChanges = false;
+
+        String oldName = category.getName();
+        String oldNote = category.getNote();
 
         updateCategoryDTO.getName().ifPresent(name -> {
             FieldUtils.checkFieldIsEmptyOrNull(name, "Tên phân loại");
@@ -78,8 +96,31 @@ public class CategoryService {
             FieldUtils.checkFieldIsEmptyOrNull(note, "Ghi chú");
             category.setNote(note);
         });
+
+        // Kiểm tra và ghi log các trường thay đổi
+        if (updateCategoryDTO.getName().isPresent() && !category.getName().equals(oldName)) {
+            logMessage.append("name from ").append(oldName).append(" to ").append(category.getName()).append("\n");
+            hasChanges = true;
+        }
+        if (updateCategoryDTO.getNote().isPresent() && !category.getNote().equals(oldNote)) {
+            logMessage.append("note from ").append(oldNote).append(" to ").append(category.getNote()).append("\n");
+            hasChanges = true;
+        }
+
+        if (hasChanges) {
+            categoryRepository.save(category);
+            // Ghi log vào Category_Log
+            CategoryLog log = new CategoryLog();
+            log.setCategory(category);
+            log.setAction("UPDATE");
+            log.setMessage(logMessage.toString());
+            log.setCreatedAt(LocalDateTime.now());
+            categoryLogRepository.save(log);
+        } else {
+            categoryRepository.save(category);
+        }
         
-        return categoryRepository.save(category);
+        return category;
     }
 
     public void deleteCategory(String id) {
