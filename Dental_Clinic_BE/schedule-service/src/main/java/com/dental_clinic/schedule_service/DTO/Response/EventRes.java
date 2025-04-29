@@ -7,7 +7,8 @@ import java.time.LocalDateTime;
 
 @Getter
 @AllArgsConstructor
-public class RangeTimeRes {
+public class EventRes {
+    private String id;
     private LocalDateTime startTime;
     private LocalDateTime endTime;
 }

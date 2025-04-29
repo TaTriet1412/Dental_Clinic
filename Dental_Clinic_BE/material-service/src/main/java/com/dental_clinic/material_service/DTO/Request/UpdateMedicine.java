@@ -14,7 +14,7 @@ public record UpdateMedicine(
         Optional<Integer> quantity,
         Optional<List<Long>> ingreIdList,
         Optional<String> cared_actor,
-        Optional<Integer> revenue,
+        Optional<Integer> price ,
         Optional<Integer> cost,
         Optional<String> instruction
 ) {

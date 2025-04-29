@@ -5,8 +5,7 @@ import lombok.Getter;
 
 @Builder
 @Getter
-public class PriceCostNameDentalRes {
+public class PriceCostDentalRes {
     private int cost;
     private int price;
-    private String name;
 }

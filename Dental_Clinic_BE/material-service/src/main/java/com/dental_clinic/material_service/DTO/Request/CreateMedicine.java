@@ -12,7 +12,7 @@ public record CreateMedicine (
     Integer quantity,
     List<Long> ingreIdList,
     String cared_actor,
-    Integer revenue,
+    Integer price ,
     Integer cost,
     String instruction
 ){}

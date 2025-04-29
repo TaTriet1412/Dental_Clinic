@@ -1,5 +1,30 @@
+@use "@coreui/coreui/scss/coreui" as * with (
+  $enable-deprecation-messages: false
+);
+
+// Import Chart.js custom tooltips styles
+@use "@coreui/chartjs/scss/coreui-chartjs";
+
+
+// Custom styles for this theme
+@use "./scss/theme";
+
+// Some temp fixes
+//@use "fixes";
+
+// If you want to add custom CSS you can put it here.
+@use "./scss/custom";
+
+// Examples
+// We use those styles to show code examples, you should remove them in your application.
+@use "./scss/examples";
+
+
 /* You can add global styles to this file, and also import other style files */
 @import "@angular/material/prebuilt-themes/indigo-pink.css"; // Hoặc theme bạn đã chọn
+
+
+
 
 html, body { height: 100%; }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; background-color: #f4f7f6; } // Thêm màu nền nhẹ
@@ -23,11 +48,4 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; background-
   }
 }
 
-// Có thể thêm một số tùy chỉnh chung cho FullCalendar ở đây
-// Ví dụ: Làm nổi bật ngày hôm nay
-// .fc .fc-daygrid-day.fc-day-today {
-//   background-color: rgba(255, 235, 59, 0.15); // Vàng nhạt
-// }
-// .fc .fc-timegrid-col.fc-day-today {
-//    background-color: rgba(255, 235, 59, 0.1);
-// }
+

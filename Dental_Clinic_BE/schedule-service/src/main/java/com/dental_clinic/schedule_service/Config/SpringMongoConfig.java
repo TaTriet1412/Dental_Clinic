@@ -1,4 +1,4 @@
-package com.dental_clinic.patient_service.Config;
+package com.dental_clinic.schedule_service.Config;
 
 
 import jakarta.annotation.PostConstruct;

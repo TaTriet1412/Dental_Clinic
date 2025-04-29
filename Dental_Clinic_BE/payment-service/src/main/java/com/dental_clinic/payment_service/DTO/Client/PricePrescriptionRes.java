@@ -1,4 +1,4 @@
-package com.dental_clinic.prescription_service.DTO.Response;
+package com.dental_clinic.payment_service.DTO.Client;
 
 import lombok.Builder;
 import lombok.Getter;

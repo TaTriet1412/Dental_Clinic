@@ -1,4 +1,4 @@
-package com.dental_clinic.dental_service.DTO;
+package com.dental_clinic.dental_service.DTO.Request;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;

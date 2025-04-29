@@ -23,5 +23,6 @@ public interface DentalRepository extends MongoRepository<Dental, String> {
             "{ $project: { _id: 0, img: 1 } }"
     })
     List<String> findAllImg();
+    public Optional<Dental> findByIdAndAble(String id, boolean able);
 
 }

@@ -1,7 +1,9 @@
-package com.dental_clinic.dentist_service.Config;
+package com.dental_clinic.payment_service.Config;
 
 import com.dental_clinic.common_lib.constant.ServiceUrls;
-import com.dental_clinic.dentist_service.Client.AccountClient;
+import com.dental_clinic.payment_service.Client.DentalClient;
+import com.dental_clinic.payment_service.Client.PatientClient;
+import com.dental_clinic.payment_service.Client.PrescriptionClient;
 import org.springframework.cloud.client.loadbalancer.reactive.LoadBalancedExchangeFilterFunction;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -18,21 +20,57 @@ public class WebClientConfig {
     }
 
     @Bean
-    public WebClient accountWebClient() {
+    public WebClient dentalWebClient() {
         return WebClient.builder()
-                .baseUrl(ServiceUrls.AUTH_WITH_PORT)
+                .baseUrl(ServiceUrls.DENTAL_WITH_PORT)
                 .filter(filterFunction)
                 .build();
     }
 
     @Bean
-    public AccountClient accountClient() {
-        WebClientAdapter adapter = WebClientAdapter.create(accountWebClient());
+    public DentalClient dentalClient() {
+        WebClientAdapter adapter = WebClientAdapter.create(dentalWebClient());
         HttpServiceProxyFactory httpServiceProxyFactory = HttpServiceProxyFactory
                 .builder()
                 .exchangeAdapter(adapter)
                 .build();
-        return httpServiceProxyFactory.createClient(AccountClient.class);
+        return httpServiceProxyFactory.createClient(DentalClient.class);
+    }
+
+    @Bean
+    public WebClient prescriptionWebClient() {
+        return WebClient.builder()
+                .baseUrl(ServiceUrls.PRESCRIPTION_WITH_PORT)
+                .filter(filterFunction)
+                .build();
+    }
+
+    @Bean
+    public PrescriptionClient prescriptionClient() {
+        WebClientAdapter adapter = WebClientAdapter.create(prescriptionWebClient());
+        HttpServiceProxyFactory httpServiceProxyFactory = HttpServiceProxyFactory
+                .builder()
+                .exchangeAdapter(adapter)
+                .build();
+        return httpServiceProxyFactory.createClient(PrescriptionClient.class);
+    }
+
+    @Bean
+    public WebClient patientWebClient() {
+        return WebClient.builder()
+                .baseUrl(ServiceUrls.PATIENT_WITH_PORT)
+                .filter(filterFunction)
+                .build();
+    }
+
+    @Bean
+    public PatientClient patientClient() {
+        WebClientAdapter adapter = WebClientAdapter.create(patientWebClient());
+        HttpServiceProxyFactory httpServiceProxyFactory = HttpServiceProxyFactory
+                .builder()
+                .exchangeAdapter(adapter)
+                .build();
+        return httpServiceProxyFactory.createClient(PatientClient.class);
     }
 }
 

@@ -23,7 +23,7 @@ public class Medicine {
     private int cost;
 
     @Column
-    private int revenue;
+    private int price;
 
     @Column(columnDefinition = "LONGTEXT")
     private String cared_actor;

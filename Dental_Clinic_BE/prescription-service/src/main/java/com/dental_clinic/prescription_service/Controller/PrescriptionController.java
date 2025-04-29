@@ -32,6 +32,24 @@ public class PrescriptionController {
                 .build();
     }
 
+    @GetMapping("/{id}/bill_id_null")
+    public ApiResponse<Object> getPrescriptionHasBillNullById(@PathVariable String id){
+        return ApiResponse.builder()
+                .apiCode(200)
+                .message("Kiểm tra đơn thuốc chưa có hóa đơn nào chứa thành công")
+                .result(prescriptionService.getPrescriptionHasBillNullById(id))
+                .build();
+    }
+
+    @GetMapping("/{id}/price")
+    public ApiResponse<Object> getPrescriptionPriceById(@PathVariable String id) {
+        return ApiResponse.builder()
+                .apiCode(200)
+                .message("Lấy giá đơn thuốc thành công")
+                .result(prescriptionService.getPrescriptionPrice(id))
+                .build();
+    }
+
     @GetMapping("/patient/{patId}")
     public ApiResponse<Object> getPrescriptionsByPatientId(
             @PathVariable Long patId) {
@@ -86,6 +104,15 @@ public class PrescriptionController {
                 .apiCode(200)
                 .message("Cập nhật mã hóa đơn thành công")
                 .result(prescriptionService.updateBillIdForPrescription(id, request.bill_id()))
+                .build();
+    }
+
+    @PatchMapping("/{id}/remove-bill")
+    public ApiResponse<Object> removeBillIdForPrescription(@PathVariable String id) {
+        return ApiResponse.builder()
+                .apiCode(200)
+                .message("Xóa mã hóa đơn thành công")
+                .result(prescriptionService.removeBillIdForPrescription(id))
                 .build();
     }
 }

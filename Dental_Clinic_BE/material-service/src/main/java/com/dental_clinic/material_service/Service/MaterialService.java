@@ -212,14 +212,14 @@ public class MaterialService {
         //        Kiểm tra trường thông tin có sai định dạng không
         FieldUtils.checkFieldIsEmptyOrNull(request.instruction(),"Hưỡng dẫn sử dụng");
         FieldUtils.checkFieldIsEmptyOrNull(request.cared_actor(),"Đối tượng sử dụng");
-        FieldUtils.checkFieldIsEmptyOrNull(request.revenue(),"Giá");
+        FieldUtils.checkFieldIsEmptyOrNull(request.price(),"Giá");
         FieldUtils.checkFieldIsEmptyOrNull(request.cost(),"Chi phí");
 
 
-        FieldUtils.checkNumberIsIntegerAndNotNegative(request.revenue());
+        FieldUtils.checkNumberIsIntegerAndNotNegative(request.price());
         FieldUtils.checkNumberIsIntegerAndNotNegative(request.cost());
 
-        if(request.revenue() < request.cost())
+        if(request.price() < request.cost())
             throw new AppException(ErrorCode.INVALID_REQUEST,"Chi phí không được lớn hơn giá vật liệu");
 
 
@@ -243,7 +243,7 @@ public class MaterialService {
                 Medicine.builder()
                         .id(savedMaterial.getId())
                         .cost(request.cost())
-                        .revenue(request.revenue())
+                        .price(request.price())
                         .instruction(request.instruction())
                         .cared_actor(request.cared_actor())
                         .build()
@@ -432,12 +432,12 @@ public class MaterialService {
             medicine.setCost(cost);
         });
 
-        request.revenue().ifPresent(revenue -> {
-            FieldUtils.checkNumberIsIntegerAndNotNegative(revenue);
-            medicine.setRevenue(revenue);
+        request.price().ifPresent(price -> {
+            FieldUtils.checkNumberIsIntegerAndNotNegative(price);
+            medicine.setPrice(price);
         });
 
-        if(medicine.getRevenue() < medicine.getCost())
+        if(medicine.getPrice() < medicine.getCost())
             throw new AppException(ErrorCode.INVALID_REQUEST,"Chi phí không được lớn hơn giá vật liệu");
 
         request.ingreIdList().ifPresent(ingreList -> {
@@ -465,7 +465,7 @@ public class MaterialService {
                 m.getQuantity(),
                 ingreIdList,
                 medicine.getCared_actor(),
-                medicine.getRevenue(),
+                medicine.getPrice(),
                 medicine.getCost(),
                 medicine.getInstruction()
         );

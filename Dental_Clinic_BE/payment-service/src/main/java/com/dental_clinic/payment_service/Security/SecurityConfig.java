@@ -1,4 +1,5 @@
-package com.dental_clinic.auth_service.Security;
+package com.dental_clinic.payment_service.Security;
+import com.dental_clinic.common_lib.constant.RoleUtils;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -27,8 +28,8 @@ public class SecurityConfig  {
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(authz -> authz
                         // Allow access to /auth/register and /auth/login without JWT
-                        .requestMatchers( "/auth/**")
-                            .permitAll()
+                        .requestMatchers( "/payment/**")
+                            .hasRole(RoleUtils.ADMIN.toString())
                         .requestMatchers( "/user/**")
                             .permitAll()
                         .requestMatchers(HttpMethod.GET, "/images/**")

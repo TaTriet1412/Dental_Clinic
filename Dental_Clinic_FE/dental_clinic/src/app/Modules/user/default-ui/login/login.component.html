@@ -1,0 +1,48 @@
+<!-- login.component.html -->
+<h1 class="title"><b>Đăng nhập hệ thống</b></h1>
+<p class="mb-4">Vui lòng đăng nhập để truy cập hệ thống quản lý phòng khám nha khoa.</p>
+
+<!-- Use ngSubmit to call the component's method -->
+<form (ngSubmit)="onSubmit()">
+  <div class="form-group first mb-3">
+    <label for="username">Tên đăng nhập</label>
+    <input
+      type="text"
+      class="form-control"
+      placeholder="Nhập email hoặc số điện thoại"
+      id="username"
+      name="username"
+      [(ngModel)]="loginData.userId"
+      required
+    />
+  </div>
+  <div class="form-group last mb-3">
+    <label for="password">Mật khẩu</label>
+    <input
+      type="password"
+      class="form-control"
+      placeholder="Nhập mật khẩu"
+      id="password"
+      name="password"
+      [(ngModel)]="loginData.password"
+      required
+    />
+  </div>
+
+  <!-- Error Message Display -->
+  <div *ngIf="errorMessage" class="alert alert-danger mt-2 mb-3">
+    {{ errorMessage }}
+  </div>
+
+  <!-- Update submit button -->
+  <button
+  type="submit"
+  class="btn btn-block btn-primary"
+  [disabled]="isLoading"
+>
+  <!-- Disable button when loading -->
+  {{ isLoading ? "Đang xử lý..." : "Đăng nhập" }}
+  <!-- Change text when loading -->
+</button>
+
+</form>

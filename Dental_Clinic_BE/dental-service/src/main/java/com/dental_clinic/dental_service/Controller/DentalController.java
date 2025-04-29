@@ -1,17 +1,16 @@
 package com.dental_clinic.dental_service.Controller;
 
-import com.dental_clinic.dental_service.DTO.ChangeDentalServiceImageRequest;
-import com.dental_clinic.dental_service.DTO.CreateDentalServiceDTO;
-import com.dental_clinic.dental_service.DTO.UpdateDentalServiceDTO;
+import com.dental_clinic.common_lib.dto.response.ApiResponse;
+import com.dental_clinic.dental_service.DTO.Request.ChangeDentalServiceImageRequest;
+import com.dental_clinic.dental_service.DTO.Request.CreateDentalServiceDTO;
+import com.dental_clinic.dental_service.DTO.Request.UpdateDentalServiceDTO;
 import com.dental_clinic.dental_service.Entity.Dental;
 import com.dental_clinic.dental_service.Service.DentalService;
-import com.dental_clinic.common_lib.dto.response.ApiResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -46,6 +45,24 @@ public class DentalController {
                 .result(dentalService.getById(id))
                 .apiCode(200)
                 .message("Lấy thông tin dịch vụ thành công!")
+                .build();
+    }
+
+    @GetMapping("{id}/able")
+    public ApiResponse<Object> getActiveDentalById(@PathVariable String id) {
+        return ApiResponse.builder()
+                .result(dentalService.getActiveDentalById(id))
+                .apiCode(200)
+                .message("Lấy thông tin dịch vụ thành công!")
+                .build();
+    }
+
+    @GetMapping("{id}/price_cost")
+    public ApiResponse<Object> getPriceCostOfDental(@PathVariable String id) {
+        return ApiResponse.builder()
+                .message("Lấy thông tin dịch vụ thành công!")
+                .result(dentalService.getPriceCostDental(id))
+                .apiCode(200)
                 .build();
     }
 

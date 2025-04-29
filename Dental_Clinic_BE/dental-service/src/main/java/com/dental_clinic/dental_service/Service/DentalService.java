@@ -1,8 +1,9 @@
 package com.dental_clinic.dental_service.Service;
 
-import com.dental_clinic.dental_service.DTO.ChangeDentalServiceImageRequest;
-import com.dental_clinic.dental_service.DTO.CreateDentalServiceDTO;
-import com.dental_clinic.dental_service.DTO.UpdateDentalServiceDTO;
+import com.dental_clinic.dental_service.DTO.Request.ChangeDentalServiceImageRequest;
+import com.dental_clinic.dental_service.DTO.Request.CreateDentalServiceDTO;
+import com.dental_clinic.dental_service.DTO.Request.UpdateDentalServiceDTO;
+import com.dental_clinic.dental_service.DTO.Response.PriceCostDentalRes;
 import com.dental_clinic.dental_service.Entity.Dental;
 import com.dental_clinic.dental_service.Repository.DentalRepository;
 import com.dental_clinic.dental_service.Utils.FieldUtils;
@@ -27,10 +28,10 @@ import java.util.Optional;
 @Service
 public class DentalService {
     private final DentalRepository dentalRepository;
-    @Lazy
     private final CategoryService categoryService;
 
     @Autowired
+    @Lazy
     public DentalService(DentalRepository dentalRepository, CategoryService categoryService) {
         this.dentalRepository = dentalRepository;
         this.categoryService = categoryService;
@@ -48,6 +49,20 @@ public class DentalService {
         return dentalRepository.findById(id).orElseThrow(
                 () -> new AppException(ErrorCode.NOT_FOUND, "Không tìm thấy dịch vụ có id = '" + id + "'"));
     }
+
+    public Dental getActiveDentalById(String id) {
+        return dentalRepository.findByIdAndAble(id, true).orElseThrow(
+                () -> new AppException(ErrorCode.NOT_FOUND, "Không tìm thấy dịch vụ  hoặc dịch vụ đã ngưng hoạt động"));
+    }
+
+    public PriceCostDentalRes getPriceCostDental(String id) {
+        Dental dental = getById(id);
+        return PriceCostDentalRes.builder()
+                .price(dental.getPrice())
+                .cost(dental.getCost())
+                .build();
+    }
+
 
 //    Đổi ảnh cho dịch vụ
     public void changeImg(ChangeDentalServiceImageRequest request) {
@@ -79,7 +94,7 @@ public class DentalService {
     }
 
     public Dental createDentalService(CreateDentalServiceDTO request) {
-        if(request.getRevenue() < request.getCost())
+        if(request.getPrice() < request.getCost())
             throw new AppException(ErrorCode.INVALID_REQUEST, "Chi phí không được lớn hơn giá sản phẩm");
 
         if (!categoryService.isAbleByCategoryId(request.getCategoryId()))
@@ -95,7 +110,7 @@ public class DentalService {
                 .created_at(LocalDateTime.now())
                 .able(true)
                 .name(request.getName())
-                .revenue(request.getRevenue())
+                .price(request.getPrice())
                 .cost(request.getCost())
                 .description(request.getDescription())
                 .unit(request.getUnit())
@@ -117,10 +132,10 @@ public class DentalService {
             dental.setName(name);
         });
 
-        req.getRevenue().ifPresent(revenue -> {
-            FieldUtils.checkFieldIsEmptyOrNull(revenue, "Giá sản phẩm");
-            FieldUtils.checkNumberIsIntegerAndNotNegative(revenue);
-            dental.setRevenue(revenue);
+        req.getPrice().ifPresent(price -> {
+            FieldUtils.checkFieldIsEmptyOrNull(price, "Giá sản phẩm");
+            FieldUtils.checkNumberIsIntegerAndNotNegative(price);
+            dental.setPrice(price);
         });
 
         req.getCost().ifPresent(cost -> {
@@ -146,7 +161,7 @@ public class DentalService {
 
         if(!categoryService.isAbleByCategoryId(id))
             throw new AppException(ErrorCode.INVALID_REQUEST, "Phân loại '" + id + "'" + " đã đóng");
-        if (dental.getRevenue() < dental.getCost())
+        if (dental.getPrice() < dental.getCost())
             throw new AppException(ErrorCode.INVALID_REQUEST, "Chi phí không được lớn hơn giá sản phẩm");
 
         return dentalRepository.save(dental);

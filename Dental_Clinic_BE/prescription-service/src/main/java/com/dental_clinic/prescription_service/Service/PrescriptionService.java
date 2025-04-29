@@ -4,6 +4,7 @@ import com.dental_clinic.common_lib.exception.AppException;
 import com.dental_clinic.common_lib.exception.ErrorCode;
 import com.dental_clinic.prescription_service.DTO.Request.CreatePrescriptionReq;
 import com.dental_clinic.prescription_service.DTO.Request.UpdatePrescriptionReq;
+import com.dental_clinic.prescription_service.DTO.Response.PricePrescriptionRes;
 import com.dental_clinic.prescription_service.Entity.Medicine;
 import com.dental_clinic.prescription_service.Entity.Prescription;
 import com.dental_clinic.prescription_service.Repository.PrescriptionRepository;
@@ -29,6 +30,12 @@ public class PrescriptionService {
                 .orElseThrow(() -> new AppException(ErrorCode.NOT_FOUND,"Không tìm thấy toa thuốc có id = " + id));
     }
 
+    public PricePrescriptionRes getPrescriptionPrice(String id) {
+        return PricePrescriptionRes.builder()
+                .price(findPrescriptionById(id).getTotal_price())
+                .build();
+    }
+
     public List<Prescription> getAllPrescriptions() {
         return prescriptionRepository.findAll();
     }
@@ -46,10 +53,21 @@ public class PrescriptionService {
         return prescriptionRepository.save(prescription);
     }
 
+    public Prescription getPrescriptionHasBillNullById(String id) {
+        Prescription prescription = findPrescriptionById(id);
+        Boolean exists = prescriptionRepository.existsByIdAndBillIdIsNullOrNotPresent(id);
+        if (exists == null || !exists) {
+            throw new AppException(ErrorCode.NOT_FOUND, "Toa thuốc này đã có hóa đơn riêng hoặc không tồn tại");
+        }
+        return prescription;
+    }
+
+
     private static Prescription createPrescriptionFromRequest(CreatePrescriptionReq request) {
         return Prescription.builder()
                 .pat_id(request.pat_id())
                 .den_id(request.den_id())
+                .bill_id(null)
                 .note(request.note())
                 .medicines(request.medicines().stream()
                         .map(medicineReq
@@ -79,6 +97,13 @@ public class PrescriptionService {
         Prescription prescription = findPrescriptionById(id);
         checkWhetherPreDeleted(prescription);
         prescription.setBill_id(billId);
+        return prescriptionRepository.save(prescription);
+    }
+
+    public Prescription removeBillIdForPrescription(String id) {
+        Prescription prescription = findPrescriptionById(id);
+        checkWhetherPreDeleted(prescription);
+        prescription.setBill_id(null);
         return prescriptionRepository.save(prescription);
     }
 

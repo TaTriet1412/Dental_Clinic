@@ -1,0 +1,120 @@
+<div class="schedule-page-container">
+  <h1>Lịch làm việc nhân viên</h1>
+
+  <c-row ngPreserveWhitespaces>
+    <c-col xs="12">
+      <c-card class="mb-4">
+        <c-card-header
+          class="d-flex justify-content-between align-items-center"
+        >
+          <strong>Chọn nhân viên</strong>
+        </c-card-header>
+        <c-card-body>
+          <form
+            #tooltipForm="ngForm"
+            (ngSubmit)="onEmployeeSubmit(tooltipForm)"
+            [validated]="validated"
+            cForm
+            class="row g-3 needs-validation d-flex justify-content-between align-items-center"
+            novalidate
+          >
+            <!-- Kiểu nhân sự -->
+            <c-col class="position-relative mb-4" [md]="3">
+              <label cLabel for="validationTooltipRole">Kiểu nhân sự</label>
+              <select
+                cSelect
+                id="validationTooltipRole"
+                name="role"
+                required
+                [(ngModel)]="selectedRole"
+                #role="ngModel"
+                (change)="onRoleChange($event)"
+                [class.is-invalid]="validated && role.invalid"
+              >
+                <option value="" disabled selected>Chọn phân loại</option>
+                <option *ngFor="let role of roleList" [value]="role.id">
+                  {{ role.displayName }}
+                </option>
+              </select>
+              <c-form-feedback
+                *ngIf="validated && role.invalid"
+                [valid]="false"
+                tooltip
+              >
+                Vui lòng chọn phân loại.
+              </c-form-feedback>
+            </c-col>
+
+            <!-- Nhập mã nhân sự -->
+            <c-col class="position-relative mb-4" [md]="3">
+              <label cLabel for="validationTooltipCode">Mã nhân sự</label>
+              <input
+                cFormControl
+                id="validationTooltipCode"
+                name="code"
+                type="number"
+                required
+                [(ngModel)]="enteredCode"
+                #code="ngModel"
+                (input)="onCodeInput($event)"
+                [class.is-invalid]="validated && code.invalid"
+                placeholder="Nhập mã nhân sự"
+                [disabled]="!selectedRole"
+              />
+              <c-form-feedback
+                *ngIf="validated && code.invalid"
+                [valid]="false"
+                tooltip
+              >
+                Vui lòng nhập mã nhân sự.
+              </c-form-feedback>
+            </c-col>
+
+            <!-- Chọn nhân sự -->
+            <c-col class="position-relative mb-4" [md]="5">
+              <label cLabel for="validationTooltipEmployee">Tên nhân sự</label>
+              <select
+                cSelect
+                id="validationTooltipEmployee"
+                name="employee"
+                required
+                [(ngModel)]="selectedEmployee"
+                #employee="ngModel"
+                (change)="onEmployeeChange($event)"
+                [class.is-invalid]="validated && employee.invalid"
+                [disabled]="!selectedRole"
+              >
+                <option value="" disabled selected>Chọn nhân sự</option>
+                <option
+                  *ngFor="let employee of employeeList"
+                  [value]="employee.name"
+                >
+                  {{ employee.name }}
+                </option>
+              </select>
+              <c-form-feedback
+                *ngIf="validated && employee.invalid"
+                [valid]="false"
+                tooltip
+              >
+                Vui lòng chọn nhân sự.
+              </c-form-feedback>
+            </c-col>
+
+            <!-- Nút tìm kiếm -->
+            <c-col class="d-flex align-items-end mb-4" [md]="2">
+              <button cButton color="primary" type="submit">
+                <i class="fas fa-search me-2"></i>
+                Tìm kiếm
+              </button>
+            </c-col>
+          </form>
+        </c-card-body>
+      </c-card>
+    </c-col>
+  </c-row>
+
+  <div class="calendar-container" *ngIf="calendarVisible">
+    <full-calendar #calendar [options]="calendarOptions"></full-calendar>
+  </div>
+</div>

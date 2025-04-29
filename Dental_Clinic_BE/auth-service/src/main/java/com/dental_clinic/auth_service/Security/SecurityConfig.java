@@ -1,4 +1,5 @@
 package com.dental_clinic.auth_service.Security;
+import com.dental_clinic.common_lib.constant.RoleUtils;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -29,6 +30,11 @@ public class SecurityConfig  {
                         // Allow access to /auth/register and /auth/login without JWT
                         .requestMatchers( "/auth/**")
                             .permitAll()
+
+//                        USER
+
+                        .requestMatchers( "/user/role/́")
+                            .hasAnyRole(RoleUtils.ADMIN.toString(),RoleUtils.RECEPTIONIST.toString())
                         .requestMatchers(HttpMethod.GET, "/images/**")
                             .permitAll()
 

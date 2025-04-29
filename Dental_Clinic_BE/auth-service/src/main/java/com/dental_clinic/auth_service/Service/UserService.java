@@ -1,5 +1,6 @@
 package com.dental_clinic.auth_service.Service;
 
+import com.dental_clinic.auth_service.DTO.Response.NameIdEmployeeRes;
 import com.dental_clinic.common_lib.exception.AppException;
 import com.dental_clinic.common_lib.exception.ErrorCode;
 
@@ -19,6 +20,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -38,6 +40,14 @@ public class UserService {
     public User getById(Long id) {
         return userRepository.findById(id).orElseThrow(
                 () -> new AppException(ErrorCode.NOT_FOUND, "Không tìm thấy tài khoản có id = '" + id + "'"));
+    }
+
+    public List<NameIdEmployeeRes> getNameAndIdOfEmployeeByRoleId(Long roleId){
+       List<NameIdEmployeeRes> result = userRepository.findByRoleId(roleId).stream()
+               .map(user -> new NameIdEmployeeRes(user.getId(), user.getName()))
+               .toList();
+
+       return result;
     }
 
     public User getUserByEmail(String email) {

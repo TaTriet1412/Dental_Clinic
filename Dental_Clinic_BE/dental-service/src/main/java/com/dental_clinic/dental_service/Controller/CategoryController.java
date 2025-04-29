@@ -1,7 +1,7 @@
 package com.dental_clinic.dental_service.Controller;
 
-import com.dental_clinic.dental_service.DTO.CreateCategoryDTO;
-import com.dental_clinic.dental_service.DTO.UpdateCategoryDTO;
+import com.dental_clinic.dental_service.DTO.Request.CreateCategoryDTO;
+import com.dental_clinic.dental_service.DTO.Request.UpdateCategoryDTO;
 import com.dental_clinic.dental_service.Entity.Category;
 import com.dental_clinic.dental_service.Service.CategoryService;
 import com.dental_clinic.common_lib.dto.response.ApiResponse;
@@ -11,8 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @CrossOrigin(origins = "http://localhost:4200")

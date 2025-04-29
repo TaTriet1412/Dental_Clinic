@@ -47,7 +47,7 @@ public class MedicineService {
                     m.getUnit(),
                     m.getMfg_date(),
                     m.isAble(),
-                    me.getRevenue(),
+                    me.getPrice(),
                     me.getCost()));
         }
         return resultArr;
@@ -64,7 +64,7 @@ public class MedicineService {
                     m.getUnit(),
                     m.getMfg_date(),
                     m.isAble(),
-                    me.getRevenue(),
+                    me.getPrice(),
                     me.getCost()));
         }
         return resultArr;

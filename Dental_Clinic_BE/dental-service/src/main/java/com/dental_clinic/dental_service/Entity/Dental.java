@@ -1,12 +1,10 @@
 package com.dental_clinic.dental_service.Entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import lombok.*;
 import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
-import org.springframework.data.annotation.TypeAlias;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
@@ -29,11 +27,12 @@ public class Dental {
 
     private String name;
     private int cost;
-    private int revenue;
+    private int price;
     private String cared_actor;
     private String description;
     private String unit;
     private String img;
     private LocalDateTime created_at;
     private boolean able;
+
 }

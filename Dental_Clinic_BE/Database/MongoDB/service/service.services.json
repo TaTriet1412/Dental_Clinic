@@ -7,7 +7,6 @@
   },
   "name": "Khám tổng quát",
   "cost": 300000,
-  "revenue": 500000,
   "cared_actor": "Mọi bệnh nhân",
   "description": "Khám tổng quát",
   "unit": "Lượt",
@@ -15,7 +14,8 @@
   "created_at": {
     "$date": "2025-03-12T23:55:21.803Z"
   },
-  "able": true
+  "able": true,
+  "price": 500000
 },
 {
   "_id": {
@@ -26,7 +26,6 @@
   },
   "name": "Nhổ răng cửa, răng nanh",
   "cost": 400000,
-  "revenue": 500000,
   "cared_actor": "Mọi bệnh nhân",
   "description": "Lấy răng cửa bị hỏng",
   "unit": "Cái",
@@ -34,7 +33,8 @@
   "created_at": {
     "$date": "2025-03-12T23:55:21.803Z"
   },
-  "able": true
+  "able": true,
+  "price": 500000
 },
 {
   "_id": {
@@ -45,7 +45,6 @@
   },
   "name": "Nhổ răng cối nhỏ",
   "cost": 500000,
-  "revenue": 600000,
   "cared_actor": "Mọi bệnh nhân",
   "description": "Lấy răng cối bị hỏng",
   "unit": "Cái",
@@ -53,7 +52,8 @@
   "created_at": {
     "$date": "2025-03-12T23:55:21.803Z"
   },
-  "able": true
+  "able": true,
+  "price": 600000
 },
 {
   "_id": {
@@ -64,7 +64,6 @@
   },
   "name": "Nhổ răng cối lớn trên",
   "cost": 600000,
-  "revenue": 700000,
   "cared_actor": "Mọi bệnh nhân",
   "description": "Lấy răng cối lớn trên bị hỏng",
   "unit": "Cái",
@@ -72,7 +71,8 @@
   "created_at": {
     "$date": "2025-03-12T23:55:21.803Z"
   },
-  "able": true
+  "able": true,
+  "price": 700000
 },
 {
   "_id": {
@@ -83,7 +83,6 @@
   },
   "name": "Nhổ răng cối lớn dưới",
   "cost": 800000,
-  "revenue": 900000,
   "cared_actor": "Mọi bệnh nhân",
   "description": "Lấy răng cối lớn dưới bị hỏng",
   "unit": "Cái",
@@ -91,7 +90,8 @@
   "created_at": {
     "$date": "2025-03-12T23:55:21.803Z"
   },
-  "able": true
+  "able": true,
+  "price": 900000
 },
 {
   "_id": {
@@ -102,7 +102,6 @@
   },
   "name": "Nhổ răng cối lung lay",
   "cost": 400000,
-  "revenue": 500000,
   "cared_actor": "Mọi bệnh nhân",
   "description": "Lấy răng cối lung lay",
   "unit": "Cái",
@@ -110,7 +109,8 @@
   "created_at": {
     "$date": "2025-03-12T23:55:21.803Z"
   },
-  "able": true
+  "able": true,
+  "price": 500000
 },
 {
   "_id": {
@@ -121,7 +121,6 @@
   },
   "name": "Nhổ chân răng vĩnh viễn",
   "cost": 500000,
-  "revenue": 600000,
   "cared_actor": "Mọi bệnh nhân",
   "description": "Nhổ chân răng vĩnh viễn",
   "unit": "Cái",
@@ -129,7 +128,8 @@
   "created_at": {
     "$date": "2025-03-12T23:55:21.803Z"
   },
-  "able": true
+  "able": true,
+  "price": 600000
 },
 {
   "_id": {
@@ -140,7 +140,6 @@
   },
   "name": "Khâu ổ răng",
   "cost": 400000,
-  "revenue": 500000,
   "cared_actor": "Mọi bệnh nhân",
   "description": "Nhổ chân răng vĩnh viễn",
   "unit": "Cái",
@@ -148,7 +147,8 @@
   "created_at": {
     "$date": "2025-03-12T23:55:21.803Z"
   },
-  "able": true
+  "able": true,
+  "price": 500000
 },
 {
   "_id": {
@@ -159,7 +159,6 @@
   },
   "name": "Răng khôn mọc lệch nhổ tiểu phẫu",
   "cost": 200000,
-  "revenue": 300000,
   "cared_actor": "Mọi bệnh nhân",
   "description": "Nhổ răng để cân bằng hàm",
   "unit": "Cái",
@@ -167,7 +166,8 @@
   "created_at": {
     "$date": "2025-03-12T23:55:21.803Z"
   },
-  "able": true
+  "able": true,
+  "price": 300000
 },
 {
   "_id": {
@@ -178,7 +178,6 @@
   },
   "name": "Phẫu thuật điều chỉnh xương ổ răng",
   "cost": 150000,
-  "revenue": 200000,
   "cared_actor": "Trên 13 tuổi",
   "description": "Điều chỉnh xương ổ răng",
   "unit": "Cái",
@@ -186,7 +185,8 @@
   "created_at": {
     "$date": "2025-03-12T23:55:21.803Z"
   },
-  "able": true
+  "able": true,
+  "price": 200000
 },
 {
   "_id": {
@@ -197,7 +197,6 @@
   },
   "name": "Phẫu thuật cắt chóp",
   "cost": 200000,
-  "revenue": 300000,
   "cared_actor": "Trên 13 tuổi",
   "description": "Cắt chóp để cân bằng hàm",
   "unit": "Cái",
@@ -205,7 +204,8 @@
   "created_at": {
     "$date": "2025-03-12T23:55:21.803Z"
   },
-  "able": true
+  "able": true,
+  "price": 300000
 },
 {
   "_id": {
@@ -216,7 +216,6 @@
   },
   "name": "Cạo vôi răng",
   "cost": 30000,
-  "revenue": 50000,
   "cared_actor": "Mọi bệnh nhân",
   "description": "Cạo các vôi trên răng",
   "unit": "2 hàm",
@@ -224,7 +223,8 @@
   "created_at": {
     "$date": "2025-03-12T23:55:21.803Z"
   },
-  "able": true
+  "able": true,
+  "price": 50000
 },
 {
   "_id": {
@@ -235,7 +235,6 @@
   },
   "name": "Điều trị viêm nha chu không phẫu thuật",
   "cost": 80000,
-  "revenue": 100000,
   "cared_actor": "Mọi bệnh nhân",
   "description": "Dùng thuốc cho răng viêm nha",
   "unit": "Vùng hàm",
@@ -243,7 +242,8 @@
   "created_at": {
     "$date": "2025-03-12T23:55:21.803Z"
   },
-  "able": true
+  "able": true,
+  "price": 100000
 },
 {
   "_id": {
@@ -254,7 +254,6 @@
   },
   "name": "Phẫu thuật lật vạt làm sạch",
   "cost": 80000,
-  "revenue": 100000,
   "cared_actor": "Mọi bệnh nhân",
   "description": "Lật vạt làm sạch",
   "unit": "Lần",
@@ -262,7 +261,8 @@
   "created_at": {
     "$date": "2025-03-12T23:55:21.803Z"
   },
-  "able": true
+  "able": true,
+  "price": 100000
 },
 {
   "_id": {
@@ -273,7 +273,6 @@
   },
   "name": "Cắt thắng",
   "cost": 80000,
-  "revenue": 100000,
   "cared_actor": "Mọi bệnh nhân",
   "description": "Cắt thắng",
   "unit": "Lần",
@@ -281,7 +280,8 @@
   "created_at": {
     "$date": "2025-03-12T23:55:21.803Z"
   },
-  "able": true
+  "able": true,
+  "price": 100000
 },
 {
   "_id": {
@@ -292,7 +292,6 @@
   },
   "name": "Phẫu thuật nướu",
   "cost": 400000,
-  "revenue": 500000,
   "cared_actor": "Mọi bệnh nhân",
   "description": "Phẫu thuật nướu bị viêm",
   "unit": "Răng",
@@ -300,7 +299,8 @@
   "created_at": {
     "$date": "2025-03-12T23:55:21.803Z"
   },
-  "able": true
+  "able": true,
+  "price": 500000
 },
 {
   "_id": {
@@ -311,7 +311,6 @@
   },
   "name": "Tái tạo thân răng",
   "cost": 100000,
-  "revenue": 150000,
   "cared_actor": "Mọi bệnh nhân",
   "description": "Tái tạo thân răng",
   "unit": "Xoang",
@@ -319,7 +318,8 @@
   "created_at": {
     "$date": "2025-03-12T23:55:21.803Z"
   },
-  "able": true
+  "able": true,
+  "price": 150000
 },
 {
   "_id": {
@@ -330,7 +330,6 @@
   },
   "name": "Trám composite xoang I, III",
   "cost": 2000000,
-  "revenue": 2500000,
   "cared_actor": "Mọi bệnh nhân",
   "description": "Trám composite loại 1/3",
   "unit": "Xoang",
@@ -338,7 +337,8 @@
   "created_at": {
     "$date": "2025-03-12T23:55:21.803Z"
   },
-  "able": true
+  "able": true,
+  "price": 2500000
 },
 {
   "_id": {
@@ -349,7 +349,6 @@
   },
   "name": "Trám composite xoang II, IV, V",
   "cost": 1000000,
-  "revenue": 1200000,
   "cared_actor": "Mọi bệnh nhân",
   "description": "Trám composite loại 2/4",
   "unit": "Xoang",
@@ -357,7 +356,8 @@
   "created_at": {
     "$date": "2025-03-12T23:55:21.803Z"
   },
-  "able": true
+  "able": true,
+  "price": 1200000
 },
 {
   "_id": {
@@ -368,7 +368,6 @@
   },
   "name": "Trám GIC",
   "cost": 800000,
-  "revenue": 1000000,
   "cared_actor": "Mọi bệnh nhân",
   "description": "Trám GIC",
   "unit": "Xoang",
@@ -376,7 +375,8 @@
   "created_at": {
     "$date": "2025-03-12T23:55:21.803Z"
   },
-  "able": true
+  "able": true,
+  "price": 1000000
 },
 {
   "_id": {
@@ -387,7 +387,6 @@
   },
   "name": "Trám đắp mặt, hở kẽ",
   "cost": 1500000,
-  "revenue": 2000000,
   "cared_actor": "Mọi bệnh nhân",
   "description": "Trám đắp mặt",
   "unit": "Cái",
@@ -395,7 +394,8 @@
   "created_at": {
     "$date": "2025-03-12T23:55:21.803Z"
   },
-  "able": true
+  "able": true,
+  "price": 2000000
 },
 {
   "_id": {
@@ -406,7 +406,6 @@
   },
   "name": "Trám phòng ngừa",
   "cost": 600000,
-  "revenue": 800000,
   "cared_actor": "Mọi bệnh nhân",
   "description": "Trám phòng răng bị viêm",
   "unit": "Cái",
@@ -414,7 +413,8 @@
   "created_at": {
     "$date": "2025-03-12T23:55:21.803Z"
   },
-  "able": true
+  "able": true,
+  "price": 800000
 },
 {
   "_id": {
@@ -425,7 +425,6 @@
   },
   "name": "Răng cửa, răng nanh",
   "cost": 200000,
-  "revenue": 250000,
   "cared_actor": "Mọi bệnh nhân",
   "description": "Chữa tủy răng cửa, răng nanh",
   "unit": "Cái",
@@ -433,7 +432,8 @@
   "created_at": {
     "$date": "2025-03-12T23:55:21.803Z"
   },
-  "able": true
+  "able": true,
+  "price": 250000
 },
 {
   "_id": {
@@ -444,7 +444,6 @@
   },
   "name": "Răng cối nhỏ",
   "cost": 250000,
-  "revenue": 300000,
   "cared_actor": "Mọi bệnh nhân",
   "description": "Chữa tủy răng cối nhỏ",
   "unit": "Cái",
@@ -452,7 +451,8 @@
   "created_at": {
     "$date": "2025-03-12T23:55:21.803Z"
   },
-  "able": true
+  "able": true,
+  "price": 300000
 },
 {
   "_id": {
@@ -463,7 +463,6 @@
   },
   "name": "Răng cối lớn",
   "cost": 50000,
-  "revenue": 60000,
   "cared_actor": "Mọi bệnh nhân",
   "description": "Chữa tủy răng cối lớn",
   "unit": "Cái",
@@ -471,7 +470,8 @@
   "created_at": {
     "$date": "2025-03-12T23:55:21.803Z"
   },
-  "able": true
+  "able": true,
+  "price": 60000
 },
 {
   "_id": {
@@ -482,7 +482,6 @@
   },
   "name": "Chữa tủy lại (đóng thêm)",
   "cost": 50000,
-  "revenue": 60000,
   "cared_actor": "Mọi bệnh nhân",
   "description": "Chữa tủy thêm theo yêu cầu",
   "unit": "Ống tủy",
@@ -490,7 +489,8 @@
   "created_at": {
     "$date": "2025-03-12T23:55:21.803Z"
   },
-  "able": true
+  "able": true,
+  "price": 60000
 },
 {
   "_id": {
@@ -501,7 +501,6 @@
   },
   "name": "Phục hình tháo lắp 1 răng",
   "cost": 80000,
-  "revenue": 100000,
   "cared_actor": "Mọi bệnh nhân",
   "description": "Phục hình tháo lắp 1 răng",
   "unit": "Răng",
@@ -509,7 +508,8 @@
   "created_at": {
     "$date": "2025-03-12T23:55:21.803Z"
   },
-  "able": true
+  "able": true,
+  "price": 100000
 },
 {
   "_id": {
@@ -520,7 +520,6 @@
   },
   "name": "Phục hình tháo lắp 1 hàm toàn hàm",
   "cost": 1200000,
-  "revenue": 1500000,
   "cared_actor": "Mọi bệnh nhân",
   "description": "Phục hình tháo lắp 1 hàm",
   "unit": "Hàm",
@@ -528,7 +527,8 @@
   "created_at": {
     "$date": "2025-03-12T23:55:21.803Z"
   },
-  "able": true
+  "able": true,
+  "price": 1500000
 },
 {
   "_id": {
@@ -539,7 +539,6 @@
   },
   "name": "Phục hình tháo lắp 2 hàm toàn hàm",
   "cost": 2500000,
-  "revenue": 3000000,
   "cared_actor": "Mọi bệnh nhân",
   "description": "Phục hình tháo lắp 2 hàm toàn hàm",
   "unit": "Hàm",
@@ -547,7 +546,8 @@
   "created_at": {
     "$date": "2025-03-12T23:55:21.803Z"
   },
-  "able": true
+  "able": true,
+  "price": 3000000
 },
 {
   "_id": {
@@ -558,7 +558,6 @@
   },
   "name": "Vá hàm",
   "cost": 80000,
-  "revenue": 100000,
   "cared_actor": "Mọi bệnh nhân",
   "description": "Vá hàm",
   "unit": "Hàm",
@@ -566,7 +565,8 @@
   "created_at": {
     "$date": "2025-03-12T23:55:21.803Z"
   },
-  "able": true
+  "able": true,
+  "price": 100000
 },
 {
   "_id": {
@@ -577,7 +577,6 @@
   },
   "name": "Thay nền",
   "cost": 250000,
-  "revenue": 300000,
   "cared_actor": "Mọi bệnh nhân",
   "description": "Thay nền cho răng hàm",
   "unit": "Hàm",
@@ -585,7 +584,8 @@
   "created_at": {
     "$date": "2025-03-12T23:55:21.803Z"
   },
-  "able": true
+  "able": true,
+  "price": 300000
 },
 {
   "_id": {
@@ -596,7 +596,6 @@
   },
   "name": "Đệm hàm nhựa nấu",
   "cost": 200000,
-  "revenue": 250000,
   "cared_actor": "Mọi bệnh nhân",
   "description": "Đệm hàm",
   "unit": "Hàm",
@@ -604,7 +603,8 @@
   "created_at": {
     "$date": "2025-03-12T23:55:21.803Z"
   },
-  "able": true
+  "able": true,
+  "price": 250000
 },
 {
   "_id": {
@@ -615,7 +615,6 @@
   },
   "name": "Thêm, thay móc",
   "cost": 40000,
-  "revenue": 50000,
   "cared_actor": "Mọi bệnh nhân",
   "description": "Thay/thêm móc",
   "unit": "Cái",
@@ -623,7 +622,8 @@
   "created_at": {
     "$date": "2025-03-12T23:55:21.803Z"
   },
-  "able": true
+  "able": true,
+  "price": 50000
 },
 {
   "_id": {
@@ -634,7 +634,6 @@
   },
   "name": "Thêm, thay răng",
   "cost": 40000,
-  "revenue": 50000,
   "cared_actor": "Mọi bệnh nhân",
   "description": "Thay/thêm răng giả",
   "unit": "Cái",
@@ -642,7 +641,8 @@
   "created_at": {
     "$date": "2025-03-12T23:55:21.803Z"
   },
-  "able": true
+  "able": true,
+  "price": 50000
 },
 {
   "_id": {
@@ -653,7 +653,6 @@
   },
   "name": "Chữa đau",
   "cost": 40000,
-  "revenue": 50000,
   "cared_actor": "Mọi bệnh nhân",
   "description": "Chữa đau /buốt răng",
   "unit": "Lần",
@@ -661,7 +660,8 @@
   "created_at": {
     "$date": "2025-03-12T23:55:21.803Z"
   },
-  "able": true
+  "able": true,
+  "price": 50000
 },
 {
   "_id": {
@@ -672,7 +672,6 @@
   },
   "name": "Móc dẻo",
   "cost": 150000,
-  "revenue": 200000,
   "cared_actor": "Mọi bệnh nhân",
   "description": "Móc dẻo",
   "unit": "Cái",
@@ -680,7 +679,8 @@
   "created_at": {
     "$date": "2025-03-12T23:55:21.803Z"
   },
-  "able": true
+  "able": true,
+  "price": 200000
 },
 {
   "_id": {
@@ -691,7 +691,6 @@
   },
   "name": "Hàm dẻo",
   "cost": 600000,
-  "revenue": 700000,
   "cared_actor": "Mọi bệnh nhân",
   "description": "Hàm dẻo",
   "unit": "Cái",
@@ -699,7 +698,8 @@
   "created_at": {
     "$date": "2025-03-12T23:55:21.803Z"
   },
-  "able": true
+  "able": true,
+  "price": 700000
 },
 {
   "_id": {
@@ -710,7 +710,6 @@
   },
   "name": "Hàm khung bộ",
   "cost": 650000,
-  "revenue": 750000,
   "cared_actor": "Mọi bệnh nhân",
   "description": "Hàm khung bộ",
   "unit": "Cái",
@@ -718,7 +717,8 @@
   "created_at": {
     "$date": "2025-03-12T23:55:21.803Z"
   },
-  "able": true
+  "able": true,
+  "price": 750000
 },
 {
   "_id": {
@@ -729,7 +729,6 @@
   },
   "name": "Đệm hàm nhựa tự cứng (Hàm cũ)",
   "cost": 80000,
-  "revenue": 100000,
   "cared_actor": "Mọi bệnh nhân",
   "description": "Đệm bằng nhựa cho hàm cũ",
   "unit": "Hàm",
@@ -737,7 +736,8 @@
   "created_at": {
     "$date": "2025-03-12T23:55:21.803Z"
   },
-  "able": true
+  "able": true,
+  "price": 100000
 },
 {
   "_id": {
@@ -748,7 +748,6 @@
   },
   "name": "Điều chỉnh khớp cắn (Hàm cũ)",
   "cost": 80000,
-  "revenue": 100000,
   "cared_actor": "Mọi bệnh nhân",
   "description": "Điều chỉnh khớp của hàm cũ",
   "unit": "Hàm",
@@ -756,7 +755,8 @@
   "created_at": {
     "$date": "2025-03-12T23:55:21.803Z"
   },
-  "able": true
+  "able": true,
+  "price": 100000
 },
 {
   "_id": {
@@ -767,7 +767,6 @@
   },
   "name": "Tái tạo cùi răng (có chốt)",
   "cost": 1200000,
-  "revenue": 1500000,
   "cared_actor": "Mọi bệnh nhân",
   "description": "Tái tạo cùi có chốt cho răng",
   "unit": "Răng",
@@ -775,7 +774,8 @@
   "created_at": {
     "$date": "2025-03-12T23:55:21.803Z"
   },
-  "able": true
+  "able": true,
+  "price": 1500000
 },
 {
   "_id": {
@@ -786,7 +786,6 @@
   },
   "name": "Mão, cầu răng kim loại toàn diện",
   "cost": 3000000,
-  "revenue": 3500000,
   "cared_actor": "Mọi bệnh nhân",
   "description": "Mão, cầu răng kim loại",
   "unit": "Răng",
@@ -794,7 +793,8 @@
   "created_at": {
     "$date": "2025-03-12T23:55:21.803Z"
   },
-  "able": true
+  "able": true,
+  "price": 3500000
 },
 {
   "_id": {
@@ -805,7 +805,6 @@
   },
   "name": "Mão, cầu răng kim loại-sứ",
   "cost": 4500000,
-  "revenue": 5000000,
   "cared_actor": "Mọi bệnh nhân",
   "description": "Mão, cầu răng kim loại và sứ",
   "unit": "Răng",
@@ -813,7 +812,8 @@
   "created_at": {
     "$date": "2025-03-12T23:55:21.803Z"
   },
-  "able": true
+  "able": true,
+  "price": 5000000
 },
 {
   "_id": {
@@ -824,7 +824,6 @@
   },
   "name": "Sứ titan",
   "cost": 3000000,
-  "revenue": 3500000,
   "cared_actor": "Mọi bệnh nhân",
   "description": "Sứ titan phụ thêm",
   "unit": "Hàm",
@@ -832,7 +831,8 @@
   "created_at": {
     "$date": "2025-03-12T23:55:21.803Z"
   },
-  "able": true
+  "able": true,
+  "price": 3500000
 },
 {
   "_id": {
@@ -843,7 +843,6 @@
   },
   "name": "Hàm khung Ti (chưa bao gồm răng)",
   "cost": 1200000,
-  "revenue": 1500000,
   "cared_actor": "Mọi bệnh nhân",
   "description": "Hàm khung titan thêm",
   "unit": "Hàm",
@@ -851,7 +850,8 @@
   "created_at": {
     "$date": "2025-03-12T23:55:21.803Z"
   },
-  "able": true
+  "able": true,
+  "price": 1500000
 },
 {
   "_id": {
@@ -862,7 +862,6 @@
   },
   "name": "Sứ zirconia",
   "cost": 2000000,
-  "revenue": 2500000,
   "cared_actor": "Mọi bệnh nhân",
   "description": "Sứ zirconia thêm",
   "unit": "Hàm",
@@ -870,7 +869,8 @@
   "created_at": {
     "$date": "2025-03-12T23:55:21.803Z"
   },
-  "able": true
+  "able": true,
+  "price": 2500000
 },
 {
   "_id": {
@@ -881,7 +881,6 @@
   },
   "name": "Sứ cercon",
   "cost": 3000000,
-  "revenue": 3500000,
   "cared_actor": "Mọi bệnh nhân",
   "description": "Sứ cercon thêm",
   "unit": "Hàm",
@@ -889,7 +888,8 @@
   "created_at": {
     "$date": "2025-03-12T23:55:21.803Z"
   },
-  "able": true
+  "able": true,
+  "price": 3500000
 },
 {
   "_id": {
@@ -900,7 +900,6 @@
   },
   "name": "Điều chỉnh, gắn lại, tháo PHCĐ",
   "cost": 800000,
-  "revenue": 1000000,
   "cared_actor": "Mọi bệnh nhân",
   "description": "Thay đổi tích cực bằng các biện pháp phục hồi cố định",
   "unit": "Răng",
@@ -908,7 +907,8 @@
   "created_at": {
     "$date": "2025-03-12T23:55:21.803Z"
   },
-  "able": true
+  "able": true,
+  "price": 1000000
 },
 {
   "_id": {
@@ -919,7 +919,6 @@
   },
   "name": "Hàm tạm",
   "cost": 400000,
-  "revenue": 500000,
   "cared_actor": "Mọi bệnh nhân",
   "description": "Hàm tạm thêm",
   "unit": "Hàm",
@@ -927,7 +926,8 @@
   "created_at": {
     "$date": "2025-03-12T23:55:21.803Z"
   },
-  "able": true
+  "able": true,
+  "price": 500000
 },
 {
   "_id": {
@@ -938,7 +938,6 @@
   },
   "name": "Mão tạm",
   "cost": 120000,
-  "revenue": 150000,
   "cared_actor": "Mọi bệnh nhân",
   "description": "Mão tạm thêm",
   "unit": "Răng",
@@ -946,7 +945,8 @@
   "created_at": {
     "$date": "2025-03-12T23:55:21.803Z"
   },
-  "able": true
+  "able": true,
+  "price": 150000
 },
 {
   "_id": {
@@ -957,7 +957,6 @@
   },
   "name": "Cầu răng tạm",
   "cost": 120000,
-  "revenue": 150000,
   "cared_actor": "Mọi bệnh nhân",
   "description": "Cầu răng tạm",
   "unit": "Răng",
@@ -965,7 +964,8 @@
   "created_at": {
     "$date": "2025-03-12T23:55:21.803Z"
   },
-  "able": true
+  "able": true,
+  "price": 150000
 },
 {
   "_id": {
@@ -976,7 +976,6 @@
   },
   "name": "Cùi giá đúc",
   "cost": 800000,
-  "revenue": 1000000,
   "cared_actor": "Mọi bệnh nhân",
   "description": "Cùi giả",
   "unit": "Cái",
@@ -984,7 +983,8 @@
   "created_at": {
     "$date": "2025-03-12T23:55:21.803Z"
   },
-  "able": true
+  "able": true,
+  "price": 1000000
 },
 {
   "_id": {
@@ -995,7 +995,6 @@
   },
   "name": "Nhổ răng sữa (tê bôi)",
   "cost": 150000,
-  "revenue": 200000,
   "cared_actor": "Mọi bệnh nhân",
   "description": "Nhổ răng sữa bằng bôi thuốc",
   "unit": "Răng",
@@ -1003,7 +1002,8 @@
   "created_at": {
     "$date": "2025-03-12T23:55:21.803Z"
   },
-  "able": true
+  "able": true,
+  "price": 200000
 },
 {
   "_id": {
@@ -1014,7 +1014,6 @@
   },
   "name": "Nhổ răng sữa (tê chích)",
   "cost": 400000,
-  "revenue": 500000,
   "cared_actor": "Mọi bệnh nhân",
   "description": "Nhổ răng sữa bằng tiêm thuốc",
   "unit": "Răng",
@@ -1022,7 +1021,8 @@
   "created_at": {
     "$date": "2025-03-12T23:55:21.803Z"
   },
-  "able": true
+  "able": true,
+  "price": 500000
 },
 {
   "_id": {
@@ -1033,7 +1033,6 @@
   },
   "name": "Trám răng sữa bằng GIC",
   "cost": 400000,
-  "revenue": 500000,
   "cared_actor": "Mọi bệnh nhân",
   "description": "Trám răng sữa bằng GIC",
   "unit": "Răng",
@@ -1041,7 +1040,8 @@
   "created_at": {
     "$date": "2025-03-12T23:55:21.803Z"
   },
-  "able": true
+  "able": true,
+  "price": 500000
 },
 {
   "_id": {
@@ -1052,7 +1052,6 @@
   },
   "name": "Trám răng sữa bằng composite",
   "cost": 600000,
-  "revenue": 800000,
   "cared_actor": "Mọi bệnh nhân",
   "description": "Trám răng sữa bằng composite",
   "unit": "Răng",
@@ -1060,7 +1059,8 @@
   "created_at": {
     "$date": "2025-03-12T23:55:21.803Z"
   },
-  "able": true
+  "able": true,
+  "price": 800000
 },
 {
   "_id": {
@@ -1071,7 +1071,6 @@
   },
   "name": "Trám dự phòng hố rãnh mặt nhai",
   "cost": 600000,
-  "revenue": 800000,
   "cared_actor": "Mọi bệnh nhân",
   "description": "Trám dự phòng răng bị hố rãnh mặt nhai",
   "unit": "Răng",
@@ -1079,7 +1078,8 @@
   "created_at": {
     "$date": "2025-03-12T23:55:21.803Z"
   },
-  "able": true
+  "able": true,
+  "price": 800000
 },
 {
   "_id": {
@@ -1090,7 +1090,6 @@
   },
   "name": "Đặt gel Fluor phòng ngừa",
   "cost": 400000,
-  "revenue": 500000,
   "cared_actor": "Mọi bệnh nhân",
   "description": "Thêm gel Flour cho răng",
   "unit": "Hàm",
@@ -1098,7 +1097,8 @@
   "created_at": {
     "$date": "2025-03-12T23:55:21.803Z"
   },
-  "able": true
+  "able": true,
+  "price": 500000
 },
 {
   "_id": {
@@ -1109,7 +1109,6 @@
   },
   "name": "Lấy tủy chân răng sữa",
   "cost": 150000,
-  "revenue": 200000,
   "cared_actor": "Mọi bệnh nhân",
   "description": "Lấy tủy chân của răng sữa",
   "unit": "Răng",
@@ -1117,7 +1116,8 @@
   "created_at": {
     "$date": "2025-03-12T23:55:21.803Z"
   },
-  "able": true
+  "able": true,
+  "price": 200000
 },
 {
   "_id": {
@@ -1128,7 +1128,6 @@
   },
   "name": "Mão nhựa răng cửa (Strip crown)",
   "cost": 150000,
-  "revenue": 200000,
   "cared_actor": "Mọi bệnh nhân",
   "description": "Mão nhựa Strip crown cho răng cửa",
   "unit": "Răng",
@@ -1136,7 +1135,8 @@
   "created_at": {
     "$date": "2025-03-12T23:55:21.803Z"
   },
-  "able": true
+  "able": true,
+  "price": 200000
 },
 {
   "_id": {
@@ -1147,7 +1147,6 @@
   },
   "name": "Mão kim loại làm sẵn",
   "cost": 2000000,
-  "revenue": 2500000,
   "cared_actor": "Mọi bệnh nhân",
   "description": "Mão kim loại cho răng",
   "unit": "Răng",
@@ -1155,7 +1154,8 @@
   "created_at": {
     "$date": "2025-03-12T23:55:21.803Z"
   },
-  "able": true
+  "able": true,
+  "price": 2500000
 },
 {
   "_id": {
@@ -1166,7 +1166,6 @@
   },
   "name": "Bộ giữ khoảng tháo lắp",
   "cost": 2000000,
-  "revenue": 2500000,
   "cared_actor": "Mọi bệnh nhân",
   "description": "Bộ giữ khung hàm",
   "unit": "Hàm",
@@ -1174,7 +1173,8 @@
   "created_at": {
     "$date": "2025-03-12T23:55:21.803Z"
   },
-  "able": true
+  "able": true,
+  "price": 2500000
 },
 {
   "_id": {
@@ -1185,7 +1185,6 @@
   },
   "name": "Giữ khoảng cố định 1 bên",
   "cost": 300000,
-  "revenue": 400000,
   "cared_actor": "Mọi bệnh nhân",
   "description": "Bộ giữ khung cố định 1 bên",
   "unit": "Cái",
@@ -1193,7 +1192,8 @@
   "created_at": {
     "$date": "2025-03-12T23:55:21.803Z"
   },
-  "able": true
+  "able": true,
+  "price": 400000
 },
 {
   "_id": {
@@ -1204,7 +1204,6 @@
   },
   "name": "Bộ giữ khoảng cố định 2 bên",
   "cost": 600000,
-  "revenue": 800000,
   "cared_actor": "Mọi bệnh nhân",
   "description": "Bộ giữ khung cố định 2 bên",
   "unit": "Bộ",
@@ -1212,7 +1211,8 @@
   "created_at": {
     "$date": "2025-03-12T23:55:21.803Z"
   },
-  "able": true
+  "able": true,
+  "price": 800000
 },
 {
   "_id": {
@@ -1223,7 +1223,6 @@
   },
   "name": "Mặt phẳng nghiêng",
   "cost": 400000,
-  "revenue": 500000,
   "cared_actor": "Mọi bệnh nhân",
   "description": "Mặt phẳng nghiêng",
   "unit": "Cái",
@@ -1231,7 +1230,8 @@
   "created_at": {
     "$date": "2025-03-12T23:55:21.803Z"
   },
-  "able": true
+  "able": true,
+  "price": 500000
 },
 {
   "_id": {
@@ -1242,7 +1242,6 @@
   },
   "name": "Tấm chặn môi",
   "cost": 400000,
-  "revenue": 500000,
   "cared_actor": "Mọi bệnh nhân",
   "description": "Tấm chặn môi",
   "unit": "Cái",
@@ -1250,7 +1249,8 @@
   "created_at": {
     "$date": "2025-03-12T23:55:21.803Z"
   },
-  "able": true
+  "able": true,
+  "price": 500000
 },
 {
   "_id": {
@@ -1261,7 +1261,6 @@
   },
   "name": "Khí cụ đẩy môi (lip bumper)",
   "cost": 800000,
-  "revenue": 1000000,
   "cared_actor": "Mọi bệnh nhân",
   "description": "Dụng cụ đẩy môi lip bumper",
   "unit": "Cái",
@@ -1269,7 +1268,8 @@
   "created_at": {
     "$date": "2025-03-12T23:55:21.803Z"
   },
-  "able": true
+  "able": true,
+  "price": 1000000
 },
 {
   "_id": {
@@ -1280,7 +1280,6 @@
   },
   "name": "Khí cụ tháo lắp điều trị cắn chéo 1 răng",
   "cost": 800000,
-  "revenue": 1000000,
   "cared_actor": "Mọi bệnh nhân",
   "description": "Dụng cụ tháo lắp điều trị cần chéo 1 răng",
   "unit": "Cái",
@@ -1288,7 +1287,8 @@
   "created_at": {
     "$date": "2025-03-12T23:55:21.803Z"
   },
-  "able": true
+  "able": true,
+  "price": 1000000
 },
 {
   "_id": {
@@ -1299,7 +1299,6 @@
   },
   "name": "Khí cụ Quad Helix",
   "cost": 800000,
-  "revenue": 1000000,
   "cared_actor": "Mọi bệnh nhân",
   "description": "Dụng cụ Quad Helix",
   "unit": "Cái",
@@ -1307,7 +1306,8 @@
   "created_at": {
     "$date": "2025-03-12T23:55:21.803Z"
   },
-  "able": true
+  "able": true,
+  "price": 1000000
 },
 {
   "_id": {
@@ -1318,7 +1318,6 @@
   },
   "name": "Tiểu phẫu",
   "cost": 200000,
-  "revenue": 250000,
   "cared_actor": "Mọi bệnh nhân",
   "description": "Tiểu phẫu",
   "unit": "Lần",
@@ -1326,7 +1325,8 @@
   "created_at": {
     "$date": "2025-03-12T23:55:21.803Z"
   },
-  "able": true
+  "able": true,
+  "price": 250000
 },
 {
   "_id": {
@@ -1337,7 +1337,6 @@
   },
   "name": "Khí cụ tháo lắp 1 hàm",
   "cost": 1200000,
-  "revenue": 1500000,
   "cared_actor": "Mọi bệnh nhân",
   "description": "Khí cụ tháo lắp 1 hàm",
   "unit": "Hàm",
@@ -1345,7 +1344,8 @@
   "created_at": {
     "$date": "2025-03-12T23:55:21.803Z"
   },
-  "able": true
+  "able": true,
+  "price": 1500000
 },
 {
   "_id": {
@@ -1356,7 +1356,6 @@
   },
   "name": "Khí cụ tháo lắp 2 hàm",
   "cost": 2500000,
-  "revenue": 3000000,
   "cared_actor": "Mọi bệnh nhân",
   "description": "Khí cụ tháo lắp 2 hàm",
   "unit": "Hàm",
@@ -1364,7 +1363,8 @@
   "created_at": {
     "$date": "2025-03-12T23:55:21.803Z"
   },
-  "able": true
+  "able": true,
+  "price": 3000000
 },
 {
   "_id": {
@@ -1375,7 +1375,6 @@
   },
   "name": "Làm lại khí cụ tháo lắp 1 hàm",
   "cost": 250000,
-  "revenue": 300000,
   "cared_actor": "Mọi bệnh nhân",
   "description": "Làm lại khí cụ tháo lắp 1 hàm",
   "unit": "Hàm",
@@ -1383,7 +1382,8 @@
   "created_at": {
     "$date": "2025-03-12T23:55:21.803Z"
   },
-  "able": true
+  "able": true,
+  "price": 300000
 },
 {
   "_id": {
@@ -1394,7 +1394,6 @@
   },
   "name": "Làm lại khí cụ tháo lắp 2 hàm",
   "cost": 500000,
-  "revenue": 600000,
   "cared_actor": "Mọi bệnh nhân",
   "description": "Làm lại khí cụ tháo lắp 2 hàm",
   "unit": "Hàm",
@@ -1402,7 +1401,8 @@
   "created_at": {
     "$date": "2025-03-12T23:55:21.803Z"
   },
-  "able": true
+  "able": true,
+  "price": 600000
 },
 {
   "_id": {
@@ -1413,7 +1413,6 @@
   },
   "name": "Khí cụ duy trì kết quả 1 hàm",
   "cost": 250000,
-  "revenue": 300000,
   "cared_actor": "Mọi bệnh nhân",
   "description": "Khí cụ giữ lại kết quả của 1 hàm",
   "unit": "Hàm",
@@ -1421,7 +1420,8 @@
   "created_at": {
     "$date": "2025-03-12T23:55:21.803Z"
   },
-  "able": true
+  "able": true,
+  "price": 300000
 },
 {
   "_id": {
@@ -1432,7 +1432,6 @@
   },
   "name": "Khí cụ cố định 1 hàm",
   "cost": 8000000,
-  "revenue": 10000000,
   "cared_actor": "Mọi bệnh nhân",
   "description": "",
   "unit": "Hàm",
@@ -1440,7 +1439,8 @@
   "created_at": {
     "$date": "2025-03-12T23:55:21.803Z"
   },
-  "able": true
+  "able": true,
+  "price": 10000000
 },
 {
   "_id": {
@@ -1451,7 +1451,6 @@
   },
   "name": "Khí cụ cố định 2 hàm",
   "cost": 16000000,
-  "revenue": 20000000,
   "cared_actor": "Mọi bệnh nhân",
   "description": "",
   "unit": "Hàm",
@@ -1459,7 +1458,8 @@
   "created_at": {
     "$date": "2025-03-12T23:55:21.803Z"
   },
-  "able": true
+  "able": true,
+  "price": 20000000
 },
 {
   "_id": {
@@ -1470,7 +1470,6 @@
   },
   "name": "Khí cụ cố định 2 hàm trên 2 năm",
   "cost": 20000000,
-  "revenue": 26000000,
   "cared_actor": "Mọi bệnh nhân",
   "description": "",
   "unit": "Hàm",
@@ -1478,7 +1477,8 @@
   "created_at": {
     "$date": "2025-03-12T23:55:21.803Z"
   },
-  "able": true
+  "able": true,
+  "price": 26000000
 },
 {
   "_id": {
@@ -1489,7 +1489,6 @@
   },
   "name": "Khí cụ cố định 2 hàm sử dụng mắc cài thế hệ mới",
   "cost": 22000000,
-  "revenue": 28000000,
   "cared_actor": "Mọi bệnh nhân",
   "description": "",
   "unit": "Hàm",
@@ -1497,7 +1496,8 @@
   "created_at": {
     "$date": "2025-03-12T23:55:21.803Z"
   },
-  "able": true
+  "able": true,
+  "price": 28000000
 },
 {
   "_id": {
@@ -1508,7 +1508,6 @@
   },
   "name": "Khí cụ cố định 2 hàm sử dụng mắc cài sứ",
   "cost": 12000000,
-  "revenue": 15000000,
   "cared_actor": "Mọi bệnh nhân",
   "description": "",
   "unit": "Hàm",
@@ -1516,7 +1515,8 @@
   "created_at": {
     "$date": "2025-03-12T23:55:21.803Z"
   },
-  "able": true
+  "able": true,
+  "price": 15000000
 },
 {
   "_id": {
@@ -1527,7 +1527,6 @@
   },
   "name": "Máng Fluor không thuốc",
   "cost": 80000,
-  "revenue": 100000,
   "cared_actor": "Mọi bệnh nhân",
   "description": "",
   "unit": "Máng",
@@ -1535,7 +1534,8 @@
   "created_at": {
     "$date": "2025-03-12T23:55:21.803Z"
   },
-  "able": true
+  "able": true,
+  "price": 100000
 },
 {
   "_id": {
@@ -1546,7 +1546,6 @@
   },
   "name": "1 máng nhai",
   "cost": 400000,
-  "revenue": 500000,
   "cared_actor": "Mọi bệnh nhân",
   "description": "",
   "unit": "Máng",
@@ -1554,7 +1553,8 @@
   "created_at": {
     "$date": "2025-03-12T23:55:21.803Z"
   },
-  "able": true
+  "able": true,
+  "price": 500000
 },
 {
   "_id": {
@@ -1565,7 +1565,6 @@
   },
   "name": "Mài chỉnh khớp cắn đơn giản",
   "cost": 120000,
-  "revenue": 150000,
   "cared_actor": "Mọi bệnh nhân",
   "description": "",
   "unit": "Lần",
@@ -1573,7 +1572,8 @@
   "created_at": {
     "$date": "2025-03-12T23:55:21.803Z"
   },
-  "able": true
+  "able": true,
+  "price": 150000
 },
 {
   "_id": {
@@ -1584,7 +1584,6 @@
   },
   "name": "Mài chỉnh khớp cắn phức tạp",
   "cost": 250000,
-  "revenue": 300000,
   "cared_actor": "Mọi bệnh nhân",
   "description": "",
   "unit": "Lần",
@@ -1592,7 +1591,8 @@
   "created_at": {
     "$date": "2025-03-12T23:55:21.803Z"
   },
-  "able": true
+  "able": true,
+  "price": 300000
 },
 {
   "_id": {
@@ -1603,7 +1603,6 @@
   },
   "name": "Phim quanh chóp",
   "cost": 250000,
-  "revenue": 300000,
   "cared_actor": "Mọi bệnh nhân",
   "description": "",
   "unit": "Phim",
@@ -1611,7 +1610,8 @@
   "created_at": {
     "$date": "2025-03-12T23:55:21.803Z"
   },
-  "able": true
+  "able": true,
+  "price": 300000
 },
 {
   "_id": {
@@ -1622,7 +1622,6 @@
   },
   "name": "Phim toàn cảnh",
   "cost": 80000,
-  "revenue": 100000,
   "cared_actor": "Mọi bệnh nhân",
   "description": "",
   "unit": "Phim",
@@ -1630,7 +1629,8 @@
   "created_at": {
     "$date": "2025-03-12T23:55:21.803Z"
   },
-  "able": true
+  "able": true,
+  "price": 100000
 },
 {
   "_id": {
@@ -1641,7 +1641,6 @@
   },
   "name": "Răng sứ dán kim loại",
   "cost": 1200000,
-  "revenue": 1500000,
   "cared_actor": "Mọi bệnh nhân",
   "description": "",
   "unit": "Hàm",
@@ -1649,7 +1648,8 @@
   "created_at": {
     "$date": "2025-03-12T23:55:21.803Z"
   },
-  "able": true
+  "able": true,
+  "price": 1500000
 },
 {
   "_id": {
@@ -1660,7 +1660,6 @@
   },
   "name": "Răng sứ dán Titan",
   "cost": 2500000,
-  "revenue": 3000000,
   "cared_actor": "Mọi bệnh nhân",
   "description": "",
   "unit": "Hàm",
@@ -1668,7 +1667,8 @@
   "created_at": {
     "$date": "2025-03-12T23:55:21.803Z"
   },
-  "able": true
+  "able": true,
+  "price": 3000000
 },
 {
   "_id": {
@@ -1679,7 +1679,6 @@
   },
   "name": "Răng sứ dán Zirco",
   "cost": 5000000,
-  "revenue": 6000000,
   "cared_actor": "Mọi bệnh nhân",
   "description": "",
   "unit": "Hàm",
@@ -1687,7 +1686,8 @@
   "created_at": {
     "$date": "2025-03-12T23:55:21.803Z"
   },
-  "able": true
+  "able": true,
+  "price": 6000000
 },
 {
   "_id": {
@@ -1698,7 +1698,6 @@
   },
   "name": "Răng sứ dán Bio HPP",
   "cost": 7000000,
-  "revenue": 8000000,
   "cared_actor": "Mọi bệnh nhân",
   "description": "",
   "unit": "Hàm",
@@ -1706,7 +1705,8 @@
   "created_at": {
     "$date": "2025-03-12T23:55:21.804Z"
   },
-  "able": true
+  "able": true,
+  "price": 8000000
 },
 {
   "_id": {
@@ -1717,7 +1717,6 @@
   },
   "name": "Trụ phục hình Multi Unit",
   "cost": 1200000,
-  "revenue": 1500000,
   "cared_actor": "Mọi bệnh nhân",
   "description": "Phục hình bằng trụ Multi Unit",
   "unit": "Hàm",
@@ -1725,7 +1724,8 @@
   "created_at": {
     "$date": "2025-03-12T23:55:21.804Z"
   },
-  "able": true
+  "able": true,
+  "price": 1500000
 },
 {
   "_id": {
@@ -1736,7 +1736,6 @@
   },
   "name": "Răng sứ (Kim loại, Titan, Zirco, Bio HPP)",
   "cost": 1200000,
-  "revenue": 1500000,
   "cared_actor": "Mọi bệnh nhân",
   "description": "Phục hình bằng Răng sứ (Kim loại, Titan, Zirco, Bio HPP)",
   "unit": "Hàm",
@@ -1744,7 +1743,8 @@
   "created_at": {
     "$date": "2025-03-12T23:55:21.804Z"
   },
-  "able": true
+  "able": true,
+  "price": 1500000
 },
 {
   "_id": {
@@ -1755,7 +1755,6 @@
   },
   "name": "Hàm phủ tháo lắp 2 Implant",
   "cost": 6000000,
-  "revenue": 7000000,
   "cared_actor": "Mọi bệnh nhân",
   "description": "Răng composite nền nhựa cường lực 2 Implant",
   "unit": "Hàm",
@@ -1763,7 +1762,8 @@
   "created_at": {
     "$date": "2025-03-12T23:55:21.804Z"
   },
-  "able": true
+  "able": true,
+  "price": 7000000
 },
 {
   "_id": {
@@ -1774,7 +1774,6 @@
   },
   "name": "Hàm phủ tháo lắp 3 Implant thanh bar",
   "cost": 6500000,
-  "revenue": 7500000,
   "cared_actor": "Mọi bệnh nhân",
   "description": "Răng composite nền nhựa cường lực 3 Implant thanh bar",
   "unit": "Hàm",
@@ -1782,7 +1781,8 @@
   "created_at": {
     "$date": "2025-03-12T23:55:21.804Z"
   },
-  "able": true
+  "able": true,
+  "price": 7500000
 },
 {
   "_id": {
@@ -1793,7 +1793,6 @@
   },
   "name": "Hàm phủ tháo lắp 4 Implant thanh bar",
   "cost": 7000000,
-  "revenue": 8000000,
   "cared_actor": "Mọi bệnh nhân",
   "description": "Răng composite nền nhựa cường lực 4 Implant thanh bar",
   "unit": "Hàm",
@@ -1801,7 +1800,8 @@
   "created_at": {
     "$date": "2025-03-12T23:55:21.804Z"
   },
-  "able": true
+  "able": true,
+  "price": 8000000
 },
 {
   "_id": {
@@ -1812,7 +1812,6 @@
   },
   "name": "Hàm phủ tháo lắp 5 Implant thanh bar",
   "cost": 8000000,
-  "revenue": 9000000,
   "cared_actor": "Mọi bệnh nhân",
   "description": "Răng composite nền nhựa cường lực 5 Implant thanh bar",
   "unit": "Hàm",
@@ -1820,7 +1819,8 @@
   "created_at": {
     "$date": "2025-03-12T23:55:21.804Z"
   },
-  "able": true
+  "able": true,
+  "price": 9000000
 },
 {
   "_id": {
@@ -1831,7 +1831,6 @@
   },
   "name": "Hàm phủ tháo lắp 6 Implant thanh bar",
   "cost": 9000000,
-  "revenue": 10000000,
   "cared_actor": "Mọi bệnh nhân",
   "description": "Răng composite nền nhựa cường lực 6 Implant thanh bar",
   "unit": "Hàm",
@@ -1839,7 +1838,8 @@
   "created_at": {
     "$date": "2025-03-12T23:55:21.804Z"
   },
-  "able": true
+  "able": true,
+  "price": 10000000
 },
 {
   "_id": {
@@ -1850,7 +1850,6 @@
   },
   "name": "Hàm phủ tháo lắp 3 Implant nút bấm",
   "cost": 6500000,
-  "revenue": 7500000,
   "cared_actor": "Mọi bệnh nhân",
   "description": "Răng composite nền nhựa cường lực 3 Implant nút bấm",
   "unit": "Hàm",
@@ -1858,7 +1857,8 @@
   "created_at": {
     "$date": "2025-03-12T23:55:21.804Z"
   },
-  "able": true
+  "able": true,
+  "price": 7500000
 },
 {
   "_id": {
@@ -1869,7 +1869,6 @@
   },
   "name": "Hàm phủ tháo lắp 4 Implant nút bấm",
   "cost": 7000000,
-  "revenue": 8000000,
   "cared_actor": "Mọi bệnh nhân",
   "description": "Răng composite nền nhựa cường lực 4 Implant nút bấm",
   "unit": "Hàm",
@@ -1877,7 +1876,8 @@
   "created_at": {
     "$date": "2025-03-12T23:55:21.804Z"
   },
-  "able": true
+  "able": true,
+  "price": 8000000
 },
 {
   "_id": {
@@ -1888,7 +1888,6 @@
   },
   "name": "Hàm phủ tháo lắp 5 Implant nút bấm",
   "cost": 8000000,
-  "revenue": 9000000,
   "cared_actor": "Mọi bệnh nhân",
   "description": "Răng composite nền nhựa cường lực 5 Implant nút bấm",
   "unit": "Hàm",
@@ -1896,7 +1895,8 @@
   "created_at": {
     "$date": "2025-03-12T23:55:21.804Z"
   },
-  "able": true
+  "able": true,
+  "price": 9000000
 },
 {
   "_id": {
@@ -1907,7 +1907,6 @@
   },
   "name": "Hàm phủ tháo lắp 6 Implant nút bấm",
   "cost": 9000000,
-  "revenue": 10000000,
   "cared_actor": "Mọi bệnh nhân",
   "description": "Răng composite nền nhựa cường lực 6 Implant nút bấm",
   "unit": "Hàm",
@@ -1915,7 +1914,8 @@
   "created_at": {
     "$date": "2025-03-12T23:55:21.804Z"
   },
-  "able": true
+  "able": true,
+  "price": 10000000
 },
 {
   "_id": {
@@ -1926,7 +1926,6 @@
   },
   "name": "Hàm cố định bắt vít 4 Implant Sườn Titan răng nhựa",
   "cost": 6000000,
-  "revenue": 7000000,
   "cared_actor": "Mọi bệnh nhân",
   "description": "Hàm cố định bắt vít HYBRID 4 Implant Sườn Titan răng nhựa",
   "unit": "Hàm",
@@ -1934,7 +1933,8 @@
   "created_at": {
     "$date": "2025-03-12T23:55:21.804Z"
   },
-  "able": true
+  "able": true,
+  "price": 7000000
 },
 {
   "_id": {
@@ -1945,7 +1945,6 @@
   },
   "name": "Hàm cố định bắt vít 4 Implant Sườn Titan răng sứ",
   "cost": 13000000,
-  "revenue": 15000000,
   "cared_actor": "Mọi bệnh nhân",
   "description": "Hàm cố định bắt vít HYBRID 4 Implant Sườn Titan răng sứ",
   "unit": "Hàm",
@@ -1953,7 +1952,8 @@
   "created_at": {
     "$date": "2025-03-12T23:55:21.804Z"
   },
-  "able": true
+  "able": true,
+  "price": 15000000
 },
 {
   "_id": {
@@ -1964,7 +1964,6 @@
   },
   "name": "Hàm cố định bắt vít 4 Implant Sườn Zirco răng nhựa",
   "cost": 10000000,
-  "revenue": 11000000,
   "cared_actor": "Mọi bệnh nhân",
   "description": "Hàm cố định bắt vít HYBRID 4 Implant Sườn Zirco răng nhựa",
   "unit": "Hàm",
@@ -1972,7 +1971,8 @@
   "created_at": {
     "$date": "2025-03-12T23:55:21.804Z"
   },
-  "able": true
+  "able": true,
+  "price": 11000000
 },
 {
   "_id": {
@@ -1983,7 +1983,6 @@
   },
   "name": "Hàm cố định bắt vít 4 Implant Sườn Zirco răng sứ",
   "cost": 17000000,
-  "revenue": 19000000,
   "cared_actor": "Mọi bệnh nhân",
   "description": "Hàm cố định bắt vít HYBRID 4 Implant Sườn Zirco răng sứ",
   "unit": "Hàm",
@@ -1991,7 +1990,8 @@
   "created_at": {
     "$date": "2025-03-12T23:55:21.804Z"
   },
-  "able": true
+  "able": true,
+  "price": 19000000
 },
 {
   "_id": {
@@ -2002,7 +2002,6 @@
   },
   "name": "Hàm cố định bắt vít 4 Implant Sườn Bio HPP răng nhựa",
   "cost": 10000000,
-  "revenue": 11000000,
   "cared_actor": "Mọi bệnh nhân",
   "description": "Hàm cố định bắt vít HYBRID 4 Implant Sườn Bio HPP răng nhựa",
   "unit": "Hàm",
@@ -2010,7 +2009,8 @@
   "created_at": {
     "$date": "2025-03-12T23:55:21.804Z"
   },
-  "able": true
+  "able": true,
+  "price": 11000000
 },
 {
   "_id": {
@@ -2021,7 +2021,6 @@
   },
   "name": "Hàm cố định bắt vít 4 Implant Sườn Bio HPP răng sứ",
   "cost": 17000000,
-  "revenue": 19000000,
   "cared_actor": "Mọi bệnh nhân",
   "description": "Hàm cố định bắt vít HYBRID 4 Implant Sườn Bio HPP răng sứ",
   "unit": "Hàm",
@@ -2029,7 +2028,8 @@
   "created_at": {
     "$date": "2025-03-12T23:55:21.804Z"
   },
-  "able": true
+  "able": true,
+  "price": 19000000
 },
 {
   "_id": {
@@ -2040,7 +2040,6 @@
   },
   "name": "Hàm cố định bắt vít 5 Implant",
   "cost": 1200000,
-  "revenue": 1400000,
   "cared_actor": "Mọi bệnh nhân",
   "description": "Hàm cố định bắt vít HYBRID 5 Implant",
   "unit": "Hàm",
@@ -2048,7 +2047,8 @@
   "created_at": {
     "$date": "2025-03-12T23:55:21.804Z"
   },
-  "able": true
+  "able": true,
+  "price": 1400000
 },
 {
   "_id": {
@@ -2059,7 +2059,6 @@
   },
   "name": "Hàm cố định bắt vít 6 Implant Sườn Titan răng nhựa",
   "cost": 8000000,
-  "revenue": 9000000,
   "cared_actor": "Mọi bệnh nhân",
   "description": "Hàm cố định bắt vít HYBRID 6 Implant Sườn Titan răng nhựa",
   "unit": "Hàm",
@@ -2067,7 +2066,8 @@
   "created_at": {
     "$date": "2025-03-12T23:55:21.804Z"
   },
-  "able": true
+  "able": true,
+  "price": 9000000
 },
 {
   "_id": {
@@ -2078,7 +2078,6 @@
   },
   "name": "Hàm cố định bắt vít 6 Implant Sườn Titan răng sứ",
   "cost": 15000000,
-  "revenue": 17000000,
   "cared_actor": "Mọi bệnh nhân",
   "description": "Hàm cố định bắt vít HYBRID 6 Implant Sườn Titan răng sứ",
   "unit": "Hàm",
@@ -2086,7 +2085,8 @@
   "created_at": {
     "$date": "2025-03-12T23:55:21.804Z"
   },
-  "able": true
+  "able": true,
+  "price": 17000000
 },
 {
   "_id": {
@@ -2097,7 +2097,6 @@
   },
   "name": "Hàm cố định bắt vít 6 Implant Sườn Zirco răng nhựa",
   "cost": 12000000,
-  "revenue": 13000000,
   "cared_actor": "Mọi bệnh nhân",
   "description": "Hàm cố định bắt vít HYBRID 6 Implant Sườn Zirco răng nhựa",
   "unit": "Hàm",
@@ -2105,7 +2104,8 @@
   "created_at": {
     "$date": "2025-03-12T23:55:21.804Z"
   },
-  "able": true
+  "able": true,
+  "price": 13000000
 },
 {
   "_id": {
@@ -2116,7 +2116,6 @@
   },
   "name": "Hàm cố định bắt vít 6 Implant Sườn Zirco răng sứ",
   "cost": 19000000,
-  "revenue": 21000000,
   "cared_actor": "Mọi bệnh nhân",
   "description": "Hàm cố định bắt vít HYBRID 6 Implant Sườn Zirco răng sứ",
   "unit": "Hàm",
@@ -2124,7 +2123,8 @@
   "created_at": {
     "$date": "2025-03-12T23:55:21.804Z"
   },
-  "able": true
+  "able": true,
+  "price": 21000000
 },
 {
   "_id": {
@@ -2135,7 +2135,6 @@
   },
   "name": "Hàm cố định bắt vít 6 Implant Sườn Bio HPP răng nhựa",
   "cost": 12000000,
-  "revenue": 13000000,
   "cared_actor": "Mọi bệnh nhân",
   "description": "Hàm cố định bắt vít HYBRID 6 Implant Sườn Bio HPP răng nhựa",
   "unit": "Hàm",
@@ -2143,7 +2142,8 @@
   "created_at": {
     "$date": "2025-03-12T23:55:21.804Z"
   },
-  "able": true
+  "able": true,
+  "price": 13000000
 },
 {
   "_id": {
@@ -2154,7 +2154,6 @@
   },
   "name": "Hàm cố định bắt vít 6 Implant Sườn Bio HPP răng sứ",
   "cost": 19000000,
-  "revenue": 21000000,
   "cared_actor": "Mọi bệnh nhân",
   "description": "Hàm cố định bắt vít HYBRID 6 Implant Sườn Bio HPP răng sứ",
   "unit": "Hàm",
@@ -2162,7 +2161,8 @@
   "created_at": {
     "$date": "2025-03-12T23:55:21.804Z"
   },
-  "able": true
+  "able": true,
+  "price": 21000000
 },
 {
   "_id": {
@@ -2173,7 +2173,6 @@
   },
   "name": "Răng tạm toàn hàm",
   "cost": 1500000,
-  "revenue": 2000000,
   "cared_actor": "Mọi bệnh nhân",
   "description": "Phục hình tạm tức thì toàn hàm",
   "unit": "Hàm",
@@ -2181,7 +2180,8 @@
   "created_at": {
     "$date": "2025-03-12T23:55:21.804Z"
   },
-  "able": true
+  "able": true,
+  "price": 2000000
 },
 {
   "_id": {
@@ -2192,7 +2192,6 @@
   },
   "name": "Cylinder",
   "cost": 3500000,
-  "revenue": 4000000,
   "cared_actor": "Mọi bệnh nhân",
   "description": "Phục hình tạm tức thì toàn hàm Cylinder",
   "unit": "Hàm",
@@ -2200,7 +2199,8 @@
   "created_at": {
     "$date": "2025-03-12T23:55:21.804Z"
   },
-  "able": true
+  "able": true,
+  "price": 4000000
 },
 {
   "_id": {
@@ -2211,7 +2211,6 @@
   },
   "name": "OSSTEM (KOREA)",
   "cost": 1200000,
-  "revenue": 1500000,
   "cared_actor": "Mọi bệnh nhân",
   "description": "Cấy ghép 1 trụ Implant OSSTEM (KOREA)",
   "unit": "trụ Implant",
@@ -2219,7 +2218,8 @@
   "created_at": {
     "$date": "2025-03-12T23:55:21.804Z"
   },
-  "able": true
+  "able": true,
+  "price": 1500000
 },
 {
   "_id": {
@@ -2230,7 +2230,6 @@
   },
   "name": "RITTER",
   "cost": 1600000,
-  "revenue": 2000000,
   "cared_actor": "Mọi bệnh nhân",
   "description": "Cấy ghép 1 trụ Implant RITTER",
   "unit": "trụ Implant",
@@ -2238,7 +2237,8 @@
   "created_at": {
     "$date": "2025-03-12T23:55:21.804Z"
   },
-  "able": true
+  "able": true,
+  "price": 2000000
 },
 {
   "_id": {
@@ -2249,7 +2249,6 @@
   },
   "name": "SIC (SWISS/GERMANY)",
   "cost": 1600000,
-  "revenue": 2000000,
   "cared_actor": "Mọi bệnh nhân",
   "description": "Cấy ghép 1 trụ Implant SIC (SWISS/GERMANY)",
   "unit": "trụ Implant",
@@ -2257,7 +2256,8 @@
   "created_at": {
     "$date": "2025-03-12T23:55:21.804Z"
   },
-  "able": true
+  "able": true,
+  "price": 2000000
 },
 {
   "_id": {
@@ -2268,7 +2268,6 @@
   },
   "name": "NOBEL BIOCARE (USA/SWEDEN)",
   "cost": 2000000,
-  "revenue": 2400000,
   "cared_actor": "Mọi bệnh nhân",
   "description": "Cấy ghép 1 trụ Implant NOBEL BIOCARE (USA/SWEDEN)",
   "unit": "trụ Implant",
@@ -2276,7 +2275,8 @@
   "created_at": {
     "$date": "2025-03-12T23:55:21.804Z"
   },
-  "able": true
+  "able": true,
+  "price": 2400000
 },
 {
   "_id": {
@@ -2287,7 +2287,6 @@
   },
   "name": "NOBEL ACTIVE/PARALLEL (USA/SWEDEN)",
   "cost": 2400000,
-  "revenue": 2900000,
   "cared_actor": "Mọi bệnh nhân",
   "description": "Cấy ghép 1 trụ Implant NOBEL ACTIVE/PARALLEL (USA/SWEDEN)",
   "unit": "trụ Implant",
@@ -2295,7 +2294,8 @@
   "created_at": {
     "$date": "2025-03-12T23:55:21.804Z"
   },
-  "able": true
+  "able": true,
+  "price": 2900000
 },
 {
   "_id": {
@@ -2306,7 +2306,6 @@
   },
   "name": "STRAUMANN SLActive (SWISS)",
   "cost": 2600000,
-  "revenue": 3200000,
   "cared_actor": "Mọi bệnh nhân",
   "description": "Cấy ghép 1 trụ Implant STRAUMANN SLActive (SWISS)",
   "unit": "trụ Implant",
@@ -2314,7 +2313,8 @@
   "created_at": {
     "$date": "2025-03-12T23:55:21.804Z"
   },
-  "able": true
+  "able": true,
+  "price": 3200000
 },
 {
   "_id": {
@@ -2325,7 +2325,6 @@
   },
   "name": "NOBEL TiUltra-ACTIVE/PARALLEL-(USA/SWEDEN)",
   "cost": 2600000,
-  "revenue": 3200000,
   "cared_actor": "Mọi bệnh nhân",
   "description": "Cấy ghép 1 trụ Implant NOBEL TiUltra-ACTIVE/PARALLEL-(USA/SWEDEN)",
   "unit": "trụ Implant",
@@ -2333,7 +2332,8 @@
   "created_at": {
     "$date": "2025-03-12T23:55:21.804Z"
   },
-  "able": true
+  "able": true,
+  "price": 3200000
 },
 {
   "_id": {
@@ -2344,7 +2344,6 @@
   },
   "name": "STRAUMANN BLX (SWISS)",
   "cost": 3000000,
-  "revenue": 3500000,
   "cared_actor": "Mọi bệnh nhân",
   "description": "Cấy ghép 1 trụ Implant STRAUMANN BLX (SWISS)",
   "unit": "trụ Implant",
@@ -2352,7 +2351,8 @@
   "created_at": {
     "$date": "2025-03-12T23:55:21.804Z"
   },
-  "able": true
+  "able": true,
+  "price": 3500000
 },
 {
   "_id": {
@@ -2363,7 +2363,6 @@
   },
   "name": "Implant Zygoma NOBEL (USA)",
   "cost": 4000000,
-  "revenue": 5000000,
   "cared_actor": "Mọi bệnh nhân",
   "description": "Cấy ghép 1 trụ Implant Zygoma NOBEL (USA)",
   "unit": "trụ Implant",
@@ -2371,7 +2370,8 @@
   "created_at": {
     "$date": "2025-03-12T23:55:21.804Z"
   },
-  "able": true
+  "able": true,
+  "price": 5000000
 },
 {
   "_id": {
@@ -2382,7 +2382,6 @@
   },
   "name": "Xương khử khoáng",
   "cost": 400000,
-  "revenue": 500000,
   "cared_actor": "Mọi bệnh nhân",
   "description": "Xương khử khoáng",
   "unit": "Răng",
@@ -2390,7 +2389,8 @@
   "created_at": {
     "$date": "2025-03-12T23:55:21.804Z"
   },
-  "able": true
+  "able": true,
+  "price": 500000
 },
 {
   "_id": {
@@ -2401,7 +2401,6 @@
   },
   "name": "Màng Collagen 15x20mm",
   "cost": 300000,
-  "revenue": 400000,
   "cared_actor": "Mọi bệnh nhân",
   "description": "Màng Collagen 15x20mm",
   "unit": "Răng",
@@ -2409,7 +2408,8 @@
   "created_at": {
     "$date": "2025-03-12T23:55:21.804Z"
   },
-  "able": true
+  "able": true,
+  "price": 400000
 },
 {
   "_id": {
@@ -2420,7 +2420,6 @@
   },
   "name": "Màng Collagen 20x30mm",
   "cost": 400000,
-  "revenue": 500000,
   "cared_actor": "Mọi bệnh nhân",
   "description": "Màng Collagen 20x30mm",
   "unit": "Răng",
@@ -2428,7 +2427,8 @@
   "created_at": {
     "$date": "2025-03-12T23:55:21.804Z"
   },
-  "able": true
+  "able": true,
+  "price": 500000
 },
 {
   "_id": {
@@ -2439,7 +2439,6 @@
   },
   "name": "Màng Collagen 30x40mm",
   "cost": 600000,
-  "revenue": 700000,
   "cared_actor": "Mọi bệnh nhân",
   "description": "Màng Collagen 30x40mm",
   "unit": "Răng",
@@ -2447,7 +2446,8 @@
   "created_at": {
     "$date": "2025-03-12T23:55:21.804Z"
   },
-  "able": true
+  "able": true,
+  "price": 700000
 },
 {
   "_id": {
@@ -2458,7 +2458,6 @@
   },
   "name": "Màng Titan, PTFE",
   "cost": 500000,
-  "revenue": 600000,
   "cared_actor": "Mọi bệnh nhân",
   "description": "Màng Titan",
   "unit": "Răng",
@@ -2466,7 +2465,8 @@
   "created_at": {
     "$date": "2025-03-12T23:55:21.804Z"
   },
-  "able": true
+  "able": true,
+  "price": 600000
 },
 {
   "_id": {
@@ -2477,7 +2477,6 @@
   },
   "name": "Vít (Tack) neo xương, màng",
   "cost": 500000,
-  "revenue": 600000,
   "cared_actor": "Mọi bệnh nhân",
   "description": "Vít (Tack) neo xương, màng",
   "unit": "Con",
@@ -2485,7 +2484,8 @@
   "created_at": {
     "$date": "2025-03-12T23:55:21.804Z"
   },
-  "able": true
+  "able": true,
+  "price": 600000
 },
 {
   "_id": {
@@ -2496,7 +2496,6 @@
   },
   "name": "Ghép xương tự thân",
   "cost": 5000000,
-  "revenue": 6000000,
   "cared_actor": "Mọi bệnh nhân",
   "description": "Ghép xương tự thân",
   "unit": "Hàm",
@@ -2504,7 +2503,8 @@
   "created_at": {
     "$date": "2025-03-12T23:55:21.804Z"
   },
-  "able": true
+  "able": true,
+  "price": 6000000
 },
 {
   "_id": {
@@ -2515,7 +2515,6 @@
   },
   "name": "Mô liên kết",
   "cost": 4000000,
-  "revenue": 5000000,
   "cared_actor": "Mọi bệnh nhân",
   "description": "Mô liên kết",
   "unit": "Hàm",
@@ -2523,7 +2522,8 @@
   "created_at": {
     "$date": "2025-03-12T23:55:21.804Z"
   },
-  "able": true
+  "able": true,
+  "price": 5000000
 },
 {
   "_id": {
@@ -2534,7 +2534,6 @@
   },
   "name": "Màng PRP (tự thân)",
   "cost": 4000000,
-  "revenue": 5000000,
   "cared_actor": "Mọi bệnh nhân",
   "description": "Màng PRP (tự thân)",
   "unit": "Hàm",
@@ -2542,7 +2541,8 @@
   "created_at": {
     "$date": "2025-03-12T23:55:21.804Z"
   },
-  "able": true
+  "able": true,
+  "price": 5000000
 },
 {
   "_id": {
@@ -2553,7 +2553,6 @@
   },
   "name": "Ghép xương mào chậu",
   "cost": 1500000,
-  "revenue": 2000000,
   "cared_actor": "Mọi bệnh nhân",
   "description": "Ghép xương mào chậu",
   "unit": "Hàm",
@@ -2561,7 +2560,8 @@
   "created_at": {
     "$date": "2025-03-12T23:55:21.804Z"
   },
-  "able": true
+  "able": true,
+  "price": 2000000
 },
 {
   "_id": {
@@ -2572,7 +2572,6 @@
   },
   "name": "Nâng xoang kín",
   "cost": 3500000,
-  "revenue": 4000000,
   "cared_actor": "Mọi bệnh nhân",
   "description": "Nâng xoang kín Không bao gồm xương và màng",
   "unit": "Hàm",
@@ -2580,7 +2579,8 @@
   "created_at": {
     "$date": "2025-03-12T23:55:21.804Z"
   },
-  "able": true
+  "able": true,
+  "price": 4000000
 },
 {
   "_id": {
@@ -2591,7 +2591,6 @@
   },
   "name": "Nâng xoang hở",
   "cost": 5000000,
-  "revenue": 6000000,
   "cared_actor": "Mọi bệnh nhân",
   "description": "Nâng xoang kín Không bao gồm xương và màng",
   "unit": "Hàm",
@@ -2599,7 +2598,8 @@
   "created_at": {
     "$date": "2025-03-12T23:55:21.804Z"
   },
-  "able": true
+  "able": true,
+  "price": 6000000
 },
 {
   "_id": {
@@ -2610,15 +2610,15 @@
   },
   "name": "Chụp CT Cone Beam 1 hàm",
   "cost": 450000,
-  "revenue": 550000,
   "cared_actor": "Mọi bệnh nhân",
   "description": "Chụp CT Cone Beam 1 hàm",
   "unit": "Hàm",
-  "img": "template/blank_service.png",
+  "img": "dental_services/2aa82fad-ea3c-41fd-83cc-1ba0a1fce241.jpg",
   "created_at": {
     "$date": "2025-03-12T23:55:21.804Z"
   },
-  "able": true
+  "able": true,
+  "price": 550000
 },
 {
   "_id": {
@@ -2629,7 +2629,6 @@
   },
   "name": "Chụp CT Cone Beam 2 hàm",
   "cost": 700000,
-  "revenue": 900000,
   "cared_actor": "Mọi bệnh nhân",
   "description": "Chụp CT Cone Beam 1 hàm",
   "unit": "Hàm",
@@ -2637,7 +2636,8 @@
   "created_at": {
     "$date": "2025-03-12T23:55:21.804Z"
   },
-  "able": true
+  "able": true,
+  "price": 900000
 },
 {
   "_id": {
@@ -2648,7 +2648,6 @@
   },
   "name": "Máng hướng dẫn",
   "cost": 2800000,
-  "revenue": 3300000,
   "cared_actor": "Mọi bệnh nhân",
   "description": "Máng hướng dẫn",
   "unit": "Hàm",
@@ -2656,7 +2655,8 @@
   "created_at": {
     "$date": "2025-03-12T23:55:21.804Z"
   },
-  "able": true
+  "able": true,
+  "price": 3300000
 },
 {
   "_id": {
@@ -2667,7 +2667,6 @@
   },
   "name": "In sọ mặt",
   "cost": 600000,
-  "revenue": 700000,
   "cared_actor": "Mọi bệnh nhân",
   "description": "In sọ mặt",
   "unit": "Lần",
@@ -2675,7 +2674,8 @@
   "created_at": {
     "$date": "2025-03-12T23:55:21.804Z"
   },
-  "able": true
+  "able": true,
+  "price": 700000
 },
 {
   "_id": {
@@ -2686,7 +2686,6 @@
   },
   "name": "Nhổ răng cối giữa",
   "cost": 500000,
-  "revenue": 600000,
   "cared_actor": "Mọi bệnh nhân",
   "description": "Lấy răng cối giữa bị hỏng",
   "unit": "Cái",
@@ -2694,5 +2693,6 @@
   "created_at": {
     "$date": "2025-03-17T16:40:52.442Z"
   },
-  "able": false
+  "able": false,
+  "price": 600000
 }]

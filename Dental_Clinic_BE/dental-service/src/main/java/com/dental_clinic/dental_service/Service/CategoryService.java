@@ -3,18 +3,17 @@ package com.dental_clinic.dental_service.Service;
 import com.dental_clinic.common_lib.exception.AppException;
 import com.dental_clinic.common_lib.exception.ErrorCode;
 
-import com.dental_clinic.dental_service.DTO.CreateCategoryDTO;
-import com.dental_clinic.dental_service.DTO.UpdateCategoryDTO;
+import com.dental_clinic.dental_service.DTO.Request.CreateCategoryDTO;
+import com.dental_clinic.dental_service.DTO.Request.UpdateCategoryDTO;
 import com.dental_clinic.dental_service.Entity.Category;
-import com.dental_clinic.dental_service.Entity.Dental;
 import com.dental_clinic.dental_service.Repository.CategoryRepository;
 import com.dental_clinic.dental_service.Utils.FieldUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class CategoryService {
@@ -22,6 +21,7 @@ public class CategoryService {
     private final DentalService dentalService;
 
     @Autowired
+    @Lazy
     public CategoryService(CategoryRepository categoryRepository, DentalService dentalService) {
         this.categoryRepository = categoryRepository;
         this.dentalService = dentalService;

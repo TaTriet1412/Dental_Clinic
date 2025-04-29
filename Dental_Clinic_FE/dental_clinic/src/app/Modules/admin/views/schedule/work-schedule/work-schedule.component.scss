@@ -1,0 +1,58 @@
+@import url('../../../../../../../public/assets/scss/snackbar.scss');
+
+.schedule-page-container {
+  padding: 20px;
+  font-family: Arial, Helvetica, sans-serif; // Hoặc font bạn muốn
+}
+
+.calendar-container {
+  max-width: 1200px; // Giới hạn chiều rộng tối đa
+  margin: 20px auto; // Căn giữa và tạo khoảng cách
+  background-color: #fff;
+  padding: 15px;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.align-end {
+  align-items: end;
+}
+
+.custom-action-btn {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px; // Khoảng cách giữa icon và chữ
+  font-weight: bold;
+  border-radius: 6px;
+  transition: all 0.3s ease-in-out;
+
+  i {
+    font-size: 14px; // Kích thước icon
+  }
+
+  &:hover {
+    transform: translateY(-2px); // Hiệu ứng nâng lên khi hover
+  }
+
+  &[color="info"] {
+    background-color: #17a2b8; // Màu xanh
+    border: none;
+    color: white;
+
+    &:hover {
+      background-color: #138496;
+    }
+  }
+
+  &[color="danger"] {
+    background-color: #dc3545; // Màu đỏ
+    border: none;
+    color: white;
+
+    &:hover {
+      background-color: #c82333;
+    }
+  }
+}

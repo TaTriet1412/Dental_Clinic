@@ -23,4 +23,6 @@ public interface PrescriptionRepository extends MongoRepository<Prescription, St
     @Query("{'den_id': ?0, 'is_deleted': false}")
     List<Prescription> findByDenIdAndIsDeletedFalse(Long medId);
 
+    @Query(value = "{$or: [{'bill_id': null}, {'bill_id': {$exists: false}}], '_id': ?0}", exists = true)
+    Boolean existsByIdAndBillIdIsNullOrNotPresent(String id);
 }

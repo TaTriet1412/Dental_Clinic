@@ -1,0 +1,14 @@
+img {
+    margin: 0 auto;
+    display: block;
+    margin-top: 20%;
+}
+
+.bg {
+    background-image: url('/assets/user/image/bg_login.png');
+}
+
+@import "../../../../../public/assets/login/css/bootstrap.min.css";
+@import "../../../../../public/assets/login/scss/style.scss";
+
+@import '../../../../../node_modules/ngx-spinner/animations/ball-scale-multiple.css'

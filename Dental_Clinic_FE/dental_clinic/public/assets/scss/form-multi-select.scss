@@ -1,0 +1,460 @@
+// Multi-select styles
+:host  ::ng-deep {
+    .form-multi-select,
+    :not(.form-multi-select) > .form-multi-select-dropdown {
+      --cui-form-multi-select-zindex: 1000;
+      --cui-form-multi-select-font-family: ;
+      --cui-form-multi-select-font-size: 1rem;
+      --cui-form-multi-select-font-weight: 400;
+      --cui-form-multi-select-line-height: 1.5;
+      --cui-form-multi-select-color: var(--cui-body-color);
+      --cui-form-multi-select-bg: var(--cui-body-bg);
+      --cui-form-multi-select-box-shadow: inset 0 1px 2px rgba(8, 10, 12, 0.075);
+      --cui-form-multi-select-border-width: var(--cui-border-width);
+      --cui-form-multi-select-border-color: var(--cui-border-color);
+      --cui-form-multi-select-border-radius: var(--cui-border-radius);
+      --cui-form-multi-select-disabled-color: var(--cui-body-color);
+      --cui-form-multi-select-disabled-bg: var(--cui-secondary-bg);
+      --cui-form-multi-select-disabled-border-color: var(--cui-border-color);
+      --cui-form-multi-select-focus-color: var(--cui-body-color);
+      --cui-form-multi-select-focus-bg: var(--cui-body-bg);
+      --cui-form-multi-select-focus-border-color: rgb(171.5, 170.5, 234.5);
+      --cui-form-multi-select-focus-box-shadow: 0 0 0 0.25rem rgba(88, 86, 214, 0.25);
+      --cui-form-multi-select-placeholder-color: var(--cui-secondary-color);
+      --cui-form-multi-select-selection-padding-y: 0.375rem;
+      --cui-form-multi-select-selection-padding-x: 0.75rem;
+      --cui-form-multi-select-cleaner-width: 1.5rem;
+      --cui-form-multi-select-cleaner-height: 1.5rem;
+      --cui-form-multi-select-cleaner-padding-y: 0;
+      --cui-form-multi-select-cleaner-padding-x: 0;
+      --cui-form-multi-select-cleaner-icon: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%23000'%3e%3cpath d='M.293.293a1 1 0 011.414 0L8 6.586 14.293.293a1 1 0 111.414 1.414L9.414 8l6.293 6.293a1 1 0 01-1.414 1.414L8 9.414l-6.293 6.293a1 1 0 01-1.414-1.414L6.586 8 .293 1.707a1 1 0 010-1.414z'/%3e%3c/svg%3e");
+      --cui-form-multi-select-cleaner-icon-color: var(--cui-tertiary-color);
+      --cui-form-multi-select-cleaner-icon-hover-color: var(--cui-body-color);
+      --cui-form-multi-select-cleaner-icon-size: 0.625rem;
+      --cui-form-multi-select-indicator-width: 1.5rem;
+      --cui-form-multi-select-indicator-height: 1.5rem;
+      --cui-form-multi-select-indicator-padding-y: 0;
+      --cui-form-multi-select-indicator-padding-x: 0;
+      --cui-form-multi-select-indicator-icon: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512' fill='%23000'%3e%3cpath d='M256.045 416.136.717 160.807l29.579-29.579 225.749 225.748 225.749-225.748 29.579 29.579-255.328 255.329z'/%3e%3c/svg%3e");
+      --cui-form-multi-select-indicator-icon-color: var(--cui-tertiary-color);
+      --cui-form-multi-select-indicator-icon-hover-color: var(--cui-body-color);
+      --cui-form-multi-select-indicator-icon-size: 0.75rem;
+      --cui-form-multi-select-select-all-padding-y: 0.5rem;
+      --cui-form-multi-select-select-all-padding-x: 0.75rem;
+      --cui-form-multi-select-select-all-color: var(--cui-body-secondary-color);
+      --cui-form-multi-select-select-all-bg: transparent;
+      --cui-form-multi-select-select-all-border-width: var(--cui-border-width);
+      --cui-form-multi-select-select-all-border-color: var(--cui-border-color);
+      --cui-form-multi-select-select-all-hover-color: var(--cui-body-color);
+      --cui-form-multi-select-select-all-hover-bg: transparent;
+      --cui-form-multi-select-dropdown-min-width: 100%;
+      --cui-form-multi-select-dropdown-bg: var(--cui-body-bg);
+      --cui-form-multi-select-dropdown-border-width: var(--cui-border-width);
+      --cui-form-multi-select-dropdown-border-color: var(--cui-border-color);
+      --cui-form-multi-select-dropdown-border-radius: var(--cui-border-radius);
+      --cui-form-multi-select-dropdown-box-shadow: var(--cui-box-shadow);
+      --cui-form-multi-select-options-padding-y: 0.5rem;
+      --cui-form-multi-select-options-padding-x: 0.75rem;
+      --cui-form-multi-select-options-font-size: 1rem;
+      --cui-form-multi-select-options-font-weight: 400;
+      --cui-form-multi-select-options-color: var(--cui-body-color);
+      --cui-form-multi-select-optgroup-label-padding-y: 0.5rem;
+      --cui-form-multi-select-optgroup-label-padding-x: 0.625rem;
+      --cui-form-multi-select-optgroup-label-font-size: 80%;
+      --cui-form-multi-select-optgroup-label-font-weight: 700;
+      --cui-form-multi-select-optgroup-label-color: var(--cui-tertiary-color);
+      --cui-form-multi-select-optgroup-label-text-transform: uppercase;
+      --cui-form-multi-select-option-padding-y: 0.5rem;
+      --cui-form-multi-select-option-padding-x: 1.25rem;
+      --cui-form-multi-select-option-margin-y: 1px;
+      --cui-form-multi-select-option-margin-x: 0;
+      --cui-form-multi-select-option-border-width: var(--cui-border-width);
+      --cui-form-multi-select-option-border-color: transparent;
+      --cui-form-multi-select-option-border-radius: var(--cui-border-radius);
+      --cui-form-multi-select-option-box-shadow: inset 0 1px 2px rgba(8, 10, 12, 0.075);
+      --cui-form-multi-select-option-hover-color: var(--cui-body-color);
+      --cui-form-multi-select-option-hover-bg: var(--cui-tertiary-bg);
+      --cui-form-multi-select-option-focus-box-shadow: 0 0 0 0.25rem rgba(88, 86, 214, 0.25);
+      --cui-form-multi-select-option-disabled-color: var(--cui-secondary-color);
+      --cui-form-multi-select-option-indicator-width: 1em;
+      --cui-form-multi-select-option-indicator-bg: var(--cui-body-bg);
+      --cui-form-multi-select-option-indicator-border: var(--cui-border-width) solid var(--cui-border-color);
+      --cui-form-multi-select-option-indicator-border-radius: 0.25em;
+      --cui-form-multi-select-option-selected-bg: #e7eaee; /* Thay đổi từ --cui-secondary-bg */
+      --cui-form-multi-select-option-selected-indicator-bg: #738ae6; /* Màu tối hơn một chút cho checkbox */
+      --cui-form-multi-select-option-selected-indicator-border-color: #e7eaee;
+      --cui-form-multi-select-option-selected-indicator-bg-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3e%3cpath fill='none' stroke='rgba%28255, 255, 255, 0.87%29' stroke-linecap='round' stroke-linejoin='round' stroke-width='3' d='m6 10 3 3 6-6'/%3e%3c/svg%3e");
+      --cui-form-multi-select-tag-padding-y: 0.0625rem;
+      --cui-form-multi-select-tag-padding-x: 0.5rem;
+      --cui-form-multi-select-tag-bg: var(--cui-secondary-bg);
+      --cui-form-multi-select-tag-border-width: var(--cui-border-width);
+      --cui-form-multi-select-tag-border-color: var(--cui-border-color);
+      --cui-form-multi-select-tag-border-radius: 0.25rem;
+      --cui-form-multi-select-tag-delete-width: 0.75rem;
+      --cui-form-multi-select-tag-delete-height: 0.75rem;
+      --cui-form-multi-select-tag-delete-icon: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%23000'%3e%3cpath d='M.293.293a1 1 0 011.414 0L8 6.586 14.293.293a1 1 0 111.414 1.414L9.414 8l6.293 6.293a1 1 0 01-1.414 1.414L8 9.414l-6.293 6.293a1 1 0 01-1.414-1.414L6.586 8 .293 1.707a1 1 0 010-1.414z'/%3e%3c/svg%3e");
+      --cui-form-multi-select-tag-delete-icon-color: var(--cui-secondary-color);
+      --cui-form-multi-select-tag-delete-icon-hover-color: var(--cui-body-color);
+      --cui-form-multi-select-tag-delete-icon-size: 0.5rem;
+      --cui-form-multi-select-selection-tags-gap: 0.25rem;
+      --cui-form-multi-select-selection-tags-padding-y: 0.25rem;
+      --cui-form-multi-select-selection-tags-padding-x: 0.25rem;
+      position: relative;
+    
+      &.is-invalid,
+      .was-validated &:invalid + .form-multi-select,
+      .was-validated &:invalid + :not(.form-multi-select) > .form-multi-select-dropdown,
+      :not(.form-multi-select) > .form-multi-select-dropdown.is-invalid {
+        --cui-form-multi-select-border-color: var(--cui-form-invalid-border-color);
+      }
+    
+      &.is-valid,
+      .was-validated &:valid + .form-multi-select,
+      .was-validated &:valid + :not(.form-multi-select) > .form-multi-select-dropdown,
+      :not(.form-multi-select) > .form-multi-select-dropdown.is-valid {
+        --cui-form-multi-select-border-color: var(--cui-form-valid-border-color);
+      }
+    
+      select.form-multi-select {
+        display: none;
+      }
+    
+      .form-multi-select-input-group {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: stretch;
+        width: 100%;
+        font-family: var(--cui-form-multi-select-font-family);
+        font-size: var(--cui-form-multi-select-font-size);
+        font-weight: var(--cui-form-multi-select-font-weight);
+        line-height: var(--cui-form-multi-select-line-height);
+        color: var(--cui-form-multi-select-color);
+        background-color: var(--cui-form-multi-select-bg);
+        background-clip: padding-box;
+        border: var(--cui-form-multi-select-border-width) solid var(--cui-form-multi-select-border-color);
+        border-radius: var(--cui-form-multi-select-border-radius);
+        transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+    
+        @media (prefers-reduced-motion: reduce) {
+          transition: none;
+        }
+    
+        &:focus,
+        &:has(:focus),
+        &.show .form-multi-select-input-group {
+          color: var(--cui-form-multi-select-focus-color);
+          background-color: var(--cui-form-multi-select-focus-bg);
+          border-color: var(--cui-form-multi-select-focus-border-color);
+          outline: 0;
+          box-shadow: var(--cui-form-multi-select-focus-box-shadow);
+        }
+      }
+    
+      .form-multi-select-selection {
+        position: relative;
+        display: flex;
+        flex: 1 1 auto;
+        flex-wrap: wrap;
+        width: 1%;
+        min-width: 0;
+        padding: var(--cui-form-multi-select-selection-padding-y) var(--cui-form-multi-select-selection-padding-x);
+      }
+  
+      .form-multi-select-tag {
+        display: inline-flex;
+        align-items: center;
+        padding: var(--cui-form-multi-select-tag-padding-y) var(--cui-form-multi-select-tag-padding-x);
+        background-color: var(--cui-form-multi-select-tag-bg);
+        border: var(--cui-form-multi-select-tag-border-width) solid var(--cui-form-multi-select-tag-border-color);
+        border-radius: var(--cui-form-multi-select-tag-border-radius);
+  
+        .form-multi-select-tag-delete {
+          width: var(--cui-form-multi-select-tag-delete-width);
+          height: var(--cui-form-multi-select-tag-delete-height);
+          margin-left: 0.5rem;
+          background: transparent var(--cui-form-multi-select-tag-delete-icon) center/var(--cui-form-multi-select-tag-delete-icon-size) no-repeat;
+          border: none;
+          opacity: 0.65;
+  
+          &:hover {
+            opacity: 1;
+            filter: brightness(0.8);
+          }
+        }
+      }
+    
+      .form-multi-select-search {
+        display: flex;
+        flex: 0 1 0px;
+        max-width: 100%;
+        padding: 0;
+        background: 0 0;
+        border: 0;
+    
+        &:focus {
+          outline: 0;
+        }
+    
+        &::-moz-placeholder {
+          color: var(--cui-form-multi-select-placeholder-color);
+          opacity: 1;
+        }
+    
+        &::placeholder {
+          color: var(--cui-form-multi-select-placeholder-color);
+          opacity: 1;
+        }
+    
+        &:-moz-placeholder-shown {
+          flex: 1 1 auto;
+        }
+    
+        &:placeholder-shown,
+        .show & {
+          flex: 1 1 auto;
+        }
+      }
+    
+      .form-multi-select-buttons {
+        display: flex;
+        align-items: center;
+        min-height: calc(2 * var(--cui-form-multi-select-selection-padding-y) + var(--cui-form-multi-select-font-size) * var(--cui-form-multi-select-line-height));
+        padding: 0 var(--cui-form-multi-select-selection-padding-y);
+      }
+    
+      .form-multi-select-cleaner,
+      .form-multi-select-indicator {
+        position: relative;
+        z-index: 2;
+        box-sizing: content-box;
+        background-color: transparent;
+        background-repeat: no-repeat;
+        background-position: center;
+        border: 0;
+    
+        &:focus {
+          z-index: 5;
+          outline: 0;
+          box-shadow: var(--cui-focus-ring-x, 0) var(--cui-focus-ring-y, 0) var(--cui-focus-ring-blur, 0) var(--cui-focus-ring-width) var(--cui-focus-ring-color);
+          border-radius: 0.375rem;
+        }
+    
+        &::before {
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          content: "";
+        }
+      }
+    
+      .form-multi-select-cleaner {
+        width: var(--cui-form-multi-select-cleaner-width);
+        height: var(--cui-form-multi-select-cleaner-height);
+        padding: var(--cui-form-multi-select-cleaner-padding-y) var(--cui-form-multi-select-cleaner-padding-x);
+    
+        &::before {
+          background-color: var(--cui-form-multi-select-cleaner-icon-color);
+          mask: var(--cui-form-multi-select-cleaner-icon) center/var(--cui-form-multi-select-cleaner-icon-size) no-repeat;
+        }
+    
+        &:hover::before {
+          background-color: var(--cui-form-multi-select-cleaner-icon-hover-color);
+        }
+      }
+    
+      .form-multi-select-indicator {
+        width: var(--cui-form-multi-select-indicator-width);
+        height: var(--cui-form-multi-select-indicator-height);
+        padding: var(--cui-form-multi-select-indicator-padding-y) var(--cui-form-multi-select-indicator-padding-x);
+        transition: transform 0.15s ease-in-out;
+    
+        @media (prefers-reduced-motion: reduce) {
+          transition: none;
+        }
+    
+        &::before {
+          background-color: var(--cui-form-multi-select-indicator-icon-color);
+          mask: var(--cui-form-multi-select-indicator-icon) center/var(--cui-form-multi-select-indicator-icon-size) no-repeat;
+        }
+    
+        &:hover::before {
+          background-color: var(--cui-form-multi-select-indicator-icon-hover-color);
+        }
+      }
+    
+      .form-multi-select-dropdown {
+        position: absolute;
+        z-index: var(--cui-form-multi-select-zindex);
+        display: none;
+        min-width: var(--cui-form-multi-select-dropdown-min-width);
+        background-color: var(--cui-form-multi-select-dropdown-bg);
+        background-clip: padding-box;
+        border: var(--cui-form-multi-select-dropdown-border-width) solid var(--cui-form-multi-select-dropdown-border-color);
+        border-radius: var(--cui-form-multi-select-dropdown-border-radius);
+    
+        &.show,
+        .show & {
+          display: block;
+        }
+  
+        .form-multi-select-all {
+          width: 100%; // Chiếm full width
+          margin: 0;
+          padding: var(--cui-form-multi-select-select-all-padding-y) var(--cui-form-multi-select-select-all-padding-x);
+          border: none !important; // Xóa toàn bộ viền
+          border-radius: 0; // Xóa bo góc
+          box-shadow: none !important;
+  
+          // Thêm divider dưới cùng
+          position: relative;
+          &::after {
+            content: "";
+            position: absolute;
+            bottom: 0;
+            left: var(--cui-form-multi-select-select-all-padding-x);
+            right: var(--cui-form-multi-select-select-all-padding-x);
+            height: 1px;
+            background-color: var(--cui-form-multi-select-select-all-border-color);
+          }
+  
+          // Checkbox custom
+          &::before {
+            content: "";
+            display: inline-block;
+            width: 1em;
+            height: 1em;
+            margin-right: 0.5rem;
+            vertical-align: middle;
+            border: 2px solid var(--cui-form-multi-select-option-indicator-border-color);
+            border-radius: 3px;
+            background-color: var(--cui-form-multi-select-option-indicator-bg);
+            transition: all 0.2s ease;
+          }
+  
+          &:hover {
+            &::before {
+              border-color: var(--cui-form-multi-select-option-selected-indicator-border-color);
+            }
+          }
+  
+          &.all-selected {
+            &::before {
+              background-color: var(--cui-form-multi-select-option-selected-indicator-bg);
+              border-color: var(--cui-form-multi-select-option-selected-indicator-border-color);
+              background-image: var(--cui-form-multi-select-option-selected-indicator-bg-image);
+              background-size: 80%;
+              
+            }
+          }
+        }
+  
+        // Thêm divider sau Select All
+        .form-multi-select-all + .form-multi-select-options {
+          border-top: 1px solid var(--cui-form-multi-select-select-all-border-color);
+        }
+  
+        .form-multi-select-option.form-multi-selected {
+          background-color: var(--cui-form-multi-select-option-selected-bg);
+          
+          &::before {
+            background-color: var(--cui-form-multi-select-option-selected-indicator-bg);
+            border-color: var(--cui-form-multi-select-option-selected-indicator-border-color);
+          }
+        }
+  
+        .form-multi-select-option {
+          padding-top: 10px;
+          padding-bottom: 10px;
+          position: relative;
+          padding-left: calc(
+            var(--cui-form-multi-select-option-indicator-width) + 
+            var(--cui-form-multi-select-option-padding-x) + 0.5rem
+          ); // Tạo khoảng trống cho checkbox
+          transition: all 0.2s ease;
+    
+          // Checkbox container
+          &::before {
+            content: "";
+            position: absolute;
+            left: var(--cui-form-multi-select-option-padding-x);
+            top: 50%;
+            transform: translateY(-50%);
+            width: var(--cui-form-multi-select-option-indicator-width);
+            height: var(--cui-form-multi-select-option-indicator-width);
+            border: var(--cui-form-multi-select-option-indicator-border);
+            border-radius: var(--cui-form-multi-select-option-indicator-border-radius);
+            background-color: var(--cui-form-multi-select-option-indicator-bg);
+            transition: all 0.2s ease;
+          }
+  
+       
+          // Checkmark (ẩn mặc định)
+          &::after {
+            content: "";
+            position: absolute;
+            left: calc(var(--cui-form-multi-select-option-padding-x) + 2px);
+            top: 50%;
+            width: calc(var(--cui-form-multi-select-option-indicator-width) - 4px);
+            height: calc(var(--cui-form-multi-select-option-indicator-width) - 4px);
+            transform: translateY(-50%);
+            opacity: 0;
+            background: var(--cui-form-multi-select-option-selected-indicator-bg) 
+              url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23ffffff'%3E%3Cpath d='M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z'/%3E%3C/svg%3E") 
+              center/contain no-repeat;
+            transition: opacity 0.2s ease;
+          }
+    
+          // Trạng thái được chọn
+          &.form-multi-selected {
+            &::before {
+              background-color: var(--cui-form-multi-select-option-selected-indicator-bg);
+              border-color: var(--cui-form-multi-select-option-selected-indicator-border-color);
+            }
+    
+            &::after {
+              opacity: 1;
+            }
+          }
+    
+          // Hiệu ứng hover
+          &:hover {
+            &::before {
+              border-color: var(--cui-form-multi-select-option-selected-indicator-border-color);
+            }
+          }
+        }
+      }
+    
+      
+    
+      // Responsive and size variants
+      &.form-multi-select-sm {
+        --cui-form-multi-select-selection-padding-y: 0.25rem;
+        --cui-form-multi-select-selection-padding-x: 0.5rem;
+        --cui-form-multi-select-font-size: 0.875rem;
+        --cui-form-multi-select-border-radius: var(--cui-border-radius-sm);
+        --cui-form-multi-select-tag-padding-y: 0.075rem;
+        --cui-form-multi-select-tag-padding-x: 0.5rem;
+        --cui-form-multi-select-tag-border-radius: 0.125rem;
+        --cui-form-multi-select-selection-tags-gap: 0.125rem;
+        --cui-form-multi-select-selection-tags-padding-y: 0.0625rem;
+        --cui-form-multi-select-selection-tags-padding-x: 0.125rem;
+      }
+    
+      &.form-multi-select-lg {
+        --cui-form-multi-select-selection-padding-y: 0.5rem;
+        --cui-form-multi-select-selection-padding-x: 1rem;
+        --cui-form-multi-select-font-size: 1.25rem;
+        --cui-form-multi-select-border-radius: var(--cui-border-radius-lg);
+        --cui-form-multi-select-tag-padding-y: 0.175rem;
+        --cui-form-multi-select-tag-padding-x: 0.5rem;
+        --cui-form-multi-select-tag-border-radius: 0.375rem;
+        --cui-form-multi-select-selection-tags-gap: 0.25rem;
+        --cui-form-multi-select-selection-tags-padding-y: 0.25rem;
+        --cui-form-multi-select-selection-tags-padding-x: 0.25rem;
+      }
+    }
+  }
+  

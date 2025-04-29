@@ -2,11 +2,33 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="82151459-3396-4eba-8106-9c297d84fa18" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/config-server/src/main/resources/config/dentist-service.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config-server/src/main/resources/config/api-gateway.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/config-server/src/main/resources/config/api-gateway.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dentist-service/src/main/java/com/dental_clinic/dentist_service/DentistServiceApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/dentist-service/src/main/java/com/dental_clinic/dentist_service/DentistServiceApplication.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dentist-service/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/dentist-service/src/main/resources/application.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/material-service/src/main/java/com/dental_clinic/material_service/MaterialServiceApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/material-service/src/main/java/com/dental_clinic/material_service/MaterialServiceApplication.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/config-server/src/main/resources/config/patient-service.yaml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/config-server/src/main/resources/config/schedule-service.yaml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/patient-service/src/main/java/com/dental_clinic/patient_service/DTO/Request/UpdateLastVisted.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/patient-service/src/main/resources/application.yaml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/schedule-service/src/main/java/com/dental_clinic/schedule_service/Config/EnvConfig.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/schedule-service/src/main/java/com/dental_clinic/schedule_service/Config/SpringMongoConfig.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/schedule-service/src/main/java/com/dental_clinic/schedule_service/Controller/AppointmentController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/schedule-service/src/main/java/com/dental_clinic/schedule_service/Controller/WorkScheduleController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/schedule-service/src/main/java/com/dental_clinic/schedule_service/DTO/Request/CreateAppointmentReq.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/schedule-service/src/main/java/com/dental_clinic/schedule_service/DTO/Request/CreateWorkScheduleReq.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/schedule-service/src/main/java/com/dental_clinic/schedule_service/DTO/Request/UpdateAppointStatusReq.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/schedule-service/src/main/java/com/dental_clinic/schedule_service/DTO/Request/UpdateAppointmentReq.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/schedule-service/src/main/java/com/dental_clinic/schedule_service/DTO/Request/UpdateWorkScheduleReq.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/schedule-service/src/main/java/com/dental_clinic/schedule_service/Entity/Appointment.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/schedule-service/src/main/java/com/dental_clinic/schedule_service/Entity/AppointmentStatus.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/schedule-service/src/main/java/com/dental_clinic/schedule_service/Entity/WorkSchedule.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/schedule-service/src/main/java/com/dental_clinic/schedule_service/Repository/AppointmentRepository.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/schedule-service/src/main/java/com/dental_clinic/schedule_service/Repository/WorkScheduleRepository.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/schedule-service/src/main/java/com/dental_clinic/schedule_service/Service/AppointmentService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/schedule-service/src/main/java/com/dental_clinic/schedule_service/Service/WorkScheduleService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/schedule-service/src/main/resources/.env" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/schedule-service/src/main/resources/application.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/patient-service/src/main/java/com/dental_clinic/patient_service/Controller/PatientController.java" beforeDir="false" afterPath="$PROJECT_DIR$/patient-service/src/main/java/com/dental_clinic/patient_service/Controller/PatientController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/patient-service/src/main/java/com/dental_clinic/patient_service/Entity/Patient.java" beforeDir="false" afterPath="$PROJECT_DIR$/patient-service/src/main/java/com/dental_clinic/patient_service/Entity/Patient.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/patient-service/src/main/java/com/dental_clinic/patient_service/PatientServiceApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/patient-service/src/main/java/com/dental_clinic/patient_service/PatientServiceApplication.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/patient-service/src/main/java/com/dental_clinic/patient_service/Service/PatientService.java" beforeDir="false" afterPath="$PROJECT_DIR$/patient-service/src/main/java/com/dental_clinic/patient_service/Service/PatientService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/patient-service/src/main/resources/application.properties" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -16,6 +38,10 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
   </component>
+  <component name="KubernetesApiPersistence"><![CDATA[{}]]></component>
+  <component name="KubernetesApiProvider"><![CDATA[{
+  "isMigrated": true
+}]]></component>
   <component name="ProjectColorInfo">{
   &quot;customColor&quot;: &quot;&quot;,
   &quot;associatedIndex&quot;: 5
@@ -28,32 +54,16 @@
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
     "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.git.unshallow": "true",
     "git-widget-placeholder": "main",
     "kotlin-language-version-configured": "true",
     "last_opened_file_path": "D:/College/Year3/SOA/CK/Application/Dental_Clinic/Dental_Clinic_BE",
-    "settings.editor.selected.configurable": "com.poratu.idea.plugins.tomcat.setting.TomcatServersConfigurable"
+    "nodejs_package_manager_path": "npm",
+    "settings.editor.selected.configurable": "com.poratu.idea.plugins.tomcat.setting.TomcatServersConfigurable",
+    "vue.rearranger.settings.migration": "true"
   }
 }]]></component>
   <component name="RunManager">
-    <configuration default="true" type="TestNG">
-      <shortenClasspath name="NONE" />
-      <option name="SUITE_NAME" value="" />
-      <option name="PACKAGE_NAME" value="" />
-      <option name="MAIN_CLASS_NAME" value="" />
-      <option name="GROUP_NAME" value="" />
-      <option name="TEST_OBJECT" value="CLASS" />
-      <option name="PARAMETERS" value="" />
-      <option name="OUTPUT_DIRECTORY" value="" />
-      <option name="TEST_SEARCH_SCOPE">
-        <value defaultName="moduleWithDependencies" />
-      </option>
-      <option name="PROPERTIES_FILE" value="" />
-      <properties />
-      <listeners />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
     <configuration default="true" type="com.poratu.idea.plugins.tomcat">
       <predefined_log_file enabled="true" id="Tomcat Localhost Log" />
       <predefined_log_file enabled="true" id="Tomcat Access Log" />
@@ -76,6 +86,33 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
+    <configuration default="true" type="TestNG">
+      <shortenClasspath name="NONE" />
+      <option name="SUITE_NAME" value="" />
+      <option name="PACKAGE_NAME" value="" />
+      <option name="MAIN_CLASS_NAME" value="" />
+      <option name="GROUP_NAME" value="" />
+      <option name="TEST_OBJECT" value="CLASS" />
+      <option name="PARAMETERS" value="" />
+      <option name="OUTPUT_DIRECTORY" value="" />
+      <option name="TEST_SEARCH_SCOPE">
+        <value defaultName="moduleWithDependencies" />
+      </option>
+      <option name="PROPERTIES_FILE" value="" />
+      <properties />
+      <listeners />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+  </component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-jdk-9823dce3aa75-fbdcb00ec9e3-intellij.indexing.shared.core-IU-251.23774.435" />
+        <option value="bundled-js-predefined-d6986cc7102b-f27c65a3e318-JavaScript-IU-251.23774.435" />
+      </set>
+    </attachedChunks>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
@@ -85,7 +122,11 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1741361446728</updated>
+      <workItem from="1745521924918" duration="25000" />
     </task>
     <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
   </component>
 </project>

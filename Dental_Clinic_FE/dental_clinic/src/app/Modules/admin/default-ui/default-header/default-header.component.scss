@@ -1,0 +1,51 @@
+@import "../../../../../public/assets/scss/snackbar.scss";
+
+// Notification
+
+// Trong default-header.component.scss
+
+// Style for the dropdown menu items
+.notification-menu {
+  // Example: min-width for consistency
+  min-width: 300px;
+
+  .notification-item {
+    white-space: normal; // Allow text wrapping
+    cursor: pointer;
+
+    &.unread {
+      font-weight: bold; // Make unread items stand out
+      background-color: rgba(
+        var(--cui-primary-rgb),
+        0.05
+      ); // Subtle background for unread
+    }
+
+    &:hover,
+    &:focus {
+      background-color: rgba(var(--cui-secondary-rgb), 0.1); // Hover effect
+    }
+
+    .message-preview {
+      display: -webkit-box;
+      -webkit-line-clamp: 2; // Show max 2 lines of preview
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      font-size: $small-font-size; // Use CoreUI variable
+      line-height: 1.4;
+      margin-top: 0.25rem;
+      font-weight: normal; // Reset font weight for preview
+    }
+
+    .small {
+      font-size: $small-font-size * 0.9; // Even smaller for meta info
+    }
+  }
+}
+
+// Ensure modal content respects text wrapping
+#notificationDetailModal .modal-body p {
+  word-break: break-word; // Break long words if necessary
+}
+

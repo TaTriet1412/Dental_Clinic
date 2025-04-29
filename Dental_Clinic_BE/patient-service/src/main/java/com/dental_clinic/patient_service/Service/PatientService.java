@@ -4,6 +4,7 @@ import com.dental_clinic.common_lib.exception.AppException;
 import com.dental_clinic.common_lib.exception.ErrorCode;
 import com.dental_clinic.patient_service.DTO.Request.ChangePatientImageRequest;
 import com.dental_clinic.patient_service.DTO.Request.CreatePatientReq;
+import com.dental_clinic.patient_service.DTO.Request.UpdateLastVisted;
 import com.dental_clinic.patient_service.DTO.Request.UpdatePatientReq;
 import com.dental_clinic.patient_service.Entity.Patient;
 import com.dental_clinic.patient_service.Repository.PatientRepository;
@@ -17,6 +18,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.LocalDateTime;
+import java.time.chrono.ChronoLocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -68,15 +70,23 @@ public class PatientService {
     public Patient updatePatient(UpdatePatientReq request) {
         Patient patient = getById(request.id());
 
-        request.name().ifPresent(patient::setName);
+        request.name().ifPresent(name -> {
+            if (name.isBlank())
+                throw new AppException(ErrorCode.INVALID_REQUEST, "Tên không được để trống");
+            patient.setName(name);
+        });
 
         request.email().ifPresent(email -> {
+            if (email.isBlank())
+                throw new AppException(ErrorCode.INVALID_REQUEST, "Email không được để trống");
             if (patientRepository.existsByEmailAndIdNot(email, request.id()))
                 throw new AppException(ErrorCode.EXISTED_DATA, "Email đã tồn tại");
             patient.setEmail(email);
         });
 
         request.phone().ifPresent(phone -> {
+            if (phone.isBlank())
+                throw new AppException(ErrorCode.INVALID_REQUEST, "Số điện thoại không được để trống");
             if (patientRepository.existsByPhoneAndIdNot(phone, request.id()))
                 throw new AppException(ErrorCode.EXISTED_DATA, "Số điện thoại đã tồn tại");
             patient.setPhone(phone);
@@ -88,15 +98,24 @@ public class PatientService {
             patient.setAddress(address);
         });
 
-        request.birthday().ifPresent(patient::setBirthday);
+        request.birthday().ifPresent(birthday -> {
+            if (birthday.isAfter(ChronoLocalDate.from(LocalDateTime.now())))
+                throw new AppException(ErrorCode.INVALID_REQUEST, "Ngày sinh không hợp lệ");
+            patient.setBirthday(birthday);
+        });
         request.gender().ifPresent(patient::setGender);
 
         return patientRepository.save(patient);
     }
 
+    //    Cập nhật thời gian khám gần nhất
+    public Patient updateLastVisit(UpdateLastVisted request) {
+        Patient patient = getById(request.id());
+        patient.setLast_visit(request.last_visit());
+        return patientRepository.save(patient);
+    }
 
-
-    //    Đổi ảnh cho dịch vụ
+    //    Đổi ảnh cho bệnh nhân
     public void changeImg(ChangePatientImageRequest request) {
         // Kiểm tra bệnh nhân tồn tại không
         Patient patient = patientRepository.findById(request.getPatientId()).orElseThrow(() -> new AppException(ErrorCode.NOT_FOUND, "Bệnh nhân không tồn tại"));

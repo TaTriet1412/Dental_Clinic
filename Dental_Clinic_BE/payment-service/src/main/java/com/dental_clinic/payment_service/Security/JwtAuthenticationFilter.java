@@ -1,5 +1,6 @@
-package com.dental_clinic.auth_service.Security;
+package com.dental_clinic.payment_service.Security;
 
+import com.dental_clinic.payment_service.Security.JwtTokenProvider;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebFilter;

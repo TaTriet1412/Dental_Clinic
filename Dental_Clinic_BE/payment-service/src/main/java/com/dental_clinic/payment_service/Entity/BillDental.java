@@ -4,15 +4,19 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
+
+import java.math.BigInteger;
 
 @Getter
 @Setter
 @Entity
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 @Table( name = "bill_service" )
-public class BillService {
+public class BillDental {
     @Id
     @GeneratedValue( strategy = GenerationType.IDENTITY )
     @Column( name = "id", nullable = false )
@@ -26,7 +30,7 @@ public class BillService {
     @NotNull
     @ColumnDefault( "0" )
     @Column( name = "service_cost", nullable = false )
-    private Integer serviceCost;
+    private BigInteger serviceCost;
 
     @NotNull
     @ColumnDefault( "0" )
@@ -36,7 +40,7 @@ public class BillService {
     @NotNull
     @ColumnDefault( "0" )
     @Column( name = "service_price", nullable = false )
-    private Integer servicePrice;
+    private BigInteger servicePrice;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "bill_id")

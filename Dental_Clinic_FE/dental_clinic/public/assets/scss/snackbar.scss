@@ -1,0 +1,19 @@
+::ng-deep .cdk-overlay-container {
+    position: fixed;
+    z-index: 10000;
+}
+
+::ng-deep .snackbar-success {
+    border-radius: 6px;
+    box-shadow: 0 0 0 6px rgb(100, 160, 11);
+}
+
+::ng-deep .snackbar-warning {
+    border-radius: 6px;
+    box-shadow: 0 0 0 6px rgb(219, 219, 15);
+}
+
+::ng-deep .snackbar-error {
+    border-radius: 6px;
+    box-shadow: 0 0 0 6px rgb(255, 0, 0);
+}

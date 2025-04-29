@@ -17,6 +17,22 @@ spring:
     config:
       uri: http://localhost:8060
     gateway:
+      default-filters:
+        - DedupeResponseHeader=Access-Control-Allow-Credentials Access-Control-Allow-Origin
+      globalcors:
+        corsConfigurations:
+          '[/**]':
+            allowedOrigins:
+              - "http://localhost:4200"
+            allowedMethods:
+              - GET
+              - POST
+              - PUT
+              - DELETE
+              - OPTIONS
+            allowedHeaders:
+              - "*"
+            allowCredentials: true
       discovery:
         locator:
           enabled: true
@@ -24,7 +40,7 @@ spring:
         - id: auth-service
           uri: lb://auth-service
           predicates:
-            - Path=/auth/**
+            - Path=/auth/**,/user/**
         - id: dental-service
           uri: lb://dental-service
           predicates:
@@ -37,6 +53,14 @@ spring:
           uri: lb://dentist-service
           predicates:
             - Path=/dentist/**
+        - id: payment-service
+          uri: lb://payment-service
+          predicates:
+            - Path=/payment/**
+        - id: schedule-service
+          uri: lb://schedule-service
+          predicates:
+            - Path=/schedule/**
 
 
 management:

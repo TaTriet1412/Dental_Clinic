@@ -1,13 +1,19 @@
 spring:
    application:
-     name: material-service
+     name: payment-service
    config:
      import: "optional:configserver:http://localhost:8088"
    datasource:
-     url: "jdbc:mysql://localhost:3306/material"
+     url: "jdbc:mysql://localhost:3306/payment"
      username: root
      password: root
    jpa:
      hibernate:
        ddl-auto: update
      show-sql: true
+   data:
+     redis:
+       host: localhost
+       port: 6379
+       password:
+       timeout: 60000
