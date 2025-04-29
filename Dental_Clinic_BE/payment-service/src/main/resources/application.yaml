@@ -1,0 +1,13 @@
+spring:
+   application:
+     name: material-service
+   config:
+     import: "optional:configserver:http://localhost:8088"
+   datasource:
+     url: "jdbc:mysql://localhost:3306/material"
+     username: root
+     password: root
+   jpa:
+     hibernate:
+       ddl-auto: update
+     show-sql: true

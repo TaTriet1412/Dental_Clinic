@@ -8,7 +8,7 @@ import java.util.Optional;
 public class UpdateDentalServiceDTO {
     Optional<String> name;
     Optional<Integer> cost;
-    Optional<Integer> revenue;
+    Optional<Integer> price;
     Optional<String> cared_actor;
     Optional<String> description;
     Optional<String> unit;
