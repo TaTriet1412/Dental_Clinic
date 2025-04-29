@@ -23,15 +23,12 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 @Service
 public class DentalService {
     private final DentalRepository dentalRepository;
     @Lazy
     private final CategoryService categoryService;
-    private static final Logger logger = LoggerFactory.getLogger(DentalService.class);
+    private final ServiceLogRepository serviceLogRepository;
 
     @Autowired
     public DentalService(DentalRepository dentalRepository, CategoryService categoryService) {
@@ -108,9 +105,17 @@ public class DentalService {
 
         dentalRepository.save(dental);
 
-        logger.info("Created new dental service: name={}, cost={}, revenue={}, cared_actor={}, description={}, unit={}",
+
+        // Ghi log vào Service_Log
+        ServiceLog log = new ServiceLog();
+        log.setEntityType("Dental");
+        log.setEntityId(dental.getId());
+        log.setAction("CREATE");
+        log.setMessage(String.format("Created new dental service: name=%s, cost=%d, revenue=%d, cared_actor=%s, description=%s, unit=%s",
                 dental.getName(), dental.getCost(), dental.getRevenue(),
-                dental.getCared_actor(), dental.getDescription(), dental.getUnit());
+                dental.getCared_actor(), dental.getDescription(), dental.getUnit()));
+        log.setCreatedAt(LocalDateTime.now());
+        serviceLogRepository.save(log);
 
         return dental;
     }
@@ -196,7 +201,14 @@ public class DentalService {
 
         if (hasChanges) {
             dentalRepository.save(dental);
-            logger.info(logMessage.toString());
+            // Ghi log vào Service_Log
+            ServiceLog log = new ServiceLog();
+            log.setEntityType("Dental");
+            log.setEntityId(dental.getId());
+            log.setAction("UPDATE");
+            log.setMessage(logMessage.toString());
+            log.setCreatedAt(LocalDateTime.now());
+            serviceLogRepository.save(log);
         } else {
             dentalRepository.save(dental);
         }

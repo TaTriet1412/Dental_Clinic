@@ -15,13 +15,10 @@ import java.util.stream.Collectors;
 import java.time.LocalDateTime;
 import java.math.BigInteger;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 @Service
 public class PrescriptionService {
     private final PrescriptionRepository prescriptionRepository;
-    private static final Logger logger = LoggerFactory.getLogger(PrescriptionService.class);
+    private final PrescriptionLogRepository prescriptionLogRepository;
 
     @Autowired
     public PrescriptionService(PrescriptionRepository prescriptionRepository) {
@@ -49,9 +46,16 @@ public class PrescriptionService {
         Prescription prescription = createPrescriptionFromRequest(request);
         prescriptionRepository.save(prescription);
 
-        logger.info("Created new prescription: pat_id={}, den_id={}, note={}, medicines={}, total_price={}",
+        // Ghi log vào Prescription_Log
+        PrescriptionLog log = new PrescriptionLog();
+        log.setPrescriptionId(prescription.getId());
+        log.setAction("CREATE");
+        log.setMessage(String.format("Created new prescription: pat_id=%d, den_id=%d, note=%s, medicines=%s, total_price=%s",
                 prescription.getPat_id(), prescription.getDen_id(), prescription.getNote(),
-                prescription.getMedicines(), prescription.getTotal_price());
+                prescription.getMedicines(), prescription.getTotal_price()));
+        log.setCreatedAt(LocalDateTime.now());
+        prescriptionLogRepository.save(log);
+
         return prescription;
     }
 
@@ -165,7 +169,13 @@ public class PrescriptionService {
 
         if (hasChanges) {
             prescriptionRepository.save(prescription);
-            logger.info(logMessage.toString());
+            // Ghi log vào Prescription_Log
+            PrescriptionLog log = new PrescriptionLog();
+            log.setPrescriptionId(prescription.getId());
+            log.setAction("UPDATE");
+            log.setMessage(logMessage.toString());
+            log.setCreatedAt(LocalDateTime.now());
+            prescriptionLogRepository.save(log);
         } else {
             prescriptionRepository.save(prescription);
         }

@@ -17,9 +17,6 @@ import lombok.experimental.FieldDefaults;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 @Service
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class DentistService {
@@ -27,7 +24,7 @@ public class DentistService {
     final AccountClient accountClient;
     final DentistRepository dentistRepository;
     final ObjectMapper objectMapper;
-    private static final Logger logger = LoggerFactory.getLogger(DentistService.class);
+    final DentistLogRepository dentistLogRepository;
 
     @Autowired
     public DentistService(FacultyService facultyService, AccountClient accountClient, DentistRepository dentistRepository, ObjectMapper objectMapper) {
@@ -68,8 +65,14 @@ public class DentistService {
 
             dentistRepository.save(dentist);
 
-            logger.info("Created new dentist: specialty={}, experience_year={}, fac_id={}",
-                    dentist.getSpecialty(), dentist.getExperienceYear(), request.facId());
+            // Ghi log vào Dentist_Log
+            DentistLog log = new DentistLog();
+            log.setDentist(dentist);
+            log.setAction("CREATE");
+            log.setMessage(String.format("Created new dentist: specialty=%s, experience_year=%d, fac_id=%d",
+                    dentist.getSpecialty(), dentist.getExperienceYear(), request.facId()));
+            log.setCreatedAt(LocalDateTime.now());
+            dentistLogRepository.save(log);
 
             return dentist;
         }
@@ -132,7 +135,13 @@ public class DentistService {
 
         if (hasChanges) {
             dentistRepository.save(dentist);
-            logger.info(logMessage.toString());
+            // Ghi log vào Dentist_Log
+            DentistLog log = new DentistLog();
+            log.setDentist(dentist);
+            log.setAction("UPDATE");
+            log.setMessage(logMessage.toString());
+            log.setCreatedAt(LocalDateTime.now());
+            dentistLogRepository.save(log);
         } else {
             dentistRepository.save(dentist);
         }

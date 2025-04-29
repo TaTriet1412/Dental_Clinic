@@ -15,8 +15,11 @@ target/
 .env
 src/main/resources/.env
 
+# macOS system files
+.DS_Store
+
 ### IntelliJ IDEA ###
-.idea
+.idea/
 *.iws
 *.iml
 *.ipr

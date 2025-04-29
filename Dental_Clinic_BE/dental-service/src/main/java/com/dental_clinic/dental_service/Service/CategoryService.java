@@ -16,14 +16,12 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 @Service
 public class CategoryService {
     private final CategoryRepository categoryRepository;
     private final DentalService dentalService;
-    private static final Logger logger = LoggerFactory.getLogger(CategoryService.class);
+    private final CategoryLogRepository categoryLogRepository;
 
     @Autowired
     public CategoryService(CategoryRepository categoryRepository, DentalService dentalService) {
@@ -66,7 +64,14 @@ public class CategoryService {
 
         categoryRepository.save(category);
 
-        logger.info("Created new category: name={}, note={}", category.getName(), category.getNote());
+        // Ghi log vào Category_Log
+        CategoryLog log = new CategoryLog();
+        log.setCategory(category);
+        log.setAction("CREATE");
+        log.setMessage(String.format("Created new category: name=%s, note=%s", category.getName(), category.getNote()));
+        log.setCreatedAt(LocalDateTime.now());
+        categoryLogRepository.save(log);
+
         return category;
     }
 
@@ -104,7 +109,13 @@ public class CategoryService {
 
         if (hasChanges) {
             categoryRepository.save(category);
-            logger.info(logMessage.toString());
+            // Ghi log vào Category_Log
+            CategoryLog log = new CategoryLog();
+            log.setCategory(category);
+            log.setAction("UPDATE");
+            log.setMessage(logMessage.toString());
+            log.setCreatedAt(LocalDateTime.now());
+            categoryLogRepository.save(log);
         } else {
             categoryRepository.save(category);
         }
