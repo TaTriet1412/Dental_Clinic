@@ -10,6 +10,7 @@ import com.dental_clinic.schedule_service.Entity.Appointment;
 import com.dental_clinic.schedule_service.Entity.WorkSchedule;
 import com.dental_clinic.schedule_service.Repository.WorkScheduleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -22,6 +23,7 @@ public class WorkScheduleService {
     WorkScheduleRepository workScheduleRepository;
 
     @Autowired
+    @Lazy
     public WorkScheduleService(WorkScheduleRepository workScheduleRepository , AppointmentService appointmentService) {
         this.workScheduleRepository = workScheduleRepository;
         this.appointmentService = appointmentService;

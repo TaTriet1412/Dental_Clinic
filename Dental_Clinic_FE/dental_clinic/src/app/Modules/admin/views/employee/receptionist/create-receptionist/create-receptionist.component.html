@@ -1,0 +1,251 @@
+<div class="p-20">
+  <h1>Thêm lễ tân</h1>
+
+  <c-row ngPreserveWhitespaces>
+    <c-col xs="12">
+      <c-card class="mb-40">
+        <c-card-header
+          class="d-flex justify-content-between align-items-center"
+        >
+          <strong>Thêm lễ tân</strong>
+        </c-card-header>
+        <c-card-body>
+          <form
+            #tooltipForm="ngForm"
+            (ngSubmit)="onSubmit(tooltipForm)"
+            [validated]="validated"
+            cForm
+            class="needs-validation"
+            novalidate
+          >
+            <c-row>
+              <c-col [md]="8" class="pl-20 pr-40">
+                <c-row [md]="6" class="mb-4">
+                  <c-col class="position-relative mb-4" [md]="6">
+                    <label cLabel for="name">Họ tên</label>
+                    <input
+                      cFormControl
+                      id="name"
+                      name="name"
+                      required
+                      [(ngModel)]="name"
+                      #nameControl="ngModel"
+                      [class.is-invalid]="validated && nameControl.invalid"
+                      placeholder="Nhập họ tên"
+                      rows="4"
+                    />
+                    <c-form-feedback
+                      *ngIf="validated && nameControl.invalid"
+                      [valid]="false"
+                      tooltip
+                    >
+                      Vui lòng nhập họ tên.
+                    </c-form-feedback>
+                  </c-col>
+
+                  <c-col class="position-relative mb-4" [md]="6">
+                    <label cLabel for="phone">Số điện thoại</label>
+                    <input
+                      cFormControl
+                      id="phone"
+                      name="phone"
+                      type="tel"
+                      required
+                      [(ngModel)]="phone"
+                      #phoneControl="ngModel"
+                      [class.is-invalid]="validated && phoneControl.invalid"
+                      placeholder="Nhập số điện thoại"
+                      rows="4"
+                    />
+                    <c-form-feedback
+                      *ngIf="validated && phoneControl.invalid"
+                      [valid]="false"
+                      tooltip
+                    >
+                      Vui lòng nhập số điện thoại.
+                    </c-form-feedback>
+                  </c-col>
+                </c-row>
+                <c-row [md]="6" class="mb-4">
+                  <c-col class="position-relative mb-4" [md]="6">
+                    <label cLabel for="email">Email</label>
+                    <input
+                      cFormControl
+                      id="email"
+                      name="email"
+                      type="email"
+                      required
+                      [(ngModel)]="email"
+                      #emailControl="ngModel"
+                      [class.is-invalid]="validated && emailControl.invalid"
+                      placeholder="Nhập họ tên"
+                      rows="4"
+                    />
+                    <c-form-feedback
+                      *ngIf="validated && emailControl.invalid"
+                      [valid]="false"
+                      tooltip
+                    >
+                      Vui lòng nhập Email.
+                    </c-form-feedback>
+                  </c-col>
+
+                  <c-col class="position-relative mb-4" [md]="6">
+                    <label cLabel for="salary">Mức lương</label>
+                    <c-input-group class="mb-3">
+                      <input
+                        cFormControl
+                        id="salary"
+                        name="salary"
+                        required
+                        [(ngModel)]="salary"
+                        #salaryControl="ngModel"
+                        [class.is-invalid]="validated && salaryControl.invalid"
+                        placeholder="Nhập mức lương"
+                        rows="4"
+                      />
+                      <span cInputGroupText>VND</span>
+                    </c-input-group>
+                    <c-form-feedback
+                      *ngIf="validated && salaryControl.invalid"
+                      [valid]="false"
+                      tooltip
+                    >
+                      Vui lòng nhập mức lương.
+                    </c-form-feedback>
+                  </c-col>
+                </c-row>
+                <c-row [md]="6" class="mb-4">
+                  <!-- Địa chỉ -->
+                  <c-col class="position-relative mb-4" [md]="6">
+                    <label cLabel for="address">Địa chỉ</label>
+                    <textarea
+                      cFormControl
+                      id="address"
+                      name="address"
+                      required
+                      [(ngModel)]="address"
+                      #addressControl="ngModel"
+                      [class.is-invalid]="validated && addressControl.invalid"
+                      placeholder="Nhập địa chỉ"
+                      rows="3"
+                      class="form-control"
+                    ></textarea>
+                    <c-form-feedback
+                      *ngIf="validated && addressControl.invalid"
+                      [valid]="false"
+                      tooltip
+                    >
+                      Vui lòng nhập địa chỉ.
+                    </c-form-feedback>
+                  </c-col>
+
+                  <!-- Giới tính -->
+                  <c-col [md]="6">
+                    <c-row class="position-relative mb-2">
+                      <label cLabel>Giới tính</label>
+                      <div class="d-flex align-items-center">
+                        <div class="form-check me-3">
+                          <input
+                            class="form-check-input"
+                            type="radio"
+                            id="male"
+                            name="gender"
+                            [value]="true"
+                            [(ngModel)]="gender"
+                          />
+                          <label class="form-check-label" for="male">Nam</label>
+                        </div>
+                        <div class="form-check">
+                          <input
+                            class="form-check-input"
+                            type="radio"
+                            id="female"
+                            name="gender"
+                            [value]="false"
+                            [(ngModel)]="gender"
+                          />
+                          <label class="form-check-label" for="female"
+                            >Nữ</label
+                          >
+                        </div>
+                      </div>
+                      <c-form-feedback
+                        *ngIf="validated && gender === null"
+                        [valid]="false"
+                        tooltip
+                      >
+                        Vui lòng chọn giới tính.
+                      </c-form-feedback>
+                    </c-row>
+
+                    <c-row class="position-relative mb-4">
+                      <label cLabel for="dateBirthdayValuePicker"
+                        >Ngày sinh</label
+                      >
+                      <c-date-picker
+                        cFormControl
+                        id="dateBirthdayValuePicker"
+                        name="birthDate"
+                        required
+                        [(ngModel)]="birthday"
+                        #birthDateControl="ngModel"
+                        [locale]="'vi-VN'"
+                        [maxDate]="maxDateForDatePicker(maxbirthday)"
+                        placeholder="Chọn ngày sinh"
+                        closeOnSelect
+                        inputReadOnly
+                        [class.is-invalid]="
+                          validated && birthDateControl.invalid
+                        "
+                      ></c-date-picker>
+                      <c-form-feedback
+                        *ngIf="validated && birthDateControl.invalid"
+                        [valid]="false"
+                        tooltip
+                      >
+                        Vui lòng chọn ngày sinh.
+                      </c-form-feedback>
+                    </c-row>
+                  </c-col>
+                </c-row>
+              </c-col>
+              <c-col [md]="4" class="d-flex flex-column align-items-center">
+                <img
+                  cImg
+                  rounded
+                  class="mb-2"
+                  [src]="selectedImage"
+                  height="200"
+                  alt="Ảnh đại diện"
+                />
+                <c-input-group class="mb-3">
+                  <input
+                    cFormControl
+                    id="inputGroupFile01"
+                    type="file"
+                    accept="image/*"
+                    (change)="onFileSelected($event)"
+                  />
+                </c-input-group>
+              </c-col>
+            </c-row>
+            <c-row class="g-4">
+              <c-col class="text-end">
+                <button
+                  cButton
+                  color="success"
+                  type="submit"
+                  [disabled]="disabledBtnSubmit"
+                >
+                  <i class="fas fa-plus me-2"></i>
+                  Thêm mới
+                </button>
+              </c-col>
+            </c-row>
+          </form>
+        </c-card-body>
+      </c-card>
+    </c-col>
+  </c-row>
+</div>

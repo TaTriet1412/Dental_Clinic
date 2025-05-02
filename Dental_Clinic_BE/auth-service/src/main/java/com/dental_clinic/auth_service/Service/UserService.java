@@ -1,6 +1,8 @@
 package com.dental_clinic.auth_service.Service;
 
 import com.dental_clinic.auth_service.DTO.Response.NameIdEmployeeRes;
+import com.dental_clinic.auth_service.DTO.Response.UserDetailRes;
+import com.dental_clinic.auth_service.DTO.Response.UserRes;
 import com.dental_clinic.common_lib.exception.AppException;
 import com.dental_clinic.common_lib.exception.ErrorCode;
 
@@ -42,10 +44,11 @@ public class UserService {
                 () -> new AppException(ErrorCode.NOT_FOUND, "Không tìm thấy tài khoản có id = '" + id + "'"));
     }
 
-    public List<NameIdEmployeeRes> getNameAndIdOfEmployeeByRoleId(Long roleId){
-       List<NameIdEmployeeRes> result = userRepository.findByRoleId(roleId).stream()
-               .map(user -> new NameIdEmployeeRes(user.getId(), user.getName()))
-               .toList();
+    public List<NameIdEmployeeRes> getNameAndIdAbleOfEmployeeByRoleId(Long roleId){
+        List<NameIdEmployeeRes> result = userRepository.findByRoleId(roleId).stream()
+                .filter(user -> !user.is_ban())
+                .map(user -> new NameIdEmployeeRes(user.getId(), user.getName()))
+                .toList();
 
        return result;
     }
@@ -69,13 +72,13 @@ public class UserService {
         });
         req.name().ifPresent(name -> {
             FieldUtils.checkStrEmpty(name, "Họ tên");
-            if(userRepository.existsByNameAndIdNot(name, req.userId()))
-                throw new AppException(ErrorCode.EXISTED_DATA, "Đã tồn tại tên này");
             u.setName(name);
         });
 
+        req.gender().ifPresent(u::setGender);
+
         req.phone().ifPresent(phone -> {
-            FieldUtils.checkNumberIsIntegerAndNotNegative(phone);
+            FieldUtils.checkStrEmpty(phone, "Số điện thoại");
             if(userRepository.existsByPhoneAndIdNot(phone, req.userId()))
                 throw new AppException(ErrorCode.EXISTED_DATA, "Đã tồn tại số điện thoại này");
             u.setPhone(phone);
@@ -87,6 +90,8 @@ public class UserService {
 
         req.salary().ifPresent(salary -> {
             FieldUtils.checkNumberIsIntegerAndNotNegative(salary);
+            if(salary < 100000)
+                throw new AppException(ErrorCode.INVALID_REQUEST, "Lương không được nhỏ hơn 100.000 đồng");
             u.setSalary(salary);
         });
 
@@ -108,6 +113,24 @@ public class UserService {
                 resultUser.getBirthday(),
                 resultUser.getPhone(),
                 resultUser.getSalary()
+        );
+    }
+
+    public UserDetailRes getUserDetailById(Long id) {
+        User user = userRepository.findById(id).orElseThrow(
+                () -> new AppException(ErrorCode.NOT_FOUND, "Không tìm thấy tài khoản có id = '" + id + "'"));
+        return new UserDetailRes(
+                user.getId(),
+                user.getName(),
+                user.getEmail(),
+                user.getAddress(),
+                user.getPhone(),
+                user.getBirthday(),
+                user.getSalary(),
+                user.getCreated_at(),
+                user.isGender(),
+                user.is_ban(),
+                user.getImg()
         );
     }
 
@@ -185,4 +208,32 @@ public class UserService {
         }).start();
     }
 
+    public NameIdEmployeeRes getNameAndIdOfUserById(Long id) {
+        User user = userRepository.findById(id).orElseThrow(
+                () -> new AppException(ErrorCode.NOT_FOUND, "Không tìm thấy tài khoản có id = '" + id + "'"));
+        return new NameIdEmployeeRes(user.getId(), user.getName());
+    }
+
+    public List<UserRes> getListUserByRoleId(Long roleId) {
+        List<User> users = userRepository.findByRoleId(roleId).stream()
+                .sorted((u1, u2) -> u2.getCreated_at().compareTo(u1.getCreated_at())) // Sort by created_at descending
+                .toList();
+
+        List<UserRes> result = new ArrayList<>();
+        for (User user : users) {
+            UserRes userRes = new UserRes(
+                    user.getId(),
+                    user.getName(),
+                    user.getEmail(),
+                    user.getPhone(),
+                    user.getBirthday(),
+                    user.getSalary(),
+                    user.getCreated_at(),
+                    user.isGender(),
+                    user.is_ban()
+            );
+            result.add(userRes);
+        }
+        return result;
+    }
 }

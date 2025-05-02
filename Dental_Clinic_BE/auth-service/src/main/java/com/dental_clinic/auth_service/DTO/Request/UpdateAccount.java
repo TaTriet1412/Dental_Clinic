@@ -14,6 +14,7 @@ public record UpdateAccount(
         Optional<String> address,
         Optional<LocalDate> birthday,
         Optional<String> phone,
+        Optional<Boolean> gender,
         Optional<Integer> salary
 ) {
 }

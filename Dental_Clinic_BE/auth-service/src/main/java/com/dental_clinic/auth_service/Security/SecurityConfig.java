@@ -32,11 +32,17 @@ public class SecurityConfig  {
                             .permitAll()
 
 //                        USER
-
                         .requestMatchers( "/user/role/́")
                             .hasAnyRole(RoleUtils.ADMIN.toString(),RoleUtils.RECEPTIONIST.toString())
+                        .requestMatchers( "/user/list/role/́2")
+                            .hasRole(RoleUtils.ADMIN.toString())
+                        .requestMatchers("/user/list/role/*")
+                            .hasAnyRole(RoleUtils.ADMIN.toString(),RoleUtils.RECEPTIONIST.toString())
+
                         .requestMatchers(HttpMethod.GET, "/images/**")
                             .permitAll()
+                        .requestMatchers("/auth/change-img")
+                            .hasAnyRole(RoleUtils.ADMIN.toString(),RoleUtils.RECEPTIONIST.toString())
 
                         // Any other request should be authenticated
                         .anyRequest().authenticated()

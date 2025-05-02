@@ -75,9 +75,6 @@ public class AuthService {
         if (userRepository.existsByPhone(req.phone())) {
             throw new AppException(ErrorCode.EXISTED_DATA, "Số điện thoại đã tồn tại");
         }
-        if (userRepository.existsByName(req.name())) {
-            throw new AppException(ErrorCode.EXISTED_DATA, "Tên đã tồn tại");
-        }
         if (!FieldUtils.isValidEmail(req.email())) {
             throw new AppException(ErrorCode.INVALID_REQUEST, "Email không hợp lệ");
         }

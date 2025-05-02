@@ -23,9 +23,36 @@ public class UserController {
     @GetMapping("/role/{roleId}")
     public ApiResponse<Object> getNameAndIdOfUserByRoleId(@PathVariable Long roleId) {
         return ApiResponse.builder()
-                .result(userService.getNameAndIdOfEmployeeByRoleId(roleId))
+                .result(userService.getNameAndIdAbleOfEmployeeByRoleId(roleId))
                 .apiCode(200)
                 .message("Lấy danh sách nhân viên thành công!")
+                .build();
+    }
+
+    @GetMapping("/{id}")
+    public ApiResponse<Object> getUserById(@PathVariable Long id) {
+        return ApiResponse.builder()
+                .result(userService.getUserDetailById(id))
+                .apiCode(200)
+                .message("Lấy thông tin nhân viên thành công!")
+                .build();
+    }
+
+    @GetMapping("/list/role/{roleId}")
+    public ApiResponse<Object> getListUserByRoleId(@PathVariable Long roleId) {
+        return ApiResponse.builder()
+                .result(userService.getListUserByRoleId(roleId))
+                .apiCode(200)
+                .message("Lấy danh sách nhân viên thành công!")
+                .build();
+    }
+
+    @GetMapping("/{id}/name-id")
+    public ApiResponse<Object> getNameAndIdOfUserById(@PathVariable Long id) {
+        return ApiResponse.builder()
+                .result(userService.getNameAndIdOfUserById(id))
+                .apiCode(200)
+                .message("Lấy thông tin nhân viên thành công!")
                 .build();
     }
 }

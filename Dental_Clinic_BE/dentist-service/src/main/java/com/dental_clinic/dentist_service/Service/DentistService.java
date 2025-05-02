@@ -11,11 +11,13 @@ import com.dental_clinic.dentist_service.DTO.Request.UpdateDentistReq;
 import com.dental_clinic.dentist_service.Entity.Dentist;
 import com.dental_clinic.dentist_service.Entity.Faculty;
 import com.dental_clinic.dentist_service.Repository.DentistRepository;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.reactive.function.client.WebClientResponseException;
 
 @Service
 @FieldDefaults(level = AccessLevel.PRIVATE)
@@ -39,15 +41,11 @@ public class DentistService {
                 .orElseThrow(() -> new AppException(ErrorCode.NOT_FOUND, "Không tìm thấy nha sĩ"));
     }
 
-    public Dentist createDentist(CreateDentistReq request) {
+    public Dentist createDentist(CreateDentistReq request) throws JsonProcessingException {
         AccountCreateRes accountCreateRes = null;
         try {
             // Gọi service tạo tài khoản
             ApiResponse<Object> accountResponse = accountClient.createAccount(request.account());
-
-            if (accountResponse== null | accountResponse.getResult() == null) {
-                throw new AppException(ErrorCode.valueOf(String.valueOf(accountResponse.getApiCode())), accountResponse.getMessage());
-            }
 
             Object result =  accountResponse.getResult();
             accountCreateRes = objectMapper.convertValue(result, AccountCreateRes.class);
@@ -65,15 +63,38 @@ public class DentistService {
             dentistRepository.save(dentist);
 
             return dentist;
-        }
-        catch (Exception ex) {
-            DeleteAccount deleteAccount = new DeleteAccount(accountCreateRes.getEmail());
-            accountClient.deleteAccount(deleteAccount);
-            if (ex instanceof AppException ) {
-                throw ex;
+        }catch (AppException e) {
+            if (accountCreateRes != null) {
+                DeleteAccount deleteAccount = new DeleteAccount(accountCreateRes.getEmail());
+                accountClient.deleteAccount(deleteAccount);
+            }
+            throw e;
+        } catch (WebClientResponseException ex) {
+            if (accountCreateRes != null) {
+                DeleteAccount deleteAccount = new DeleteAccount(accountCreateRes.getEmail());
+                accountClient.deleteAccount(deleteAccount);
+            }
+
+            String errorBody = ex.getResponseBodyAsString(); // <-- lấy lỗi gốc
+            int statusCode = ex.getRawStatusCode(); // ví dụ 400, 404, 500
+
+            // Nếu body trả về dạng JSON, bạn parse như này:
+            ApiResponse<?> errorResponse = objectMapper.readValue(errorBody, ApiResponse.class);
+
+            throw new AppException(ErrorCode.INVALID_REQUEST,
+                    errorResponse.getMessage());
+        } catch (Exception ex) {
+            if (accountCreateRes != null) {
+                DeleteAccount deleteAccount = new DeleteAccount(accountCreateRes.getEmail());
+                accountClient.deleteAccount(deleteAccount);
             }
             throw new AppException(ErrorCode.INTERNAL_SERVER_ERROR, "Tạo nha sĩ thất bại");
         }
+    }
+
+    public Dentist findDentistById(Long dentistId) {
+        return dentistRepository.findById(dentistId)
+                .orElseThrow(() -> new AppException(ErrorCode.NOT_FOUND, "Không tìm thấy nha sĩ có id = " + dentistId));
     }
 
     private void checkAbleFaculty(Long facId) {

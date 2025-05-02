@@ -298,7 +298,33 @@ export class WorkScheduleComponent implements OnInit, AfterViewInit, OnDestroy {
 
     if (form.valid && this.enteredCode && this.selectedEmployee && this.selectedRole) {
       this.calendarVisible = true; // Hiển thị lịch làm việc nếu hợp lệ
-      this.snackBar.notifySuccess('Tìm kiếm thành công!');
+
+      // Gọi API để lấy lịch làm việc của nhân sự mới
+      const startTime = this.removeUTCOffset(new Date().toISOString()); // Ngày bắt đầu (hiện tại)
+      const endTime = this.removeUTCOffset(new Date(new Date().setMonth(new Date().getMonth() + 1)).toISOString()); // Ngày kết thúc (1 tháng sau)
+
+      const eventReq: EventRequest = {
+        startTime: startTime,
+        endTime: endTime,
+        userId: Number.parseInt(this.enteredCode)
+      };
+
+      this.workScheduleService.getEventsByRangeTime(eventReq).subscribe({
+        next: (response: any) => {
+          // Cập nhật sự kiện trong calendarOptions
+          this.calendarOptions.events = response.result.map((event: any) => ({
+            id: event.id,
+            start: event.startTime,
+            end: event.endTime,
+          }));
+
+          this.snackBar.notifySuccess('Tìm kiếm thành công!');
+        },
+        error: (error) => {
+          this.snackBar.notifyError('Lỗi khi tải lịch làm việc!');
+          console.error('Error fetching events:', error);
+        }
+      });
     } else {
       this.calendarVisible = false; // Ẩn lịch làm việc nếu không hợp lệ
       this.snackBar.notifyError('Vui lòng chọn đầy đủ thông tin!');

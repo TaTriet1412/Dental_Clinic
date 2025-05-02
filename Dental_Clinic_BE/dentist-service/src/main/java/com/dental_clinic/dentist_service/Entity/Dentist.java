@@ -31,4 +31,7 @@ public class Dentist {
     @JoinColumn(name = "fac_id", nullable = false)
     @JsonBackReference
     private Faculty faculty;
+
+    public Long getFacID() { return faculty != null ? faculty.getId() : null; }
+
 }

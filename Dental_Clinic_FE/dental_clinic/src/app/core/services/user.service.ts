@@ -14,7 +14,20 @@ export class UserService {
     ) {
     }
 
-    getNameIdUserListByRoleId(role_id: number): Observable<NameIdUserResponse[]> {
-        return this.http.get<NameIdUserResponse[]>(`${this.apiUrl}/role/${role_id}`);
+    getNameIdUserListByRoleId(role_id: number): Observable<any> {
+        return this.http.get<any>(`${this.apiUrl}/role/${role_id}`);
+    }
+
+    getNameIdUserById(userId: number): Observable<any> {
+        return this.http.get<any>(`${this.apiUrl}/${userId}/name-id`);
+    }
+
+    getListUserByRoleId(roleId: number): Observable<any> {
+        return this.http.get<any>(`${this.apiUrl}/list/role/${roleId}`);
+    }
+
+
+    getUserDetailById(userId: number): Observable<any> {
+        return this.http.get<any>(`${this.apiUrl}/${userId}`);
     }
 }

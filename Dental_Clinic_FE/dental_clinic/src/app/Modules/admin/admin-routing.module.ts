@@ -4,7 +4,7 @@ import { ROUTES } from '../../core/constants/routes.constant';
 import { DefaultUiComponent } from './default-ui/default-ui.component';
 
 
-const default_url: string =  ROUTES.ADMIN.children.SCHEDULE.path;
+const default_url: string =  ROUTES.ADMIN.children.PATIENT.path;
 
 const routes: Routes = [
   {
@@ -18,13 +18,23 @@ const routes: Routes = [
         path: ROUTES.ADMIN.children.SCHEDULE.path,
         loadChildren: () => import('./views/schedule/routes').then(m => m.routes)
       },
+      {
+        path: ROUTES.ADMIN.children.EMPLOYEE.path,
+        loadChildren: () => import('./views/employee/routes').then(m => m.routes)
+      },
+      {
+        path: ROUTES.ADMIN.children.FACULTY.path,
+        loadChildren: () => import('./views/faculty/routes').then(m => m.routes)
+      },
+      {
+        path: ROUTES.ADMIN.children.PATIENT.path,
+        loadChildren: () => import('./views/patient/routes').then(m => m.routes)
+      },
       { path: "", redirectTo:  default_url, pathMatch: 'full' },
-
-
     ]
   },
   { path: '', redirectTo: '', pathMatch: 'full' },
-  { path: "**", redirectTo: ROUTES.NOT_FOUND.path } 
+  { path: "**", redirectTo: ROUTES.NOT_FOUND.path }
 ];
 
 @NgModule({

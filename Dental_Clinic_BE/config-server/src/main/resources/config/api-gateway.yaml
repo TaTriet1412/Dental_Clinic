@@ -30,6 +30,7 @@ spring:
               - PUT
               - DELETE
               - OPTIONS
+              - PATCH
             allowedHeaders:
               - "*"
             allowCredentials: true
@@ -53,6 +54,10 @@ spring:
           uri: lb://dentist-service
           predicates:
             - Path=/dentist/**
+        - id: patient-service
+          uri: lb://patient-service
+          predicates:
+            - Path=/patient/**
         - id: payment-service
           uri: lb://payment-service
           predicates:

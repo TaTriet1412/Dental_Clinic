@@ -1,6 +1,7 @@
 package com.dental_clinic.patient_service.Controller;
 
 import com.dental_clinic.common_lib.dto.response.ApiResponse;
+import com.dental_clinic.patient_service.DTO.Request.ChangePatientImageRequest;
 import com.dental_clinic.patient_service.DTO.Request.CreatePatientReq;
 import com.dental_clinic.patient_service.DTO.Request.UpdateLastVisted;
 import com.dental_clinic.patient_service.DTO.Request.UpdatePatientReq;
@@ -10,6 +11,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -45,6 +47,35 @@ public class PatientController {
                 .result(patientService.getById(id))
                 .build();
     }
+
+    @PutMapping(value = "/change-img", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ApiResponse<Object> changeImg(@ModelAttribute ChangePatientImageRequest request) {
+        patientService.changeImg(request);
+        return ApiResponse.builder()
+                .message("Thay đổi thành công")
+                .apiCode(200)
+                .build();
+    }
+
+    @GetMapping ("{id}/name")
+    public ApiResponse<Object> getNamePatientById(@PathVariable String id) {
+        return ApiResponse.builder()
+                .message("Lấy thông tin bệnh nhân thành công")
+                .apiCode(200)
+                .result(patientService.getNamePatientById(id))
+                .build();
+    }
+
+    @GetMapping ("/all-name-id")
+    public ApiResponse<Object> getNameIdAllPatient() {
+        return ApiResponse.builder()
+                .message("Lấy tất cả tên bệnh nhân thành công")
+                .apiCode(200)
+                .result(patientService.getAllNameIdPatients())
+                .build();
+    }
+
+
     
     //    Tạo bệnh nhân
     @ResponseStatus(HttpStatus.CREATED)

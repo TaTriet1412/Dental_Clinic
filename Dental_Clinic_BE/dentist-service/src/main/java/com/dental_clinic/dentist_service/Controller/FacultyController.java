@@ -31,6 +31,15 @@ public class FacultyController {
                 .build() ;
     }
 
+    @GetMapping("/{id}")
+    public ApiResponse<Object> getFacultyById(@PathVariable Long id) {
+        return ApiResponse.builder()
+                .message("Lấy thông tin khoa thành công")
+                .apiCode(HttpStatus.OK.value())
+                .result(facultyService.findById(id))
+                .build() ;
+    }
+
     @PostMapping("/create-faculty")
     @ResponseStatus(HttpStatus.CREATED)
     public ApiResponse<Object> createFaculty(
@@ -58,7 +67,7 @@ public class FacultyController {
     public ApiResponse<Object> toggleAbleFaculty(@PathVariable Long id) {
         boolean able = facultyService.toggleAble(id);
         return ApiResponse.builder()
-                .message("Thay đổi trạng thái khoa có" +
+                .message("Thay đổi trạng thái khoa có id = " +
                          id +
                         " thành: " + (able ? "Đang hoạt động" : "Tạm ngưng"))
                 .apiCode(HttpStatus.OK.value())

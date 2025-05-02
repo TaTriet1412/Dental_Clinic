@@ -62,6 +62,7 @@ registerLocaleData(localeVi);
     MatIconModule,
     MatSnackBarModule,
     NgxMatTimepickerModule,
+    NgxSpinnerModule,
 
     // SidebarModule từ CoreUI
     SidebarModule,

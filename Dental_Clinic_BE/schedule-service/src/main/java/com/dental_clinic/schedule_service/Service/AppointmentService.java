@@ -21,16 +21,17 @@ import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
 public class AppointmentService {
     AppointmentRepository appointmentRepository;
-    @Lazy
     WorkScheduleService workScheduleService;
     EmailService emailService;
 
     @Autowired
+    @Lazy
     public AppointmentService(
             AppointmentRepository appointmentRepository,
             WorkScheduleService workScheduleService,
@@ -38,6 +39,12 @@ public class AppointmentService {
         this.emailService = emailService;
         this.workScheduleService = workScheduleService;
         this.appointmentRepository = appointmentRepository;
+    }
+
+    public List<Appointment> getAllAppointments() {
+        return appointmentRepository.findAll().stream()
+                .sorted(Comparator.comparing(Appointment::getCreatedAt).reversed())
+                .toList();
     }
 
     public PageResponse<Appointment> getFilteredAndSortedAppointments(Map<String, Object> filters, int page, int size, Map<String, Boolean> sortFields) {
@@ -134,7 +141,7 @@ public class AppointmentService {
         );
     }
 
-    private boolean isAppointmentTimeValidForPat(Long patId, LocalDateTime timeStart, LocalDateTime timeEnd) {
+    private boolean isAppointmentTimeValidForPat(String patId, LocalDateTime timeStart, LocalDateTime timeEnd) {
         List<Appointment> appointments = appointmentRepository.findAll().stream()
                 .filter(appointment ->
                         appointment.getStatus() == AppointmentStatus.confirmed &&
@@ -142,6 +149,58 @@ public class AppointmentService {
                 .toList();
         return appointments.stream().noneMatch(existing ->
                 existing.getPatId().equals(patId) &&
+                        !(timeEnd.isEqual(existing.getTimeStart()) || timeEnd.isBefore(existing.getTimeStart())) &&
+                        !(timeStart.isEqual(existing.getTimeEnd()) || timeStart.isAfter(existing.getTimeEnd()))
+        );
+    }
+
+    private boolean isAppointmentTimeValidForAssi(Long assiId, LocalDateTime timeStart, LocalDateTime timeEnd) {
+        List<Appointment> appointments = appointmentRepository.findAll().stream()
+                .filter(appointment ->
+                        appointment.getStatus() == AppointmentStatus.confirmed &&
+                                appointment.getAssiId().equals(assiId))
+                .toList();;
+        return appointments.stream().noneMatch(existing ->
+                existing.getAssiId().equals(assiId) &&
+                        !(timeEnd.isEqual(existing.getTimeStart()) || timeEnd.isBefore(existing.getTimeStart())) &&
+                        !(timeStart.isEqual(existing.getTimeEnd()) || timeStart.isAfter(existing.getTimeEnd()))
+        );
+    }
+
+    private boolean isAppointmentTimeValidForDenNotId(String appointmentId, Long denId, LocalDateTime timeStart, LocalDateTime timeEnd) {
+        List<Appointment> appointments = appointmentRepository.findAll().stream()
+                .filter(appointment ->
+                        appointment.getStatus() == AppointmentStatus.confirmed &&
+                                appointment.getDenId().equals(denId) && !Objects.equals(appointment.getId() , appointmentId))
+                .toList();
+        return appointments.stream().noneMatch(existing ->
+                existing.getDenId().equals(denId) &&
+                        !(timeEnd.isEqual(existing.getTimeStart()) || timeEnd.isBefore(existing.getTimeStart())) &&
+                        !(timeStart.isEqual(existing.getTimeEnd()) || timeStart.isAfter(existing.getTimeEnd()))
+        );
+    }
+
+    private boolean isAppointmentTimeValidForPatNotId(String appointmentId,String patId, LocalDateTime timeStart, LocalDateTime timeEnd) {
+        List<Appointment> appointments = appointmentRepository.findAll().stream()
+                .filter(appointment ->
+                        appointment.getStatus() == AppointmentStatus.confirmed &&
+                                appointment.getPatId().equals(patId)&& !Objects.equals(appointment.getId() , appointmentId))
+                .toList();
+        return appointments.stream().noneMatch(existing ->
+                existing.getPatId().equals(patId) &&
+                        !(timeEnd.isEqual(existing.getTimeStart()) || timeEnd.isBefore(existing.getTimeStart())) &&
+                        !(timeStart.isEqual(existing.getTimeEnd()) || timeStart.isAfter(existing.getTimeEnd()))
+        );
+    }
+
+    private boolean isAppointmentTimeValidForAssiNotId(String appointmentId,Long assiId, LocalDateTime timeStart, LocalDateTime timeEnd) {
+        List<Appointment> appointments = appointmentRepository.findAll().stream()
+                .filter(appointment ->
+                        appointment.getStatus() == AppointmentStatus.confirmed &&
+                                appointment.getAssiId().equals(assiId)&& !Objects.equals(appointment.getId() , appointmentId))
+                .toList();;
+        return appointments.stream().noneMatch(existing ->
+                existing.getAssiId().equals(assiId) &&
                         !(timeEnd.isEqual(existing.getTimeStart()) || timeEnd.isBefore(existing.getTimeStart())) &&
                         !(timeStart.isEqual(existing.getTimeEnd()) || timeStart.isAfter(existing.getTimeEnd()))
         );
@@ -181,18 +240,7 @@ public class AppointmentService {
                 .toList();
     }
 
-    private boolean isAppointmentTimeValidForAssi(Long assiId, LocalDateTime timeStart, LocalDateTime timeEnd) {
-        List<Appointment> appointments = appointmentRepository.findAll().stream()
-                .filter(appointment ->
-                        appointment.getStatus() == AppointmentStatus.confirmed &&
-                                appointment.getAssiId().equals(assiId))
-                .toList();;
-        return appointments.stream().noneMatch(existing ->
-                existing.getAssiId().equals(assiId) &&
-                        !(timeEnd.isEqual(existing.getTimeStart()) || timeEnd.isBefore(existing.getTimeStart())) &&
-                        !(timeStart.isEqual(existing.getTimeEnd()) || timeStart.isAfter(existing.getTimeEnd()))
-        );
-    }
+
 
     public Appointment createAppointment(CreateAppointmentReq req) throws MessagingException {
         if(req.timeStart().isEqual(req.timeEnd()) || req.timeStart().isAfter(req.timeEnd()))
@@ -224,7 +272,7 @@ public class AppointmentService {
     private void checkValidAppointmentWithExistedData(
             Long denId,
             Long assiId,
-            Long patId,
+            String patId,
             LocalDateTime timeStart,
             LocalDateTime timeEnd) {
         if(!isAppointmentTimeValidForDen(denId, timeStart, timeEnd))
@@ -237,16 +285,36 @@ public class AppointmentService {
             throw new AppException(ErrorCode.INVALID_REQUEST, "Thời gian bị trùng lặp với lịch hẹn khác của phụ tá");
     }
 
+    private void checkValidAppointmentWithExistedDataNotID(
+            String appointmentId,
+            Long denId,
+            Long assiId,
+            String patId,
+            LocalDateTime timeStart,
+            LocalDateTime timeEnd) {
+        if(!isAppointmentTimeValidForDenNotId(appointmentId,denId, timeStart, timeEnd))
+            throw new AppException(ErrorCode.INVALID_REQUEST, "Thời gian bị trùng lặp với lịch hẹn khác của nha sĩ");
+
+        if(!isAppointmentTimeValidForPatNotId(appointmentId,patId, timeStart, timeEnd))
+            throw new AppException(ErrorCode.INVALID_REQUEST, "Thời gian bị trùng lặp với lịch hẹn khác của bệnh nhân");
+
+        if(!isAppointmentTimeValidForAssiNotId(appointmentId,assiId, timeStart, timeEnd))
+            throw new AppException(ErrorCode.INVALID_REQUEST, "Thời gian bị trùng lặp với lịch hẹn khác của phụ tá");
+    }
+
     private void checkValidAppointmentForSchedule(Long assiId, Long denId, LocalDateTime timeStart, LocalDateTime timeEnd) {
-        if(workScheduleService.isTimeRangeInWorkSchedule(assiId , timeStart, timeEnd))
+        if(!workScheduleService.isTimeRangeInWorkSchedule(assiId , timeStart, timeEnd))
             throw new AppException(ErrorCode.INVALID_REQUEST, "Thời gian không nằm trong lịch làm việc của phụ tá");
 
-        if(workScheduleService.isTimeRangeInWorkSchedule(denId , timeStart, timeEnd))
+        if(!workScheduleService.isTimeRangeInWorkSchedule(denId , timeStart, timeEnd))
             throw new AppException(ErrorCode.INVALID_REQUEST, "Thời gian không nằm trong lịch làm việc của nha sĩ");
     }
 
     public Appointment updateAppointment(UpdateAppointmentReq req){
         Appointment appointment = getAppointmentById(req.id());
+
+        if (isEndStatus(appointment.getStatus().toString()))
+            throw new AppException(ErrorCode.INVALID_REQUEST, "Không thể chỉnh sửa lịch hẹn vì nó ở trạng thái cuối");
 
         req.denId().ifPresent(denId -> appointment.setDenId(denId));
         req.assiId().ifPresent(assiId -> appointment.setAssiId(assiId));
@@ -275,13 +343,16 @@ public class AppointmentService {
             throw new AppException(ErrorCode.INVALID_REQUEST, "Thời gian bắt đầu phải trước thời gian kết thúc");
 
         checkValidAppointmentForSchedule(appointment.getAssiId(), appointment.getDenId(), appointment.getTimeStart(), appointment.getTimeEnd());
-        checkValidAppointmentWithExistedData(appointment.getDenId(),appointment.getAssiId(),appointment.getPatId(),appointment.getTimeStart(),appointment.getTimeEnd());
+        checkValidAppointmentWithExistedDataNotID(appointment.getId(),appointment.getDenId(),appointment.getAssiId(),appointment.getPatId(),appointment.getTimeStart(),appointment.getTimeEnd());
 
         return appointmentRepository.save(appointment);
     }
 
     public void changeStatusAppointment(UpdateAppointStatusReq req){
         Appointment appointment = getAppointmentById(req.appointment_id());
+
+        if(req.status().equals(appointment.getStatus().toString()))
+            throw new AppException(ErrorCode.INVALID_REQUEST, "Trạng thái không được giống trạng thái hiện tại");
         try {
             checkValidStatusBeforeChange(req , appointment);
             appointment.setStatus(AppointmentStatus.valueOf(req.status()));
@@ -330,12 +401,12 @@ public class AppointmentService {
             || AppointmentStatus.valueOf(req.status())==AppointmentStatus.not_show
         ) {
             if (req.note().isEmpty() || req.note().get().isBlank() || req.note().get() == null) {
-                throw new AppException(ErrorCode.INVALID_REQUEST, "Lí do không được để trống");
+                throw new AppException(ErrorCode.INVALID_REQUEST, "Trạng thái mới phải có lý do");
             }
 
             req.note().ifPresent(note -> {
                 String existingNote = appointment.getNote() == null ? "" : appointment.getNote().trim();
-                String formattedNote = String.format("<br><b>Lí do:</b> <b>%s</b>", note.trim());
+                String formattedNote = String.format("- Lí do: %s ", note.trim());
                 appointment.setNote(existingNote + formattedNote);
             });
         }
@@ -348,7 +419,7 @@ public class AppointmentService {
                 appointmentStatus == AppointmentStatus.not_show);
     }
 
-    private Appointment getAppointmentById(String id) {
+    public Appointment getAppointmentById(String id) {
         return appointmentRepository.findById(id).orElseThrow(() ->
                 new AppException(ErrorCode.NOT_FOUND,"Không tìm thấy lịch hẹn có id = '" + id + "'"));
     }

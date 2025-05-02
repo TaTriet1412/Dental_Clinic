@@ -1,0 +1,138 @@
+<div class="p-20">
+    <h1>Chỉnh sửa khoa</h1>
+  
+    <c-row ngPreserveWhitespaces>
+      <c-col xs="12">
+        <c-card class="mb-40">
+          <c-card-header
+            class="d-flex justify-content-between align-items-center"
+          >
+            <strong>Chỉnh sửa khoa</strong>
+          </c-card-header>
+          <c-card-body>
+            <form
+              #tooltipForm="ngForm"
+              (ngSubmit)="onSubmit(tooltipForm)"
+              [validated]="validated"
+              cForm
+              class="needs-validation"
+              novalidate
+            >
+              <c-row>
+                <c-col [md]="12" class="pl-20 pr-40">
+                  <c-row [md]="6" class="mb-4">
+                    <c-col class="position-relative mb-4" [md]="6">
+                      <label cLabel for="name">Tên khoa</label>
+                      <input
+                        cFormControl
+                        id="name"
+                        name="name"
+                        required
+                        [(ngModel)]="name"
+                        #nameControl="ngModel"
+                        [class.is-invalid]="validated && nameControl.invalid"
+                        placeholder="Nhập họ tên"
+                        rows="4"
+                      />
+                      <c-form-feedback
+                        *ngIf="validated && nameControl.invalid"
+                        [valid]="false"
+                        tooltip
+                      >
+                        Vui lòng nhập tên.
+                      </c-form-feedback>
+                    </c-col>
+  
+                    <c-col class="position-relative mb-4" [md]="6">
+                      <label cLabel for="phone">Số điện thoại</label>
+                      <input
+                        cFormControl
+                        id="phone"
+                        name="phone"
+                        type="tel"
+                        required
+                        [(ngModel)]="phone"
+                        #phoneControl="ngModel"
+                        [class.is-invalid]="validated && phoneControl.invalid"
+                        placeholder="Nhập số điện thoại"
+                        rows="4"
+                      />
+                      <c-form-feedback
+                        *ngIf="validated && phoneControl.invalid"
+                        [valid]="false"
+                        tooltip
+                      >
+                        Vui lòng nhập số điện thoại.
+                      </c-form-feedback>
+                    </c-col>
+                  </c-row>
+                  <c-row [md]="6" class="mb-4">
+                    <c-col class="position-relative mb-4" [md]="6">
+                      <label cLabel for="email">Email</label>
+                      <input
+                        cFormControl
+                        id="email"
+                        name="email"
+                        type="email"
+                        required
+                        [(ngModel)]="email"
+                        #emailControl="ngModel"
+                        [class.is-invalid]="validated && emailControl.invalid"
+                        placeholder="Nhập họ tên"
+                        rows="4"
+                      />
+                      <c-form-feedback
+                        *ngIf="validated && emailControl.invalid"
+                        [valid]="false"
+                        tooltip
+                      >
+                        Vui lòng nhập Email.
+                      </c-form-feedback>
+                    </c-col>
+                    <!-- Mô tả -->
+                    <c-col class="position-relative mb-4" [md]="6">
+                      <label cLabel for="description">Mô tả</label>
+                      <textarea
+                        cFormControl
+                        id="description"
+                        name="description"
+                        required
+                        [(ngModel)]="description"
+                        #descriptionControl="ngModel"
+                        [class.is-invalid]="validated && descriptionControl.invalid"
+                        placeholder="Nhập mô tả"
+                        rows="3"
+                        class="form-control"
+                      ></textarea>
+                      <c-form-feedback
+                        *ngIf="validated && descriptionControl.invalid"
+                        [valid]="false"
+                        tooltip
+                      >
+                        Vui lòng nhập mô tả.
+                      </c-form-feedback>
+                    </c-col>
+                  </c-row>
+
+                </c-col>
+              </c-row>
+              <c-row class="g-4">
+                <c-col class="text-end">
+                  <button
+                    cButton
+                    color="success"
+                    type="submit"
+                    [disabled]="disabledBtnSubmit"
+                  >
+                    <i class="fas fa-plus me-2"></i>
+                    Chỉnh sửa mới
+                  </button>
+                </c-col>
+              </c-row>
+            </form>
+          </c-card-body>
+        </c-card>
+      </c-col>
+    </c-row>
+  </div>
+  

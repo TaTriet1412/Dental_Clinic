@@ -1,0 +1,104 @@
+<div class="p-20">
+  <h1>Chi tiết lịch hẹn</h1>
+
+  <c-row ngPreserveWhitespaces>
+    <c-col xs="12">
+      <c-card class="mb-4">
+        <c-card-header
+          class="d-flex justify-content-between align-items-center"
+        >
+          <strong>Chi tiết lịch hẹn</strong>
+        </c-card-header>
+        <c-card-body>
+          <table class="table table-bordered" [striped]="true" cTable>
+            <tbody>
+              <!-- Row 1: ID -->
+              <tr>
+                <th style="width: 30%">ID:</th>
+                <td>{{ appointment.id }}</td>
+              </tr>
+
+              <!-- Row 2: Mã nha sĩ -->
+              <tr>
+                <th>Mã nha sĩ:</th>
+                <td>{{ appointment.denId }}</td>
+              </tr>
+
+              <!-- Row 3: Tên nha sĩ -->
+              <tr>
+                <th>Tên nha sĩ:</th>
+                <td>{{ dentistName }}</td>
+              </tr>
+
+              <!-- Row 4: Mã bệnh nhân -->
+              <tr>
+                <th>Mã bệnh nhân:</th>
+                <td>{{ appointment.patId }}</td>
+              </tr>
+
+              <!-- Row 5: Tên bệnh nhân -->
+              <tr>
+                <th>Tên bệnh nhân:</th>
+                <td>{{ patientName }}</td>
+              </tr>
+
+              <!-- Row 6: Mã phụ tá -->
+              <tr>
+                <th>Mã phụ tá:</th>
+                <td>{{ appointment.assiId }}</td>
+              </tr>
+
+              <!-- Row 7: Tên phụ tá -->
+              <tr>
+                <th>Tên phụ tá:</th>
+                <td>{{ assistantName }}</td>
+              </tr>
+
+              <!-- Row 8: Thời gian bắt đầu -->
+              <tr>
+                <th>Thời gian bắt đầu:</th>
+                <td>
+                  {{ appointment.timeStart | date : "dd/MM/yyyy HH:mm:ss" }}
+                </td>
+              </tr>
+
+              <!-- Row 9: Thời gian kết thúc -->
+              <tr>
+                <th>Thời gian kết thúc:</th>
+                <td>
+                  {{ appointment.timeEnd | date : "dd/MM/yyyy HH:mm:ss" }}
+                </td>
+              </tr>
+
+              <!-- Row 10: Triệu chứng -->
+              <tr>
+                <th>Triệu chứng:</th>
+                <td>{{ appointment.symptom }}</td>
+              </tr>
+
+              <!-- Row 11: Ghi chú -->
+              <tr>
+                <th>Ghi chú:</th>
+                <td>{{ appointment.note }}</td>
+              </tr>
+
+              <!-- Row 12: Thời gian tạo -->
+              <tr>
+                <th>Thời gian tạo:</th>
+                <td>
+                  {{ appointment.createdAt | date : "dd/MM/yyyy HH:mm:ss" }}
+                </td>
+              </tr>
+
+              <!-- Row 13: Trạng thái -->
+              <tr>
+                <th>Trạng thái:</th>
+                <td>{{ appointment.status }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </c-card-body>
+      </c-card>
+    </c-col>
+  </c-row>
+</div>

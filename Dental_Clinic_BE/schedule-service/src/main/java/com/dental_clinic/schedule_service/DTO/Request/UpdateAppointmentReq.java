@@ -12,7 +12,7 @@ public record UpdateAppointmentReq(
         String id,
 
         Optional<Long> denId ,
-        Optional<Long> patId ,
+        Optional<String> patId ,
         Optional<Long> assiId ,
         Optional<LocalDateTime> timeStart ,
         Optional<LocalDateTime> timeEnd ,

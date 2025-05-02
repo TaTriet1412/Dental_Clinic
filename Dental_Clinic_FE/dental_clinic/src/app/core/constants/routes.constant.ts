@@ -40,41 +40,154 @@ export const ROUTES = {
                             CREATE: {
                                 path: 'create',
                                 fullPath: '/admin/schedule/appointment/create'
+                            },
+                            DETAIL: {
+                                path: ':id',
+                                fullPath: (id: string) => `/admin/schedule/appointment/${id}`
+                            },
+                            EDIT: {
+                                path: ':id/edit',
+                                fullPath: (id: string) => `/admin/schedule/appointment/${id}/edit`
                             }
                         }
-                    },
-                    // ORDER: {
-                    //     path: ':id/table-order',
-                    //     fullPath: (id: string) =>
-                    //         `/admin/tables/${id}/table-order`,
-                    // },
-                }
-            },
-            MENU: {
-                path: 'menu',
-                fullPath: '/admin/menu',
-                children: {
-                    LIST: {
-                        path: 'list',
-                        fullPath: 'admin/menu/list'
                     }
                 }
             },
-            BILL: {
-                path: 'bills',
-                fullPath: '/admin/bills',
+            EMPLOYEE: {
+                path: 'employee',
+                fullPath: '/admin/employee',
                 children: {
-                    SHIFT: {
-                        path: 'shift',
-                        fullPath: '/admin/bills/shift'
+                    RECEPTIONIST: {
+                        path: 'receptionist',
+                        fullPath: '/admin/employee/receptionist',
+                        children: {
+                            LIST: {
+                                path: 'list',
+                                fullPath: '/admin/employee/receptionist/list'
+                            },
+                            CREATE: {
+                                path: 'create',
+                                fullPath: '/admin/employee/receptionist/create'
+                            },
+                            DETAIL: {
+                                path: ':id',
+                                fullPath: (id: string) => `/admin/employee/receptionist/${id}`
+                            },
+                            EDIT: {
+                                path: ':id/edit',
+                                fullPath: (id: string) => `/admin/employee/receptionist/${id}/edit`
+                            }
+                        }
                     },
-                    DATE: {
-                        path: 'date',
-                        fullPath: '/admin/bills/date'
+                    DENTIST: {
+                        path: 'dentist',
+                        fullPath: '/admin/employee/dentist',
+                        children: {
+                            LIST: {
+                                path: 'list',
+                                fullPath: '/admin/employee/dentist/list'
+                            },
+                            CREATE: {
+                                path: 'create',
+                                fullPath: '/admin/employee/dentist/create'
+                            },
+                            DETAIL: {
+                                path: ':id',
+                                fullPath: (id: string) => `/admin/employee/dentist/${id}`
+                            },
+                            EDIT: {
+                                path: ':id/edit',
+                                fullPath: (id: string) => `/admin/employee/dentist/${id}/edit`
+                            }
+                        }
+                    },
+                    ASSISTANT: {
+                        path: 'assistant',
+                        fullPath: '/admin/employee/assistant',
+                        children: {
+                            LIST: {
+                                path: 'list',
+                                fullPath: '/admin/employee/assistant/list'
+                            },
+                            CREATE: {
+                                path: 'create',
+                                fullPath: '/admin/employee/assistant/create'
+                            },
+                            DETAIL: {
+                                path: ':id',
+                                fullPath: (id: string) => `/admin/employee/assistant/${id}`
+                            },
+                            EDIT: {
+                                path: ':id/edit',
+                                fullPath: (id: string) => `/admin/employee/assistant/${id}/edit`
+                            }
+                        }
+                    },
+                }
+            },
+            FACULTY: {
+                path: 'faculty',
+                fullPath: '/admin/faculty',
+                children: {
+                    LIST: {
+                        path: 'list',
+                        fullPath: '/admin/faculty/list'
+                    },
+                    CREATE: {
+                        path: 'create',
+                        fullPath: '/admin/faculty/create'
                     },
                     DETAIL: {
                         path: ':id',
-                        fullPath: (id: string) => `admin/bills/${id}`
+                        fullPath: (id: string) => `/admin/faculty/${id}`
+                    },
+                    EDIT: {
+                        path: ':id/edit',
+                        fullPath: (id: string) => `/admin/faculty/${id}/edit`
+                    }
+                }
+            },
+            PATIENT: {
+                path: 'patient',
+                fullPath: '/admin/patient',
+                children: {
+                    LIST: {
+                        path: 'list',
+                        fullPath: '/admin/patient/list'
+                    },
+                    CREATE: {
+                        path: 'create',
+                        fullPath: '/admin/patient/create'
+                    },
+                    DETAIL: {
+                        path: ':id',
+                        fullPath: (id: string) => `/admin/patient/${id}`
+                    },
+                    EDIT: {
+                        path: ':id/edit',
+                        fullPath: (id: string) => `/admin/patient/${id}/edit`
+                    }
+                }
+            },
+            DENTAL: {
+                path: 'dental',
+                fullPath: '/admin/dental',
+                children: {
+                    LIST: {
+                        path: 'list',
+                        fullPath: '/admin/dental/list'
+                    },
+                    CREATE: {
+                        path: 'create',
+                        fullPath: '/admin/dental/create'
+                    },
+                    DETAIL: {
+                        path: ':id',
+                        fullPath: (id: string) => `/admin/dental/${id}`
+                    },
+                    EDIT: {
+                        path: ':id/edit',
+                        fullPath: (id: string) => `/admin/dental/${id}/edit`
                     }
                 }
             }

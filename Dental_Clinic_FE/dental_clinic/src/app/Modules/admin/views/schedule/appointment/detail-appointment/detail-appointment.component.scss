@@ -1,0 +1,17 @@
+.p-20 {
+  padding: 20px;
+}
+
+.striped-table tr:nth-child(odd) {
+  background-color: #e3f2fd; /* Xanh dương nhạt */
+}
+
+.striped-table tr:nth-child(even) {
+  background-color: #ffffff; /* Trắng */
+}
+
+// .striped-table th {
+//   background-color: #2196f3; /* Xanh dương đậm */
+//   color: #000; /* Trắng */
+//   font-weight: bold;
+// }

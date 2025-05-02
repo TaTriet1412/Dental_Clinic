@@ -6,6 +6,8 @@ import com.dental_clinic.patient_service.DTO.Request.ChangePatientImageRequest;
 import com.dental_clinic.patient_service.DTO.Request.CreatePatientReq;
 import com.dental_clinic.patient_service.DTO.Request.UpdateLastVisted;
 import com.dental_clinic.patient_service.DTO.Request.UpdatePatientReq;
+import com.dental_clinic.patient_service.DTO.Response.NameIdPatientRes;
+import com.dental_clinic.patient_service.DTO.Response.NamePatientRes;
 import com.dental_clinic.patient_service.Entity.Patient;
 import com.dental_clinic.patient_service.Repository.PatientRepository;
 import com.dental_clinic.patient_service.Utils.ImageUtils;
@@ -33,13 +35,25 @@ public class PatientService {
 
     //    Lấy tất cả bệnh nhân
     public List<Patient> getAllPatients() {
-        return patientRepository.findAll();
+        return patientRepository.findAll().stream()
+                .sorted((p1, p2) -> p2.getCreated_at().compareTo(p1.getCreated_at()))
+                .toList();
     }
-
     //    Tìm kiếm bệnh nhân theo id
     public Patient getById(String id) {
         return patientRepository.findById(id).orElseThrow(
                 () -> new AppException(ErrorCode.NOT_FOUND, "Không tìm thấy bệnh nhân có id = '" + id + "'"));
+    }
+
+    public NamePatientRes getNamePatientById(String id) {
+        Patient patient = getById(id);
+        return new NamePatientRes(patient.getName());
+    }
+
+    public List<NameIdPatientRes> getAllNameIdPatients() {
+        return patientRepository.findAll().stream()
+                .map(patient -> new NameIdPatientRes(patient.getId(), patient.getName()))
+                .toList();
     }
 
     //    Tạo bệnh nhân

@@ -96,7 +96,7 @@ public class AuthController {
                 .build();
     }
 
-    @PatchMapping("/toggle_ban/{id}")
+    @PutMapping("/toggle_ban/{id}")
     public ApiResponse<Object> toggleBanUser(@PathVariable Long id) {
         User u = authService.toggleBanUser(id);
         return ApiResponse.builder()
@@ -104,17 +104,15 @@ public class AuthController {
                         "Đã khóa tài khoản người dùng id = '" + u.getId().toString() + "'" :
                         "Mở khóa tài khoản người dùng id = '" + u.getId().toString() + "'")
                 .apiCode(200)
-                .result(u)
                 .build();
     }
 
-    @PatchMapping("/reset_password/{id}")
+    @PutMapping("/reset_password/{id}")
     public ApiResponse<Object> resetPasswordUser(@PathVariable Long id) {
         User u = authService.resetPassword(id);
         return ApiResponse.builder()
                 .message("Đã khôi phục mật khẩu mặc định cho user có id ='" + u.getId().toString() + "'")
                 .apiCode(200)
-                .result(u)
                 .build();
     }
 

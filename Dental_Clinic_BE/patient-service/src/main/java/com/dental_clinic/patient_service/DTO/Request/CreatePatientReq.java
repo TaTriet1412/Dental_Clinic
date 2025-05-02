@@ -13,7 +13,7 @@ public record CreatePatientReq(
         Boolean gender,
 
         @NotNull(message = "Ngày sinh không được để trống")
-        @Past(message = "Ngày sinh phải là ngày trong quá khứ")
+        @PastOrPresent(message = "Ngày sinh phải là ngày trong quá khứ")
         LocalDate birthday,
 
         @NotBlank(message = "Số điện thoại không được để trống")

@@ -23,14 +23,14 @@ public record CreateAccountInfo(
         String address,
 
         @JsonProperty("birthday")
-        @Past(message = "Ngày sinh phải là ngày trong quá khứ")
+        @PastOrPresent(message = "Ngày sinh không được là tương lai")
         LocalDate birthDate,
 
         @Pattern(regexp = "^(\\+84|0)\\d{9,10}$", message = "Số điện thoại không hợp lệ")
         String phone,
 
         @NotNull(message = "Lương không được để trống")
-        @Min(value = 0, message = "Lương không được âm")
+        @Min(value = 100000, message = "Lương không được nhỏ hơn 100.000 đồng")
         Integer salary,
 
         Boolean gender

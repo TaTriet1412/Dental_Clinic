@@ -14,7 +14,7 @@ public record EmailAppointmentPatientReq(
         String dentistName,
         String assistantName,
         String patientName,
-        Long patientId,
+        String patientId,
         String symptoms,
         String note,
         AppointmentStatus status

@@ -22,9 +22,9 @@ public class Appointment {
 
     @NotNull(message = "Mã bệnh nhân không được để trống")
     @Field ("pat_id")
-    private Long patId;
+    private String patId;
 
-    @NotNull(message = "Mã trợ lý không được để trống")
+    @NotNull(message = "Mã phụ tá không được để trống")
     @Field ("assi_id")
     private Long assiId;
 

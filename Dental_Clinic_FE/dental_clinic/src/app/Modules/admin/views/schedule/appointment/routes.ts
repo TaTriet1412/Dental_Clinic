@@ -1,8 +1,7 @@
 import { Routes } from '@angular/router';
 import { ROUTES } from '../../../../../core/constants/routes.constant';
-import { Title } from '@angular/platform-browser';
 
-const defaultUrl = ROUTES.ADMIN.children.SCHEDULE.children.APPOINTMENT.path;
+const defaultUrl = ROUTES.ADMIN.children.SCHEDULE.children.APPOINTMENT.children.LIST.path;
 
 export const routes: Routes = [
     {
@@ -13,7 +12,7 @@ export const routes: Routes = [
         children: [
             {
                 path: '',
-                redirectTo: ROUTES.ADMIN.children.SCHEDULE.children.APPOINTMENT.children.LIST.path,
+                redirectTo: defaultUrl,
                 pathMatch: 'full'
             },
             {
@@ -34,6 +33,26 @@ export const routes: Routes = [
                 },
                 data: {
                     title: 'Create'
+                }
+            },
+            {
+                path: ROUTES.ADMIN.children.SCHEDULE.children.APPOINTMENT.children.DETAIL.path,
+                loadComponent() {
+                    return import('./detail-appointment/detail-appointment.component')
+                        .then(m => m.DetailAppointmentComponent);
+                },
+                data: {
+                    title: 'Detail'
+                }
+            },
+            {
+                path: ROUTES.ADMIN.children.SCHEDULE.children.APPOINTMENT.children.EDIT.path,
+                loadComponent() {
+                    return import('./edit-appointment/edit-appointment.component')
+                        .then(m => m.EditAppointmentComponent);
+                },
+                data: {
+                    title: 'Edit'
                 }
             }
         ]

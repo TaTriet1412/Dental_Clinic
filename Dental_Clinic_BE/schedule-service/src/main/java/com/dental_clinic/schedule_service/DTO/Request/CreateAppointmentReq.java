@@ -9,7 +9,7 @@ public record CreateAppointmentReq(
         Long denId ,
 
         @NotNull( message = "Mã bệnh nhân không được để trống" )
-        Long patId ,
+        String patId ,
 
         @NotNull( message = "Mã trợ lý không được để trống" )
         Long assiId ,
