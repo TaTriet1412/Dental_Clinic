@@ -1,0 +1,108 @@
+<div class="p-20">
+  <h1>Chi tiết vật liệu tiêu hao</h1>
+
+  <c-row ngPreserveWhitespaces>
+    <c-col xs="12">
+      <c-card class="mb-4">
+        <c-card-header
+          class="d-flex justify-content-between align-items-center"
+        >
+          <strong>Chi tiết vật liệu tiêu hao</strong>
+        </c-card-header>
+        <c-card-body>
+          <c-row>
+            <c-col md="4">
+              <img
+                cImg
+                rounded
+                class="mb-2"
+                [src]="changeImageServer(imgUrl)"
+                width="400"
+                alt="Ảnh đại diện"
+              />
+            </c-col>
+            <c-col md="8">
+              <table class="table table-bordered" [striped]="true" cTable>
+                <tbody>
+                  <tr>
+                    <th style="width: 30%">ID:</th>
+                    <td>{{ consumableMaterial.id }}</td>
+                  </tr>
+                  <tr>
+                    <th>Phân loại:</th>
+                    <td>{{ categoryName || "Danh mục lỗi" }}</td>
+                  </tr>
+                  <tr>
+                    <th>Tên:</th>
+                    <td>{{ consumableMaterial.name }}</td>
+                  </tr>
+                  <tr>
+                    <th>Số lượng:</th>
+                    <td>
+                      {{ consumableMaterial.quantity | number }}
+                    </td>
+                  </tr>
+                  <tr>
+                    <th>Chức năng:</th>
+                    <td>{{ consumableMaterial.func }}</td>
+                  </tr>
+                  <tr>
+                    <th>Đơn vị:</th>
+                    <td>{{ consumableMaterial.unit }}</td>
+                  </tr>
+                  <ng-container *ngIf="isMedicine">
+                    <tr>
+                      <th>Thành phần:</th>
+                      <td>{{ ingredientNameJoin }}</td>
+                    </tr>
+                    <tr>
+                      <th>Hướng dẫn sử dụng:</th>
+                      <td>{{ consumableMaterial.instruction }}</td>
+                    </tr>
+                    <tr>
+                      <th>Đối tượng sử dụng:</th>
+                      <td>{{ consumableMaterial.cared_actor }}</td>
+                    </tr>
+                    <tr>
+                      <th>Chi phí:</th>
+                      <td class="text-primary">{{ consumableMaterial.cost | number }} VND</td>
+                    </tr>
+                    <tr>
+                      <th>Giá:</th>
+                      <td class="text-success">{{ consumableMaterial.price | number }} VND</td>
+                    </tr>
+                  </ng-container>
+
+                  <tr>
+                    <th>Ngày tạo:</th>
+                    <td>
+                      {{
+                        consumableMaterial.created_at
+                          | date : "dd/MM/yyyy HH:mm:ss"
+                      }}
+                    </td>
+                  </tr>
+                  <tr>
+                    <th>Ngày sản xuất:</th>
+                    <td>
+                      {{
+                        consumableMaterial.mfg_date
+                          | date : "dd/MM/yyyy"
+                      }}
+                    </td>
+                  </tr>
+                  <tr>
+                    <th>Trạng thái:</th>
+                    <td>
+                      {{ consumableMaterial.able ? "Hoạt động" : "Bị khóa" }}
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </c-col>
+          </c-row>
+        </c-card-body>
+      </c-card>
+    </c-col>
+  </c-row>
+</div>

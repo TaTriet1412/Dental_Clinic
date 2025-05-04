@@ -41,7 +41,9 @@ public class DentalService {
     }
 
     public List<Dental> getAllDentalServices() {
-        return dentalRepository.findAll();
+        List<Dental> dentals = dentalRepository.findAll();
+        dentals.sort((d1, d2) -> d2.getCreated_at().compareTo(d1.getCreated_at()));
+        return dentals;
     }
 
     public Dental getById(String id) {
@@ -159,7 +161,7 @@ public class DentalService {
             dental.setCared_actor(actor);
         });
 
-        if(!categoryService.isAbleByCategoryId(id))
+        if(!categoryService.isAbleByCategoryId(String.valueOf(dental.getCategoryId())))
             throw new AppException(ErrorCode.INVALID_REQUEST, "Phân loại '" + id + "'" + " đã đóng");
         if (dental.getPrice() < dental.getCost())
             throw new AppException(ErrorCode.INVALID_REQUEST, "Chi phí không được lớn hơn giá sản phẩm");

@@ -1,0 +1,220 @@
+// Define variables locally or move to a global scope if shared
+$main-color: #eaeaea;
+$stroke-color: black;
+
+// Apply background to the host element or a specific wrapper inside the component
+// Using :host assumes this component's styles are encapsulated
+:host {
+  display: block; // Ensure the host element takes up space
+  background: $main-color;
+  // Add padding or other layout styles as needed
+  padding: 50px 0; // Example padding
+  text-align: center; // Center content within the host
+}
+
+// Target elements within the component's template
+.error-container {
+  // Styles for the main container if needed
+  height: 100vh; // Full viewport height for centering
+
+  h1 {
+    margin: 100px auto 0 auto;
+    color: $stroke-color;
+    font-family: 'Encode Sans Semi Condensed', Verdana, sans-serif;
+    font-size: 10rem;
+    line-height: 10rem;
+    font-weight: 200;
+    text-align: center;
+    transition: opacity 0.5s linear, margin-top 0.5s linear;
+  }
+
+  h2 {
+    margin: 20px auto 30px auto;
+    font-family: 'Encode Sans Semi Condensed', Verdana, sans-serif;
+    font-size: 1.5rem;
+    font-weight: 200;
+    text-align: center;
+    transition: opacity 0.5s linear, margin-top 0.5s linear;
+  }
+
+  // Apply loading styles when .loading class is present on .error-container
+  &.loading {
+    h1, h2 {
+      margin-top: 0px;
+      opacity: 0;
+    }
+
+    .gear.one, .gear.three {
+      animation: clockwise 3s linear infinite;
+    }
+
+    .gear.two {
+      animation: anticlockwise 3s linear infinite;
+    }
+  }
+
+  .gears {
+    position: relative;
+    margin: 0 auto;
+    width: auto; // Adjust width calculation if needed based on gear positions
+    height: 120px; // Set height based on gear size and positioning
+    // Example width calculation: (120px * 2) + 10px space = 250px centered
+    // Or use inline-block/flex for gears if layout allows
+  }
+
+  .gear {
+    position: relative; // Changed to relative for easier positioning within .gears
+    display: inline-block; // Allow gears to sit side-by-side if needed
+    vertical-align: middle; // Align gears vertically
+    z-index: 0;
+    width: 120px;
+    height: 120px;
+    margin: 0 5px; // Add some space between gears if inline
+    border-radius: 50%;
+    background: $stroke-color;
+
+    // Use pseudo-elements for inner circles/details
+    &::before {
+      position: absolute;
+      left: 5px;
+      top: 5px;
+      right: 5px;
+      bottom: 5px;
+      z-index: 2;
+      content: "";
+      border-radius: 50%;
+      background: $main-color;
+    }
+
+    &::after {
+      position: absolute;
+      left: 25px;
+      top: 25px;
+      z-index: 3;
+      content: "";
+      width: 70px;
+      height: 70px;
+      border-radius: 50%;
+      border: 5px solid $stroke-color;
+      box-sizing: border-box;
+      background: $main-color;
+    }
+
+    // Specific gear positioning (adjust as needed for layout)
+    // These might need absolute positioning relative to .gears container
+    &.one {
+      // Example: Adjust positioning if using relative/inline-block
+      // left: -130px; // Remove or adjust if not using absolute
+      animation: anticlockwiseErrorStop 2s linear infinite;
+    }
+
+    &.two {
+      // top: -75px; // Remove or adjust if not using absolute
+      animation: anticlockwiseError 2s linear infinite;
+    }
+
+    &.three {
+      // top: -235px; // Remove or adjust if not using absolute
+      // left: 130px; // Remove or adjust if not using absolute
+      animation: clockwiseError 2s linear infinite;
+    }
+
+    .bar {
+      position: absolute;
+      left: -15px; // (120 - 150) / 2
+      top: 50%;
+      z-index: 0;
+      width: 150px;
+      height: 30px;
+      margin-top: -15px;
+      border-radius: 5px;
+      background: $stroke-color;
+
+      &::before {
+        position: absolute;
+        left: 5px;
+        top: 5px;
+        right: 5px;
+        bottom: 5px;
+        z-index: 1;
+        content: "";
+        border-radius: 2px;
+        background: $main-color;
+      }
+
+      // Use SCSS nesting for pseudo-classes
+      &:nth-child(2) {
+        transform: rotate(60deg);
+      }
+
+      &:nth-child(3) {
+        transform: rotate(120deg);
+      }
+    }
+  }
+}
+
+
+// Keyframes (include standard and prefixed versions)
+@keyframes clockwise {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+@-webkit-keyframes clockwise {
+  0% { -webkit-transform: rotate(0deg); }
+  100% { -webkit-transform: rotate(360deg); }
+}
+
+@keyframes anticlockwise {
+  0% { transform: rotate(360deg); }
+  100% { transform: rotate(0deg); }
+}
+@-webkit-keyframes anticlockwise {
+  0% { -webkit-transform: rotate(360deg); }
+  100% { -webkit-transform: rotate(0deg); }
+}
+
+@keyframes clockwiseError {
+  0% { transform: rotate(0deg); }
+  20% { transform: rotate(30deg); }
+  40% { transform: rotate(25deg); }
+  60% { transform: rotate(30deg); }
+  100% { transform: rotate(0deg); }
+}
+@-webkit-keyframes clockwiseError {
+  0% { -webkit-transform: rotate(0deg); }
+  20% { -webkit-transform: rotate(30deg); }
+  40% { -webkit-transform: rotate(25deg); }
+  60% { -webkit-transform: rotate(30deg); }
+  100% { -webkit-transform: rotate(0deg); }
+}
+
+@keyframes anticlockwiseErrorStop {
+  0% { transform: rotate(0deg); }
+  20% { transform: rotate(-30deg); }
+  60% { transform: rotate(-30deg); }
+  100% { transform: rotate(0deg); }
+}
+@-webkit-keyframes anticlockwiseErrorStop {
+  0% { -webkit-transform: rotate(0deg); }
+  20% { -webkit-transform: rotate(-30deg); }
+  60% { -webkit-transform: rotate(-30deg); }
+  100% { -webkit-transform: rotate(0deg); }
+}
+
+@keyframes anticlockwiseError {
+  0% { transform: rotate(0deg); }
+  20% { transform: rotate(-30deg); }
+  40% { transform: rotate(-25deg); }
+  60% { transform: rotate(-30deg); }
+  100% { transform: rotate(0deg); }
+}
+@-webkit-keyframes anticlockwiseError {
+  0% { -webkit-transform: rotate(0deg); }
+  20% { -webkit-transform: rotate(-30deg); }
+  40% { -webkit-transform: rotate(-25deg); }
+  60% { -webkit-transform: rotate(-30deg); }
+  100% { -webkit-transform: rotate(0deg); }
+}
+
+@import url('../../../../../public/assets/scss/snackbar.scss');

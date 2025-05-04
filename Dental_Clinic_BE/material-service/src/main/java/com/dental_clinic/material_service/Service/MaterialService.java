@@ -4,15 +4,14 @@ import com.dental_clinic.common_lib.exception.AppException;
 import com.dental_clinic.common_lib.exception.ErrorCode;
 import com.dental_clinic.material_service.DTO.Request.ChangeMaterialServiceImageRequest;
 import com.dental_clinic.material_service.DTO.Request.*;
-import com.dental_clinic.material_service.DTO.Response.ConsumableUpdateRes;
-import com.dental_clinic.material_service.DTO.Response.FixedUpdateRes;
-import com.dental_clinic.material_service.DTO.Response.MedicineUpdateRes;
+import com.dental_clinic.material_service.DTO.Response.*;
 import com.dental_clinic.material_service.Entity.*;
 import com.dental_clinic.material_service.Repository.MaterialRepository;
 import com.dental_clinic.material_service.Repository.MedicineRepository;
 import com.dental_clinic.material_service.Utils.FieldUtils;
 import com.dental_clinic.material_service.Utils.ImageUtils;
 import com.dental_clinic.material_service.Utils.VariableUtils;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
@@ -26,6 +25,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static com.dental_clinic.material_service.Utils.VariableUtils.DEFAULT_MATERIAL;
 import static com.dental_clinic.material_service.Utils.VariableUtils.TYPE_UPLOAD_MATERIAL_SERVICE;
@@ -34,25 +34,15 @@ import static com.dental_clinic.material_service.Utils.VariableUtils.TYPE_UPLOAD
 @Service
 public class MaterialService {
     private final MaterialRepository materialRepository;
-
     private final MedicineRepository medicineRepository;
-
-    @Lazy
     private final CategoryService categoryService;
-
-    @Lazy
     private final FixedMaterialService fixedMaterialService;
-
-    @Lazy
     private final ConsumableMaterialService consumableMaterialService;
-
-    @Lazy
     private final MedicineService medicineService;
-
-    @Lazy
     private final IngredientService ingredientService;
 
     @Autowired
+    @Lazy
     public MaterialService(MaterialRepository materialRepository, MedicineRepository medicineRepository, CategoryService categoryService, FixedMaterialService fixedMaterialService, ConsumableMaterialService consumableMaterialService, MedicineService medicineService, IngredientService ingredientService) {
         this.materialRepository = materialRepository;
         this.medicineRepository = medicineRepository;
@@ -147,7 +137,7 @@ public class MaterialService {
 
 // Tạo vật liệu cố định
 
-    public void createFixedMaterial(CreateFixedMaterial request) {
+    public FixedRes createFixedMaterial(CreateFixedMaterial request) {
         validateCreateMaterialRequest(
                 request.categoryId(),
                 request.name(),
@@ -167,11 +157,23 @@ public class MaterialService {
                 DEFAULT_MATERIAL
         );
 
-        fixedMaterialService.saveNewFixedMaterial(savedMaterial.getId());
+        FixedMaterial fixedMaterial = fixedMaterialService.saveNewFixedMaterial(savedMaterial.getId());
+        return new FixedRes(
+                savedMaterial.getId(),
+                savedMaterial.getName(),
+                savedMaterial.getQuantity(),
+                savedMaterial.getUnit(),
+                savedMaterial.getCreated_at(),
+                savedMaterial.getMfg_date(),
+                savedMaterial.isAble(),
+                savedMaterial.getFunc(),
+                savedMaterial.getCategory().getId(),
+                savedMaterial.getImg()
+        );
     }
 
 //    Tạo vật liệu tiêu hao (không phải thuốc)
-    public void createConsumableMaterial(CreateConsumableMaterial request) {
+    public ConsumableRes createConsumableMaterial(CreateConsumableMaterial request) {
         validateCreateMaterialRequest(
                 request.categoryId(),
                 request.name(),
@@ -196,10 +198,23 @@ public class MaterialService {
         ConsumableMaterial consumableMaterial =
                 consumableMaterialService.saveNewConsumableMaterial(savedMaterial.getId());
         consumableMaterialService.addIngredientForConMaterial(ingredientList, consumableMaterial.getId());
+        return new ConsumableRes(
+                savedMaterial.getId(),
+                savedMaterial.getName(),
+                savedMaterial.getQuantity(),
+                savedMaterial.getUnit(),
+                savedMaterial.getCreated_at(),
+                savedMaterial.getMfg_date(),
+                savedMaterial.isAble(),
+                savedMaterial.getFunc(),
+                consumableMaterial.getIngredientList().stream().map(Ingredient::getId).collect(Collectors.toList()),
+                savedMaterial.getCategoryId(),
+                savedMaterial.getImg()
+        );
     }
 
 //    Tạo vật liệu tiêu hao (là thuốc)
-    public void createMedicine(CreateMedicine request) {
+    public MedicineRes createMedicine(CreateMedicine request) {
         validateCreateMaterialRequest(
                 request.categoryId(),
                 request.name(),
@@ -239,7 +254,7 @@ public class MaterialService {
                 consumableMaterialService.saveNewConsumableMaterial(savedMaterial.getId());
         consumableMaterialService.addIngredientForConMaterial(ingredientList, consumableMaterial.getId());
 
-        medicineRepository.save(
+        Medicine medicine = medicineRepository.save(
                 Medicine.builder()
                         .id(savedMaterial.getId())
                         .cost(request.cost())
@@ -247,6 +262,24 @@ public class MaterialService {
                         .instruction(request.instruction())
                         .cared_actor(request.cared_actor())
                         .build()
+        );
+
+        return new MedicineRes(
+                savedMaterial.getId(),
+                savedMaterial.getName(),
+                savedMaterial.getQuantity(),
+                savedMaterial.getUnit(),
+                savedMaterial.getMfg_date(),
+                savedMaterial.isAble(),
+                medicine.getPrice(),
+                medicine.getCost(),
+                medicine.getInstruction(),
+                medicine.getCared_actor(),
+                request.ingreIdList(),
+                savedMaterial.getFunc(),
+                savedMaterial.getCategoryId(),
+                savedMaterial.getImg(),
+                savedMaterial.getCreated_at()
         );
     }
 
@@ -264,9 +297,8 @@ public class MaterialService {
         if (!isAbleOfMaterial)
             throw new AppException(ErrorCode.DATA_OFF,"Vật liệu tiêu hao '" + material.getId() + "'" + " đã đóng");
 
-        if (!material.getCategory().getId().equals(category.getId())) {
-            throw new AppException(ErrorCode.INVALID_REQUEST,"Mã phân loại của vật liệu không khớp với dữ liệu thực");
-        }
+        material.setCategory(category);
+
 
         request.name().ifPresent(name -> {
             FieldUtils.checkStrEmpty(name, "Tên vật liệu");
@@ -289,6 +321,7 @@ public class MaterialService {
         request.mfg_date().ifPresent(mfgDate -> {
             if(FieldUtils.isLocalDateMoreThanToday(mfgDate))
                 throw new AppException(ErrorCode.INVALID_REQUEST,"Ngày sản xuất không được quá ngày hiện tại");
+            material.setMfg_date(mfgDate);
         });
 
         Material m = materialRepository.save(material);
@@ -346,6 +379,7 @@ public class MaterialService {
         request.mfg_date().ifPresent(mfgDate -> {
             if(FieldUtils.isLocalDateMoreThanToday(mfgDate))
                 throw new AppException(ErrorCode.INVALID_REQUEST,"Ngày sản xuất không được quá ngày hiện tại");
+            material.setMfg_date(mfgDate);
         });
 
         request.ingreIdList().ifPresent(ingreList -> {
@@ -413,6 +447,7 @@ public class MaterialService {
         request.mfg_date().ifPresent(mfgDate -> {
             if(FieldUtils.isLocalDateMoreThanToday(mfgDate))
                 throw new AppException(ErrorCode.INVALID_REQUEST,"Ngày sản xuất không được quá ngày hiện tại");
+            material.setMfg_date(mfgDate);
         });
 
 //        Medicine
@@ -524,4 +559,18 @@ public class MaterialService {
             }
         }).start();
     }
+
+    @Transactional
+    public void updateQuantityOfListMaterial(List<UpdateQuantityMaterialReq> req) {
+        for(UpdateQuantityMaterialReq r: req) {
+            Material m = getById(r.id());
+            Integer Sum = m.getQuantity() + r.quantity();
+            if(Sum < 0)
+                throw new AppException(ErrorCode.INVALID_REQUEST,"Số lượng vật liệu '" + m.getName() + "' không đủ");
+            m.setQuantity(Sum);
+            materialRepository.save(m);
+        }
+    }
+
+
 }

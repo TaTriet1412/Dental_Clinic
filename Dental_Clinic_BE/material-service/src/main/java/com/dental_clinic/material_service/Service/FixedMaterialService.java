@@ -7,6 +7,7 @@ import com.dental_clinic.material_service.Entity.FixedMaterial;
 import com.dental_clinic.material_service.Entity.Material;
 import com.dental_clinic.material_service.Repository.FixedMaterialRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -18,6 +19,7 @@ public class FixedMaterialService {
     private final FixedMaterialRepository fixedMaterialRepository;
 
     @Autowired
+    @Lazy
     public FixedMaterialService(FixedMaterialRepository fixedMaterialRepository) {
         this.fixedMaterialRepository = fixedMaterialRepository;
     }
@@ -27,18 +29,39 @@ public class FixedMaterialService {
                 () -> new AppException(ErrorCode.NOT_FOUND,"Không tìm thấy vật liệu cố định có id = '" + id + "'"));
     }
 
-    public void saveNewFixedMaterial(Long materialId) {
-        fixedMaterialRepository.save(new FixedMaterial(materialId));
-    }
-
-    public FixedRes getFixedRes(Material m) {
+    public FixedRes getFixedResById(Long id) {
+        FixedMaterial fixedMaterial = getById(id);
+        Material m = fixedMaterial.getMaterial();
         return new FixedRes(
+                m.getId(),
                 m.getName(),
                 m.getQuantity(),
                 m.getUnit(),
                 m.getCreated_at(),
                 m.getMfg_date(),
-                m.isAble()
+                m.isAble(),
+                m.getFunc(),
+                m.getCategoryId(),
+                m.getImg()
+        );
+    }
+
+    public FixedMaterial saveNewFixedMaterial(Long materialId) {
+        return fixedMaterialRepository.save(new FixedMaterial(materialId));
+    }
+
+    public FixedRes getFixedRes(Material m) {
+        return new FixedRes(
+                m.getId(),
+                m.getName(),
+                m.getQuantity(),
+                m.getUnit(),
+                m.getCreated_at(),
+                m.getMfg_date(),
+                m.isAble(),
+                m.getFunc(),
+                m.getCategoryId(),
+                m.getImg()
         );
     }
 

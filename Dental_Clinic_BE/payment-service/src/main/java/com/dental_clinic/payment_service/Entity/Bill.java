@@ -1,6 +1,7 @@
 package com.dental_clinic.payment_service.Entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -65,7 +66,11 @@ public class Bill {
     private LocalDateTime createdAt;
 
     @OneToMany(mappedBy = "bill", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonIgnore
+    @JsonProperty
     private List<BillDental> billServiceEntities;
+
+    @OneToMany(mappedBy = "bill", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonProperty
+    private List<PaymentTransaction> paymentTransactions;
 
 }

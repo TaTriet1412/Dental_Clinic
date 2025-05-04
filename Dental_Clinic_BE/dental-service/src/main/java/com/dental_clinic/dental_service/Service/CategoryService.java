@@ -30,8 +30,11 @@ public class CategoryService {
 
 
     //   Lấy tất cả các phân loại dịch vụ
-    public List<Category> getAllCategories(){
-        return categoryRepository.findAll();
+    public List<Category> getAllCategories() {
+        return categoryRepository.findAll()
+                .stream()
+                .sorted((c1, c2) -> c2.getCreated_at().compareTo(c1.getCreated_at()))
+                .toList();
     }
 
 //    Lấy phân loại dịch vụ theo id

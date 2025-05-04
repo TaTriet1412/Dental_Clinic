@@ -1,5 +1,6 @@
 package com.dental_clinic.material_service.Entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
@@ -31,6 +32,7 @@ public class Ingredient {
     private boolean able;
 
     @ManyToMany
+    @JsonIgnore
     @JoinTable(
             name = "ingredient_consumable_material",
             joinColumns = @JoinColumn(name = "ingredient_id"),

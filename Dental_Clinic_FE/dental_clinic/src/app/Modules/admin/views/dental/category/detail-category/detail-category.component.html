@@ -1,0 +1,49 @@
+<div class="p-20">
+  <h1>Chi tiết danh mục dịch vụ</h1>
+
+  <c-row ngPreserveWhitespaces>
+    <c-col xs="12">
+      <c-card class="mb-4">
+        <c-card-header
+          class="d-flex justify-content-between align-items-center"
+        >
+          <strong>Chi tiết danh mục dịch vụ</strong>
+        </c-card-header>
+        <c-card-body>
+          <c-row>
+            <c-col md="12">
+              <table class="table table-bordered" [striped]="true" cTable>
+                <tbody>
+                  <tr>
+                    <th style="width: 30%">ID:</th>
+                    <td>{{ category.id }}</td>
+                  </tr>
+                  <tr>
+                    <th>Tên:</th>
+                    <td>{{ category.name }}</td>
+                  </tr>
+                  <tr>
+                    <th>Ghi chú:</th>
+                    <td>{{ category.note }}</td>
+                  </tr>
+                  <tr>
+                    <th>Ngày tạo:</th>
+                    <td>
+                      {{ category.created_at | date : "dd/MM/yyyy HH:mm:ss" }}
+                    </td>
+                  </tr>
+                  <tr>
+                    <th>Trạng thái:</th>
+                    <td>
+                      {{ category.able ? "Hoạt động" : "Ngừng hoạt động" }}
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </c-col>
+          </c-row>
+        </c-card-body>
+      </c-card>
+    </c-col>
+  </c-row>
+</div>

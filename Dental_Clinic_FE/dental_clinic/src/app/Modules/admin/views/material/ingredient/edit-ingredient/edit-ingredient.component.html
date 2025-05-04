@@ -1,0 +1,68 @@
+<div class="p-20">
+    <h1>Chỉnh sửa nguyên liệu</h1>
+  
+    <c-row ngPreserveWhitespaces>
+      <c-col xs="12">
+        <c-card class="mb-40">
+          <c-card-header
+            class="d-flex justify-content-between align-items-center"
+          >
+            <strong>Chỉnh sửa nguyên liệu</strong>
+          </c-card-header>
+          <c-card-body>
+            <form
+              #tooltipForm="ngForm"
+              (ngSubmit)="onSubmit(tooltipForm)"
+              [validated]="validated"
+              cForm
+              class="needs-validation"
+              novalidate
+            >
+              <c-row>
+                <c-col [md]="12" class="pl-20 pr-40">
+                  <c-row [md]="6" class="mb-4">
+                    <c-col class="mb-4" [md]="4">
+                      <div class="position-relative">
+                        <label cLabel for="name">Tên nguyên liệu</label>
+                        <input
+                          cFormControl
+                          id="name"
+                          name="name"
+                          required
+                          [(ngModel)]="name"
+                          #nameControl="ngModel"
+                          [class.is-invalid]="validated && nameControl.invalid"
+                          placeholder="Nhập tên"
+                          rows="4"
+                        />
+                        <c-form-feedback
+                          *ngIf="validated && nameControl.invalid"
+                          [valid]="false"
+                          tooltip
+                        >
+                          Vui lòng nhập tên.
+                        </c-form-feedback>
+                      </div>
+                    </c-col>
+  
+                    <c-col class="text-end" [md]="2">
+                      <button
+                        cButton
+                        color="primary"
+                        type="submit"
+                        [disabled]="disabledBtnSubmit"
+                      >
+                        <i class="fas fa-save me-2"></i>
+                        Lưu lại
+                      </button>
+                    </c-col>
+                  </c-row>
+                </c-col>
+              </c-row>
+            </form>
+          </c-card-body>
+        </c-card>
+      </c-col>
+    </c-row>
+  </div>
+  

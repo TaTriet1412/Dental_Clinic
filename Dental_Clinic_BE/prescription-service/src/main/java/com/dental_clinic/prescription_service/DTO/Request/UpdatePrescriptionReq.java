@@ -10,7 +10,7 @@ public record UpdatePrescriptionReq(
         String id,
         Optional<String> note,
         Optional<Long> den_id,
-        Optional<Long> pat_id,
+        Optional<String> pat_id,
         Optional<List<MedicineReq>> medicines
 ) {
 }

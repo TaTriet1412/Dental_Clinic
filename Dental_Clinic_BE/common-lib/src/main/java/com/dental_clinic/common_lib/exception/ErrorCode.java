@@ -15,7 +15,8 @@ public enum ErrorCode {
     NOT_FOUND(404, "Không tìm thấy dữ liệu tương ứng"),
     UNCATEGORIZED_EXCEPTION(9999, "Lỗi không xác định"),
     INTERNAL_SERVER_ERROR(500, "Server lỗi"),
-    FILE_ERROR(400, "Lỗi xử lý file");
+    FILE_ERROR(400, "Lỗi xử lý file"),
+    PAY_FAIL(400, "Thanh toán thất bại");
 
 
     private final int code;

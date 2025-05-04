@@ -4,7 +4,7 @@ import { ROUTES } from '../../core/constants/routes.constant';
 import { DefaultUiComponent } from './default-ui/default-ui.component';
 
 
-const default_url: string =  ROUTES.ADMIN.children.PATIENT.path;
+const default_url: string =  ROUTES.ADMIN.children.SCHEDULE.path;
 
 const routes: Routes = [
   {
@@ -29,6 +29,22 @@ const routes: Routes = [
       {
         path: ROUTES.ADMIN.children.PATIENT.path,
         loadChildren: () => import('./views/patient/routes').then(m => m.routes)
+      },
+      {
+        path: ROUTES.ADMIN.children.SERVICE.path,
+        loadChildren: () => import('./views/dental/routes').then(m => m.routes)
+      },
+      {
+        path: ROUTES.ADMIN.children.MATERIAL.path,
+        loadChildren: () => import('./views/material/routes').then(m => m.routes)
+      },
+      {
+        path: ROUTES.ADMIN.children.PRESCRIPTION.path,
+        loadChildren: () => import('./views/prescription/routes').then(m => m.routes)
+      },
+      {
+        path: ROUTES.ADMIN.children.PAYMENT.path,
+        loadChildren: () => import('./views/payment/routes').then(m => m.routes)
       },
       { path: "", redirectTo:  default_url, pathMatch: 'full' },
     ]

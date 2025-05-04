@@ -9,6 +9,7 @@ import com.dental_clinic.material_service.Entity.Ingredient;
 import com.dental_clinic.material_service.Repository.IngredientRepository;
 import com.dental_clinic.material_service.Utils.FieldUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -17,9 +18,13 @@ import java.util.List;
 
 @Service
 public class IngredientService {
-    @Autowired
     private IngredientRepository ingredientRepository;
 
+    @Lazy
+    @Autowired
+    public IngredientService(IngredientRepository ingredientRepository) {
+        this.ingredientRepository = ingredientRepository;
+    }
     public Ingredient getById(Long id) {
         return ingredientRepository.findById(id).orElseThrow(() ->
                 new AppException(ErrorCode.NOT_FOUND,"Không tìm thấy thành phần có id = '" + id + "'"));

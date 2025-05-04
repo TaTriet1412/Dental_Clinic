@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy, ChangeDetectionStrategy, ChangeDetectorRef, inject, LOCALE_ID } from '@angular/core';
-import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
-import { map, switchMap, tap, takeUntil, startWith, distinctUntilChanged } from 'rxjs/operators';
+import { BehaviorSubject, combineLatest, Observable, Subject, of } from 'rxjs'; // Import 'of'
+import { map, switchMap, tap, takeUntil, startWith, distinctUntilChanged, catchError } from 'rxjs/operators'; // Import catchError
 import { AppointmentService } from '../../../../../core/services/appointment.service';
 import { SnackBarService } from '../../../../../core/services/snack-bar.service';
 import { AlignDirective, BadgeModule, ButtonDirective, CardModule, ColComponent, FormSelectDirective, ModalModule, RowComponent, SpinnerModule } from '@coreui/angular';
@@ -35,7 +35,7 @@ import { FormsModule } from '@angular/forms';
   templateUrl: './appointment.component.html',
   styleUrls: ['./appointment.component.scss'],
   providers: [
-    DatePipe,
+    DatePipe, // Ensure DatePipe is provided
     { provide: LOCALE_ID, useValue: 'vi-VN' }
   ],
   changeDetection: ChangeDetectionStrategy.OnPush
@@ -45,18 +45,20 @@ export class AppointmentComponent implements OnInit, OnDestroy {
   private appointmentService = inject(AppointmentService);
   private snackbar = inject(SnackBarService);
   private cdr = inject(ChangeDetectorRef);
+  private datePipe = inject(DatePipe); // Inject DatePipe
 
   // --- State Management ---
   readonly pagination$ = new BehaviorSubject<{ page: number; size: number }>({ page: 1, size: 5 });
-  readonly sortFields$ = new BehaviorSubject<ISorterValue>({ column: 'appointmentDate', state: 'asc' });
+  // --- Sửa lại tên cột mặc định ---
+  readonly sortFields$ = new BehaviorSubject<ISorterValue>({ column: 'createdAt', state: 'desc' }); // Default sort mới nhất
   readonly loading$ = new BehaviorSubject<boolean>(true);
   readonly totalPages$ = new BehaviorSubject<number>(1);
   readonly errorMessage$ = new Subject<string>();
   readonly #destroy$ = new Subject<boolean>();
 
-  selectedAppointmentId: string = ''; // Lưu trữ ID của lịch hẹn được chọn
-  selectedStatus: string = ''; // Lưu trữ trạng thái hiện tại của lịch hẹn được chọn
-  reason: string = ''; // Lưu trữ lý do hủy lịch hẹn
+  selectedAppointmentId: string = '';
+  selectedStatus: string = '';
+  reason: string = '';
 
   // --- Data Streams ---
   readonly apiParams$: Observable<any>;
@@ -72,7 +74,7 @@ export class AppointmentComponent implements OnInit, OnDestroy {
     { key: 'status', label: 'Trạng thái' },
     { key: 'timeStart', label: 'TG bắt đầu' },
     { key: 'timeEnd', label: 'TG kết thúc' },
-    { key: 'createdAt', label: 'TG tạo' },
+    { key: 'createdAt', label: 'TG tạo' }, // Key phải khớp với dữ liệu và sortFields$
     { key: 'interact', label: 'Thao tác', sorter: false, filter: false },
   ];
 
@@ -80,7 +82,7 @@ export class AppointmentComponent implements OnInit, OnDestroy {
     private router: Router,
     private spinner: NgxSpinnerService,
   ) {
-    this.spinner.show(); // Show spinner when component is initialized
+    this.spinner.show();
     // Combine state for API parameters
     this.apiParams$ = combineLatest([this.pagination$, this.sortFields$]).pipe(
       map(([pagination, sortFields]) => ({
@@ -104,58 +106,101 @@ export class AppointmentComponent implements OnInit, OnDestroy {
     );
 
     // Fetch data based on API parameters
-    this.data$ = combineLatest([this.apiParams$, this.appointmentService.getAllAppointments()]).pipe(
+    this.data$ = combineLatest([
+        this.apiParams$,
+        // Fetch all data once
+        this.appointmentService.getAllAppointments().pipe(
+            map(response => Array.isArray(response?.result) ? response.result : []), // Get the raw data array
+            // --- Lưu trữ Date gốc ---
+            map(data => data.map((item:any) => ({
+                ...item,
+                _original_createdAt: new Date(item.createdAt),
+                _original_timeStart: new Date(item.timeStart),
+                _original_timeEnd: new Date(item.timeEnd)
+            }))),
+            catchError(err => { // Handle potential errors during initial fetch
+                console.error("Error fetching initial appointments:", err);
+                this.errorMessage$.next(err?.error?.message || 'Lỗi tải danh sách lịch hẹn');
+                this.loading$.next(false);
+                this.spinner.hide();
+                return of([]); // Return empty array on error
+            })
+        )
+    ]).pipe(
       tap(() => {
+        // Reset loading/error only when params change if needed, or keep it simple
         this.loading$.next(true);
         this.errorMessage$.next('');
+        // spinner.show() might be better placed before the combineLatest if it should show every time params change
       }),
-      map(([params, response]) => {
-        // Đảm bảo response.result là một mảng
-        const data = Array.isArray(response?.result) ? response.result : [];
+      map(([params, allData]) => { // allData now contains _original_... dates
 
-        // Định dạng dữ liệu trước khi truyền vào bảng
-        const formattedData = data.map((item: any) => ({
-          ...item,
-          createdAt: new Date(item.createdAt).toLocaleString('vi-VN', { hour12: false }),
-          timeStart: new Date(item.timeStart).toLocaleString('vi-VN', { hour12: false }),
-          timeEnd: new Date(item.timeEnd).toLocaleString('vi-VN', { hour12: false }),
-        }));
+        let processedData = [...allData]; // Work with the full dataset
 
-        // Lọc, sắp xếp và phân trang dữ liệu cục bộ
-        let filteredData = [...formattedData];
-
-        // Áp dụng sắp xếp
+        // --- Áp dụng sắp xếp trên dữ liệu gốc ---
         if (params.sort) {
           const [key, direction] = params.sort.split(',');
-          filteredData.sort((a: any, b: any) => {
-            if (a[key] < b[key]) return direction === 'asc' ? -1 : 1;
-            if (a[key] > b[key]) return direction === 'asc' ? 1 : -1;
-            return 0;
-          });
+          // --- Sắp xếp dựa trên đối tượng Date gốc ---
+          const sortKeyOriginal = `_original_${key}`; // e.g., _original_createdAt
+
+          // Check if the original date key exists before sorting
+          if (processedData.length > 0 && processedData[0].hasOwnProperty(sortKeyOriginal)) {
+              processedData.sort((a: any, b: any) => {
+                  const dateA = a[sortKeyOriginal]?.getTime();
+                  const dateB = b[sortKeyOriginal]?.getTime();
+
+                  // Handle potential invalid dates
+                  if (isNaN(dateA) && isNaN(dateB)) return 0;
+                  if (isNaN(dateA)) return 1; // Put invalid dates at the end
+                  if (isNaN(dateB)) return -1;
+
+                  if (dateA < dateB) return direction === 'asc' ? -1 : 1;
+                  if (dateA > dateB) return direction === 'asc' ? 1 : -1;
+                  return 0;
+              });
+          } else if (processedData.length > 0 && processedData[0].hasOwnProperty(key)) {
+              // Fallback to sorting other non-date columns if original date key doesn't exist
+              processedData.sort((a: any, b: any) => {
+                  if (a[key] < b[key]) return direction === 'asc' ? -1 : 1;
+                  if (a[key] > b[key]) return direction === 'asc' ? 1 : -1;
+                  return 0;
+              });
+          }
         }
 
-        // Áp dụng phân trang
+        // --- Định dạng ngày tháng *sau khi* sắp xếp ---
+        const formattedData = processedData.map((item: any) => ({
+          ...item,
+          // Sử dụng DatePipe để định dạng
+          createdAt: this.datePipe.transform(item._original_createdAt, 'dd/MM/yyyy, HH:mm:ss', 'vi-VN') || '',
+          timeStart: this.datePipe.transform(item._original_timeStart, 'dd/MM/yyyy, HH:mm:ss', 'vi-VN') || '',
+          timeEnd: this.datePipe.transform(item._original_timeEnd, 'dd/MM/yyyy, HH:mm:ss', 'vi-VN') || '',
+        }));
+
+        // Áp dụng phân trang trên dữ liệu đã sắp xếp và định dạng
         const startIndex = (params.page - 1) * params.size;
         const endIndex = startIndex + params.size;
-        const paginatedData = filteredData.slice(startIndex, endIndex);
+        const paginatedData = formattedData.slice(startIndex, endIndex);
 
-        // Cập nhật tổng số trang
-        const totalPages = Math.ceil(filteredData.length / params.size);
+        // Cập nhật tổng số trang dựa trên toàn bộ dữ liệu đã xử lý
+        const totalPages = Math.ceil(formattedData.length / params.size);
         this.totalPages$.next(totalPages);
 
         this.loading$.next(false);
-        this.cdr.markForCheck();
+        this.cdr.markForCheck(); // Mark for check after async operations
 
         return paginatedData;
       }),
-      startWith([]),
+      startWith([]), // Initial empty value before data loads
       takeUntil(this.#destroy$)
     );
-    this.spinner.hide(); // Hide spinner when data is loaded
+    // Consider moving spinner.hide() inside the final tap/map of the data$ stream
+    this.spinner.hide(); // Might hide too early if initial fetch is slow
   }
 
   ngOnInit(): void {
     console.log('AppointmentComponent initialized.');
+    // No need to call spinner.hide() here if it's handled in the stream
   }
 
   ngOnDestroy(): void {
@@ -171,21 +216,27 @@ export class AppointmentComponent implements OnInit, OnDestroy {
 
   handleItemsPerPageChange(size: number): void {
     const currentPagination = this.pagination$.value;
-    this.pagination$.next({ ...currentPagination, size });
+    // Reset to page 1 when items per page changes
+    this.pagination$.next({ ...currentPagination, size, page: 1 });
   }
 
   handleSorterValueChange(sorterValue: ISorterValue): void {
+    // Reset to page 1 when sorting changes
+    const currentPagination = this.pagination$.value;
+    this.pagination$.next({ ...currentPagination, page: 1 });
     this.sortFields$.next(sorterValue);
   }
 
   // --- Utility Methods ---
   private formatSortParam(sorter: ISorterValue): string {
     if (!sorter || !sorter.column || !sorter.state) {
-      return 'appointmentDate,asc'; // Default sort
+      // --- Sử dụng giá trị mặc định đã sửa ---
+      return 'createdAt,desc'; // Default sort mới nhất
     }
     return `${sorter.column},${sorter.state}`;
   }
 
+  // --- Navigation Methods ---
   goToCreateAppointment() {
     this.router.navigate([ROUTES.ADMIN.children.SCHEDULE.children.APPOINTMENT.children.CREATE.fullPath]);
   }
@@ -198,49 +249,51 @@ export class AppointmentComponent implements OnInit, OnDestroy {
     this.router.navigate([ROUTES.ADMIN.children.SCHEDULE.children.APPOINTMENT.children.EDIT.fullPath(id)]);
   }
 
+  // --- UI Helpers ---
   getBadge(status: string) {
+    // ... (keep existing getBadge logic) ...
     switch (status) {
-      case 'confirmed':
-        return 'info'; // Màu xanh lá cho trạng thái đã xác nhận
-      case 'in_progress':
-        return 'primary'; // Màu xanh dương cho trạng thái đang tiến hành
-      case 'finished':
-        return 'success'; // Màu xanh nhạt cho trạng thái đã hoàn thành
-      case 'cancelled':
-        return 'danger'; // Màu đỏ cho trạng thái đã hủy
-      case 'not_show':
-        return 'warning'; // Màu vàng cho trạng thái không đến
-      default:
-        return 'secondary'; // Màu xám cho trạng thái chưa xác định
+      case 'confirmed': return 'info';
+      case 'in_progress': return 'primary';
+      case 'finished': return 'success';
+      case 'cancelled': return 'danger';
+      case 'not_show': return 'warning';
+      default: return 'secondary';
     }
   }
 
+  // --- Modal and Status Change ---
   openChangeStatusModal(id: string, status: string): void {
-    this.selectedAppointmentId = id; // Gán ID của lịch hẹn được chọn
-    this.selectedStatus = status; // Gán trạng thái hiện tại của lịch hẹn
+    this.selectedAppointmentId = id;
+    this.selectedStatus = status;
     this.reason = '';
+    // Logic to actually open the modal (e.g., using a boolean flag bound to c-modal visible property)
+    // this.isModalVisible = true; // Assuming you have such a property
+    this.cdr.markForCheck();
   }
 
   onChangeStatus(): void {
-    // Gửi dữ liệu đến API hoặc xử lý logic
+    this.spinner.show(); // Show spinner during status update
     this.appointmentService.updateStatusAppointment(this.selectedAppointmentId, this.selectedStatus, this.reason).subscribe({
       next: (response) => {
         this.snackbar.notifySuccess(response.message);
-        this.data$ = this.data$.pipe(
-          map((appointments) => {
-            return appointments.map((appointment) => {
-              if (appointment.id === this.selectedAppointmentId) {
-                return { ...appointment, status: this.selectedStatus }; // Cập nhật trạng thái của lịch hẹn đã chọn
-              }
-              return appointment;
-            });
-          }
-        ));
-        this.cdr.markForCheck(); // Đảm bảo rằng thay đổi được phát hiện
+        // --- Trigger data refresh ---
+        // Easiest way with client-side data is to re-emit the source observable or manually update the local array
+        // For simplicity, let's re-trigger the fetch (though inefficient for large datasets)
+        // A better way would be to update the item in the 'allData' array before the map/slice
+        const currentParams = this.pagination$.value;
+        this.pagination$.next({...currentParams}); // Re-emit params to trigger data$ pipe again
+
+        // Close modal logic
+        // this.isModalVisible = false;
+        this.spinner.hide();
+        this.cdr.markForCheck();
       },
       error: (error) => {
-        this.snackbar.notifyError(error.error.message);
-        console.error('Error updating appointment status:', error.error);
+        this.snackbar.notifyError(error.error?.message || 'Lỗi cập nhật trạng thái');
+        console.error('Error updating appointment status:', error);
+        this.spinner.hide();
+        this.cdr.markForCheck();
       },
     });
   }

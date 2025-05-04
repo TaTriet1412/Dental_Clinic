@@ -40,6 +40,76 @@ export const navItems: INavData[] = [
   },
   {
     title: true,
+    name: 'Quản lý dịch vụ'
+  },
+  {
+    name: 'Dịch vụ *',
+    url: ROUTES.ADMIN.children.SERVICE.fullPath,
+    iconComponent: { name: 'cil-sofa' },
+    children: [
+      {
+        name: 'Dịch vụ',
+        url: ROUTES.ADMIN.children.SERVICE.children.DENTAL.fullPath,
+        icon: 'nav-icon-bullet'
+      },
+      {
+        name: 'Phân loại',
+        url: ROUTES.ADMIN.children.SERVICE.children.CATEGORY.fullPath,
+        icon: 'nav-icon-bullet'
+      }
+    ]
+  },
+  {
+    title: true,
+    name: 'Quản lý vật liệu'
+  },
+  {
+    name: 'Vật liệu *',
+    url: ROUTES.ADMIN.children.MATERIAL.fullPath,
+    iconComponent: { name: 'cil-medical-cross' },
+    children: [
+      {
+        name: 'Vật liệu cố định',
+        url: ROUTES.ADMIN.children.MATERIAL.children.FIXED.fullPath,
+        icon: 'nav-icon-bullet'
+      },
+      {
+        name: 'Vật liệu tiêu hao',
+        url: ROUTES.ADMIN.children.MATERIAL.children.CONSUMABLE.fullPath,
+        icon: 'nav-icon-bullet'
+      },
+      {
+        name: 'Thành phần',
+        url: ROUTES.ADMIN.children.MATERIAL.children.INGREDIENT.fullPath,
+        icon: 'nav-icon-bullet'
+      },
+      {
+        name: 'Phân loại',
+        url: ROUTES.ADMIN.children.MATERIAL.children.CATEGORY.fullPath,
+        icon: 'nav-icon-bullet'
+      }
+    ]
+  },
+  {
+    title: true,
+    name: 'Quản lý toa thuốc'
+  },
+  {
+    name: 'Toa thuốc',
+    url: ROUTES.ADMIN.children.PRESCRIPTION.children.LIST.fullPath,
+    iconComponent: { name: 'cil-note-add' },
+  },
+  {
+    title: true,
+    name: 'Quản lý hóa đơn'
+  },
+  {
+    name: 'Hóa đơn',
+    url: ROUTES.ADMIN.children.PAYMENT.children.LIST.fullPath,
+    iconComponent: { name: 'cil-money' },
+  },
+  {
+    title: true,
     name: 'Quản lý khoa'
   },
   {

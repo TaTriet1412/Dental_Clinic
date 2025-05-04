@@ -46,6 +46,7 @@
               "public/assets/coreui-pro-main/coreui-pro-main/scss/_time-picker.scss",
               "public/assets/coreui-pro-main/coreui-pro-main/scss/_date-picker.scss",
               "public/assets/coreui-pro-main/coreui-pro-main/scss/_calendar.scss",
+              "public/assets/coreui-pro-main/coreui-pro-main/scss/forms/_form-multi-select.scss",
               "src/styles.scss"
             ],
             "scripts": []

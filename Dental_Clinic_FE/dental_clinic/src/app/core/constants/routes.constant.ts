@@ -7,6 +7,10 @@ export const ROUTES = {
         path: 'not-found',
         fullPath: '/not-found'
     },
+    SERVER_ERROR: {
+        path: 'server-error',
+        fullPath: '/server-error'
+    },
     USER: {
         path: 'user',
         fullPath: '/user',
@@ -169,25 +173,191 @@ export const ROUTES = {
                     }
                 }
             },
-            DENTAL: {
-                path: 'dental',
-                fullPath: '/admin/dental',
+            SERVICE: {
+                path: 'service',
+                fullPath: '/admin/service',
+                children: {
+                    DENTAL: {
+                        path: 'dental',
+                        fullPath: '/admin/service/dental',
+                        children: {
+                            LIST: {
+                                path: 'list',
+                                fullPath: '/admin/service/dental/list'
+                            },
+                            CREATE: {
+                                path: 'create',
+                                fullPath: '/admin/service/dental/create'
+                            },
+                            DETAIL: {
+                                path: ':id',
+                                fullPath: (id: string) => `/admin/service/dental/${id}`
+                            },
+                            EDIT: {
+                                path: ':id/edit',
+                                fullPath: (id: string) => `/admin/service/dental/${id}/edit`
+                            }
+                        }
+                    },
+                    CATEGORY: {
+                        path: 'category',
+                        fullPath: '/admin/service/category',
+                        children: {
+                            LIST: {
+                                path: 'list',
+                                fullPath: '/admin/service/category/list'
+                            },
+                            CREATE: {
+                                path: 'create',
+                                fullPath: '/admin/service/category/create'
+                            },
+                            DETAIL: {
+                                path: ':id',
+                                fullPath: (id: string) => `/admin/service/category/${id}`
+                            },
+                            EDIT: {
+                                path: ':id/edit',
+                                fullPath: (id: string) => `/admin/service/category/${id}/edit`
+                            }
+                        }
+                    }
+                }
+            },
+            MATERIAL: {
+                path: 'material',
+                fullPath: '/admin/material',
+                children: {
+                    CONSUMABLE: {
+                        path: 'consumable',
+                        fullPath: '/admin/material/consumable',
+                        children: {
+                            LIST: {
+                                path: 'list',
+                                fullPath: '/admin/material/consumable/list'
+                            },
+                            CREATE: {
+                                path: 'create',
+                                fullPath: '/admin/material/consumable/create'
+                            },
+                            DETAIL: {
+                                path: ':id',
+                                fullPath: (id: string) => `/admin/material/consumable/${id}`
+                            },
+                            EDIT: {
+                                path: ':id/edit',
+                                fullPath: (id: string) => `/admin/material/consumable/${id}/edit`
+                            }
+                        }
+                    },
+                    FIXED: {
+                        path: 'fixed',
+                        fullPath: '/admin/material/fixed',
+                        children: {
+                            LIST: {
+                                path: 'list',
+                                fullPath: '/admin/material/fixed/list'
+                            },
+                            CREATE: {
+                                path: 'create',
+                                fullPath: '/admin/material/fixed/create'
+                            },
+                            DETAIL: {
+                                path: ':id',
+                                fullPath: (id: string) => `/admin/material/fixed/${id}`
+                            },
+                            EDIT: {
+                                path: ':id/edit',
+                                fullPath: (id: string) => `/admin/material/fixed/${id}/edit`
+                            }
+                        }
+                    },
+                    INGREDIENT: {
+                        path: 'ingredient',
+                        fullPath: '/admin/material/ingredient',
+                        children: {
+                            LIST: {
+                                path: 'list',
+                                fullPath: '/admin/material/ingredient/list'
+                            },
+                            CREATE: {
+                                path: 'create',
+                                fullPath: '/admin/material/ingredient/create'
+                            },
+                            DETAIL: {
+                                path: ':id',
+                                fullPath: (id: string) => `/admin/material/ingredient/${id}`
+                            },
+                            EDIT: {
+                                path: ':id/edit',
+                                fullPath: (id: string) => `/admin/material/ingredient/${id}/edit`
+                            }
+                        }
+                    },
+                    CATEGORY: {
+                        path: 'category',
+                        fullPath: '/admin/material/category',
+                        children: {
+                            LIST: {
+                                path: 'list',
+                                fullPath: '/admin/material/category/list'
+                            },
+                            CREATE: {
+                                path: 'create',
+                                fullPath: '/admin/material/category/create'
+                            },
+                            DETAIL: {
+                                path: ':id',
+                                fullPath: (id: string) => `/admin/material/category/${id}`
+                            },
+                            EDIT: {
+                                path: ':id/edit',
+                                fullPath: (id: string) => `/admin/material/category/${id}/edit`
+                            }
+                        }
+                    }
+                }
+            },
+            PRESCRIPTION: {
+                path: 'prescription',
+                fullPath: '/admin/prescription',
                 children: {
                     LIST: {
                         path: 'list',
-                        fullPath: '/admin/dental/list'
+                        fullPath: '/admin/prescription/list'
                     },
                     CREATE: {
                         path: 'create',
-                        fullPath: '/admin/dental/create'
+                        fullPath: '/admin/prescription/create'
                     },
                     DETAIL: {
                         path: ':id',
-                        fullPath: (id: string) => `/admin/dental/${id}`
+                        fullPath: (id: string) => `/admin/prescription/${id}`
                     },
                     EDIT: {
                         path: ':id/edit',
-                        fullPath: (id: string) => `/admin/dental/${id}/edit`
+                        fullPath: (id: string) => `/admin/prescription/${id}/edit`
+                    }
+                }
+            },
+            PAYMENT: {
+                path: 'bill',
+                fullPath: '/admin/bill',
+                children: {
+                    LIST: {
+                        path: 'list',
+                        fullPath: '/admin/bill/list'
+                    },
+                    CREATE: {
+                        path: 'create',
+                        fullPath: '/admin/bill/create'
+                    },
+                    DETAIL: {
+                        path: ':id',
+                        fullPath: (id: string) => `/admin/bill/${id}`
+                    },
+                    EDIT: {
+                        path: ':id/edit',
+                        fullPath: (id: string) => `/admin/bill/${id}/edit`
                     }
                 }
             }

@@ -78,7 +78,6 @@ public class CategoryController {
         return ApiResponse.builder()
                 .message(category.getAble() ? "Đã kích hoạt danh mục dịch vụ" : "Đã vô hiệu hóa danh mục dịch vụ")
                 .apiCode(HttpStatus.OK.value())
-                .result(category)
                 .build();
     }
 

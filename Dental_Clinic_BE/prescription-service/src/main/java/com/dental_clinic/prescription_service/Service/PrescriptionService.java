@@ -1,15 +1,23 @@
 package com.dental_clinic.prescription_service.Service;
 
+import com.dental_clinic.common_lib.dto.response.ApiResponse;
 import com.dental_clinic.common_lib.exception.AppException;
 import com.dental_clinic.common_lib.exception.ErrorCode;
+import com.dental_clinic.prescription_service.Client.MaterialClient;
+import com.dental_clinic.prescription_service.DTO.Client.UpdateQuantityMaterialReq;
 import com.dental_clinic.prescription_service.DTO.Request.CreatePrescriptionReq;
+import com.dental_clinic.prescription_service.DTO.Request.MedicineReq;
 import com.dental_clinic.prescription_service.DTO.Request.UpdatePrescriptionReq;
 import com.dental_clinic.prescription_service.DTO.Response.PricePrescriptionRes;
 import com.dental_clinic.prescription_service.Entity.Medicine;
 import com.dental_clinic.prescription_service.Entity.Prescription;
 import com.dental_clinic.prescription_service.Repository.PrescriptionRepository;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.reactive.function.client.WebClientResponseException;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -18,11 +26,20 @@ import java.math.BigInteger;
 
 @Service
 public class PrescriptionService {
-    private final PrescriptionRepository prescriptionRepository;
+    PrescriptionRepository prescriptionRepository;
+    MaterialClient materialClient;
+    ObjectMapper objectMapper;
 
     @Autowired
-    public PrescriptionService(PrescriptionRepository prescriptionRepository) {
+    public PrescriptionService(
+            MaterialClient materialClient,
+            PrescriptionRepository prescriptionRepository,
+            ObjectMapper objectMapper
+    ) {
         this.prescriptionRepository = prescriptionRepository;
+        this.materialClient = materialClient;
+        this.objectMapper = objectMapper;
+
     }
 
     private Prescription findPrescriptionById(String id) {
@@ -48,13 +65,6 @@ public class PrescriptionService {
         return prescriptionRepository.findByDenIdAndIsDeletedFalse(denId);
     }
 
-    public Prescription createPrescription(CreatePrescriptionReq request) {
-        Prescription prescription = createPrescriptionFromRequest(request);
-        prescriptionRepository.save(prescription);
-
-        return prescription;
-    }
-
     public Prescription getPrescriptionHasBillNullById(String id) {
         Prescription prescription = findPrescriptionById(id);
         Boolean exists = prescriptionRepository.existsByIdAndBillIdIsNullOrNotPresent(id);
@@ -65,39 +75,97 @@ public class PrescriptionService {
     }
 
 
-    private static Prescription createPrescriptionFromRequest(CreatePrescriptionReq request) {
-        return Prescription.builder()
-                .pat_id(request.pat_id())
-                .den_id(request.den_id())
-                .bill_id(null)
-                .note(request.note())
-                .medicines(request.medicines().stream()
-                        .map(medicineReq
-                                -> new Medicine(medicineReq.med_id(), medicineReq.quantity_medicine()))
-                        .collect(Collectors.toList()))
-                // TODO: Cập nhật giá khi có bill service
-                .total_price(BigInteger.valueOf(0))
-                .is_deleted(false)
-                .created_at(LocalDateTime.now())
-                .build();
+    @Transactional
+    public Prescription createPrescription(CreatePrescriptionReq request) throws JsonProcessingException {
+        try {
+            BigInteger totalPrice = request.medicines().stream()
+                    .map(medicineReq -> BigInteger.valueOf(medicineReq.price())
+                            .multiply(BigInteger.valueOf(medicineReq.quantity_medicine())))
+                    .reduce(BigInteger.ZERO, BigInteger::add);
+
+            List<UpdateQuantityMaterialReq> updateQuantityMaterialReqs = request.medicines().stream()
+                    .map(medicineReq -> new UpdateQuantityMaterialReq(medicineReq.med_id(), (- medicineReq.quantity_medicine())))
+                    .toList();
+
+            materialClient.updateQuantityOfListMaterial(updateQuantityMaterialReqs);
+
+            Prescription prescription = Prescription.builder()
+                    .pat_id(request.pat_id())
+                    .den_id(request.den_id())
+                    .bill_id(null)
+                    .note(request.note())
+                    .medicines(request.medicines().stream()
+                            .map(medicineReq
+                                    -> new Medicine(medicineReq.med_id(), medicineReq.quantity_medicine()))
+                            .collect(Collectors.toList()))
+                    .total_price(totalPrice)
+                    .is_deleted(false)
+                    .created_at(LocalDateTime.now())
+                    .build();
+
+            return prescriptionRepository.save(prescription);
+
+        } catch (AppException e) {
+            throw e;
+        } catch (WebClientResponseException ex) {
+            String errorBody = ex.getResponseBodyAsString(); // <-- lấy lỗi gốc
+            int statusCode = ex.getRawStatusCode(); // ví dụ 400, 404, 500
+
+            // Nếu body trả về dạng JSON, bạn parse như này:
+            ApiResponse<?> errorResponse = objectMapper.readValue(errorBody, ApiResponse.class);
+
+            throw new AppException(ErrorCode.INVALID_REQUEST,
+                    errorResponse.getMessage());
+        }
     }
 
-    public Prescription deletePrescription(String id) {
+    @Transactional
+    public Prescription deleteVariablePrescription(String id) throws JsonProcessingException {
+      try {
         Prescription prescription = findPrescriptionById(id);
+        List<UpdateQuantityMaterialReq> updateQuantityMaterialReqs = prescription.getMedicines().stream()
+            .map(medicine -> new UpdateQuantityMaterialReq(medicine.getMed_id(), medicine.getQuantity_medicine()))
+            .toList();
+
+        materialClient.updateQuantityOfListMaterial(updateQuantityMaterialReqs);
+
         checkWhetherPreDeleted(prescription);
+          if (prescription.getBill_id() != null) {
+              throw new AppException(ErrorCode.INVALID_REQUEST, "Không thể xóa toa thuốc đã có hóa đơn");
+          }
         prescription.setIs_deleted(true);
         return prescriptionRepository.save(prescription);
+        } catch (AppException e) {
+            throw e;
+        } catch (WebClientResponseException ex) {
+            String errorBody = ex.getResponseBodyAsString(); // <-- lấy lỗi gốc
+            int statusCode = ex.getRawStatusCode(); // ví dụ 400, 404, 500
+
+            // Nếu body trả về dạng JSON, bạn parse như này:
+            ApiResponse<?> errorResponse = objectMapper.readValue(errorBody, ApiResponse.class);
+
+            throw new AppException(ErrorCode.INVALID_REQUEST,
+                    errorResponse.getMessage());
+        }
+    }
+
+    public void deletePrescriptionById(String id) {
+        prescriptionRepository.deleteById(id);
     }
 
     private static void checkWhetherPreDeleted(Prescription prescription) {
         if (prescription.getIs_deleted()) {
             throw new AppException(ErrorCode.INVALID_REQUEST, "Toa thuốc đã bị xóa");
         }
+
     }
 
     public Prescription updateBillIdForPrescription(String id, Long billId) {
         Prescription prescription = findPrescriptionById(id);
         checkWhetherPreDeleted(prescription);
+        if (prescription.getBill_id() != null) {
+            throw new AppException(ErrorCode.INVALID_REQUEST, "Toa thuốc đã có hóa đơn");
+        }
         prescription.setBill_id(billId);
         return prescriptionRepository.save(prescription);
     }
@@ -109,18 +177,12 @@ public class PrescriptionService {
         return prescriptionRepository.save(prescription);
     }
 
+    @Transactional
     public Prescription updatePrescription(UpdatePrescriptionReq request) {
         Prescription prescription = findPrescriptionById(request.id());
         checkBeforeUpdatePrescription(prescription);
 
-        StringBuilder logMessage = new StringBuilder("Updated prescription id=" + request.id() + ": ");
-        boolean hasChanges = false;
-
-        Long oldPatId = prescription.getPat_id();
-        Long oldDenId = prescription.getDen_id();
-        String oldNote = prescription.getNote();
         List<Medicine> oldMedicines = prescription.getMedicines();
-        BigInteger oldTotalPrice = prescription.getTotal_price();
 
         request.note().ifPresent(note -> {
             if (note.isBlank()) {
@@ -132,8 +194,6 @@ public class PrescriptionService {
             prescription.setNote(note);
         });
 
-//        TODO: Cập nhật khi có bill service
-        prescription.setTotal_price(BigInteger.valueOf(0));
 
         request.den_id().ifPresent(denId -> {
             if (denId < 1) {
@@ -143,8 +203,8 @@ public class PrescriptionService {
         });
 
         request.pat_id().ifPresent(patId -> {
-            if (patId < 1) {
-                throw new AppException(ErrorCode.FAIL_FORMAT_DATA, "Mã bệnh nhân phải lớn hơn 0");
+            if (patId.isBlank()) {
+                throw new AppException(ErrorCode.FAIL_FORMAT_DATA, "Mã bệnh nhân không được để trống");
             }
             prescription.setPat_id(patId);
         });
@@ -153,34 +213,40 @@ public class PrescriptionService {
             if (medicineReqs.isEmpty()) {
                 throw new AppException(ErrorCode.FAIL_FORMAT_DATA, "Danh sách thuốc không được để trống");
             }
+
+            // Tính toán sự thay đổi số lượng vật liệu
+            List<UpdateQuantityMaterialReq> updateQuantityMaterialReqs = medicineReqs.stream()
+                    .collect(Collectors.toMap(MedicineReq::med_id, MedicineReq::quantity_medicine))
+                    .entrySet()
+                    .stream()
+                    .map(entry -> {
+                        Long medId = entry.getKey();
+                        int newQuantity = entry.getValue();
+                        int oldQuantity = oldMedicines.stream()
+                                .filter(medicine -> medicine.getMed_id().equals(medId))
+                                .mapToInt(Medicine::getQuantity_medicine)
+                                .findFirst()
+                                .orElse(0);
+                        return new UpdateQuantityMaterialReq(medId, oldQuantity - newQuantity);
+                    })
+                    .toList();
+
+            // Gửi yêu cầu cập nhật số lượng vật liệu
+            materialClient.updateQuantityOfListMaterial(updateQuantityMaterialReqs);
+
+            // Cập nhật danh sách thuốc và tổng giá
+            BigInteger totalPrice = medicineReqs.stream()
+                    .map(medicineReq -> BigInteger.valueOf(medicineReq.price())
+                            .multiply(BigInteger.valueOf(medicineReq.quantity_medicine())))
+                    .reduce(BigInteger.ZERO, BigInteger::add);
+
+
             List<Medicine> medicines = medicineReqs.stream()
                     .map(medicineReq -> new Medicine(medicineReq.med_id(), medicineReq.quantity_medicine()))
                     .collect(Collectors.toList());
             prescription.setMedicines(medicines);
+            prescription.setTotal_price(totalPrice);
         });
-
-        // Kiểm tra và ghi log các trường thay đổi
-        if (request.pat_id().isPresent() && !prescription.getPat_id().equals(oldPatId)) {
-            logMessage.append("pat_id from ").append(oldPatId).append(" to ").append(prescription.getPat_id()).append("\n");
-            hasChanges = true;
-        }
-        if (request.den_id().isPresent() && !prescription.getDen_id().equals(oldDenId)) {
-            logMessage.append("den_id from ").append(oldDenId).append(" to ").append(prescription.getDen_id()).append("\n");
-            hasChanges = true;
-        }
-        if (request.note().isPresent() && !prescription.getNote().equals(oldNote)) {
-            logMessage.append("note from ").append(oldNote).append(" to ").append(prescription.getNote()).append("\n");
-            hasChanges = true;
-        }
-        if (request.medicines().isPresent() && !prescription.getMedicines().equals(oldMedicines)) {
-            logMessage.append("medicines from ").append(oldMedicines).append(" to ").append(prescription.getMedicines()).append("\n");
-            hasChanges = true;
-        }
-        if (!prescription.getTotal_price().equals(oldTotalPrice)) {
-            logMessage.append("total_price from ").append(oldTotalPrice).append(" to ").append(prescription.getTotal_price()).append("\n");
-            hasChanges = true;
-        }
-
 
         prescriptionRepository.save(prescription);
 
@@ -194,5 +260,9 @@ public class PrescriptionService {
         if (prescription.getBill_id() != null) {
             throw new AppException(ErrorCode.INVALID_REQUEST, "Không thể cập nhật toa thuốc đã có hóa đơn");
         }
+    }
+
+    public Prescription getPrescriptionById(String id) {
+        return findPrescriptionById(id);
     }
 }

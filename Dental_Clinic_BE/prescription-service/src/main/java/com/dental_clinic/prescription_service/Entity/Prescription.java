@@ -1,4 +1,5 @@
 package com.dental_clinic.prescription_service.Entity;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.Lob;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -19,7 +20,7 @@ import java.util.List;
 public class Prescription {
     @Id
     String id;
-    Long pat_id;
+    String pat_id;
     Long den_id;
     Long bill_id;
     Boolean is_deleted;

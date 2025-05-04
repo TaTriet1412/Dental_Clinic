@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -21,6 +22,7 @@ import java.util.List;
 @CrossOrigin(origins = "http://localhost:4200")
 @FieldDefaults(makeFinal = true, level = lombok.AccessLevel.PRIVATE)
 @RequestMapping("/material")
+@Validated
 public class MaterialController {
     MaterialService materialService;
     FixedMaterialService fixedMaterialService;
@@ -62,6 +64,16 @@ public class MaterialController {
                .build();
    }
 
+   //   GetById
+    @GetMapping("/fixed-material/{id}")
+    public ApiResponse<Object> getFixedMaterialById(@PathVariable Long id) {
+        return ApiResponse.builder()
+                .result(fixedMaterialService.getFixedResById(id))
+                .apiCode(200)
+                .message("Lấy vật liệu cố định thành công!")
+                .build();
+    }
+
    //    GetByCatId
    @GetMapping("fixed-material/category/{catId}")
    public ApiResponse<Object> getListFixedMaterialByCatId(@PathVariable Long catId) {
@@ -76,9 +88,8 @@ public class MaterialController {
    @ResponseStatus(HttpStatus.CREATED)
    @PostMapping("/fixed-material")
    public ApiResponse<Object> createNewFixedMaterial(@Valid @RequestBody CreateFixedMaterial req) {
-       materialService.createFixedMaterial(req);
        return ApiResponse.builder()
-               .result(null)
+               .result(materialService.createFixedMaterial(req))
                .apiCode(201)
                .message("Thêm vật liệu cố định mới thành công")
                .build();
@@ -107,6 +118,16 @@ public class MaterialController {
                 .build();
     }
 
+    //    GetById
+    @GetMapping("/consumable-material/{id}")
+    public ApiResponse<Object> getConsumableMaterialById(@PathVariable Long id) {
+        return ApiResponse.builder()
+                .result(consumableMaterialService.getConsumableResById(id))
+                .apiCode(200)
+                .message("Lấy vật liệu tiêu hao thành công!")
+                .build();
+    }
+
     //    GetByCatId
     @GetMapping("consumable-material/category/{catId}")
     public ApiResponse<Object> getListConsumableMaterialByCatId(@PathVariable Long catId) {
@@ -121,9 +142,8 @@ public class MaterialController {
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/consumable-material")
     public ApiResponse<Object> createNewConsumableMaterial(@Valid @RequestBody CreateConsumableMaterial req) {
-        materialService.createConsumableMaterial(req);
         return ApiResponse.builder()
-                .result(null)
+                .result(materialService.createConsumableMaterial(req))
                 .apiCode(201)
                 .message("Thêm vật liệu tiêu hao mới thành công")
                 .build();
@@ -151,6 +171,16 @@ public class MaterialController {
                 .build();
     }
 
+    //    GetById
+    @GetMapping("/consumable-material/medicine/{id}")
+    public ApiResponse<Object> getMedicineById(@PathVariable Long id) {
+        return ApiResponse.builder()
+                .result(medicineService.getMedicineResById(id))
+                .apiCode(200)
+                .message("Lấy thuốc thành công!")
+                .build();
+    }
+
     //    GetByCatId
     @GetMapping("consumable-material/medicine/category/{catId}")
     public ApiResponse<Object> getListMedicineByCatId(@PathVariable Long catId) {
@@ -165,9 +195,8 @@ public class MaterialController {
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/consumable-material/medicine")
     public ApiResponse<Object> createNewMedicine(@Valid @RequestBody CreateMedicine req) {
-        materialService.createMedicine(req);
         return ApiResponse.builder()
-                .result(null)
+                .result(materialService.createMedicine(req))
                 .apiCode(201)
                 .message("Thêm thuốc mới thành công")
                 .build();
@@ -191,6 +220,16 @@ public class MaterialController {
                 .result(null)
                 .apiCode(200)
                 .message("Thay đổi ảnh thành công")
+                .build();
+    }
+
+    // Cập nhật số lượng của danh sách vật liệu
+    @PutMapping("/list/update-quantity")
+    public ApiResponse<Object> updateQuantityOfListMaterial(@Valid @RequestBody List<UpdateQuantityMaterialReq> request) {
+        materialService.updateQuantityOfListMaterial(request);
+        return ApiResponse.builder()
+                .apiCode(200)
+                .message("Cập nhật số lượng thành công")
                 .build();
     }
 

@@ -5,6 +5,7 @@ import com.dental_clinic.prescription_service.DTO.Request.CreatePrescriptionReq;
 import com.dental_clinic.prescription_service.DTO.Request.UpdateBillIdForPrescriptionReq;
 import com.dental_clinic.prescription_service.DTO.Request.UpdatePrescriptionReq;
 import com.dental_clinic.prescription_service.Service.PrescriptionService;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +30,15 @@ public class PrescriptionController {
                 .apiCode(200)
                 .message("Lấy danh sách đơn thuốc thành công")
                 .result(prescriptionService.getAllPrescriptions())
+                .build();
+    }
+
+    @GetMapping("/{id}")
+    public ApiResponse<Object> getPrescriptionById(@PathVariable String id) {
+        return ApiResponse.builder()
+                .apiCode(200)
+                .message("Lấy đơn thuốc thành công")
+                .result(prescriptionService.getPrescriptionById(id))
                 .build();
     }
 
@@ -72,7 +82,7 @@ public class PrescriptionController {
 
     @PostMapping("/create-prescription")
     @ResponseStatus(HttpStatus.CREATED)
-    public ApiResponse<Object> createPrescription(@Valid @RequestBody CreatePrescriptionReq request) {
+    public ApiResponse<Object> createPrescription(@Valid @RequestBody CreatePrescriptionReq request) throws JsonProcessingException {
         return ApiResponse.builder()
                 .apiCode(201)
                 .message("Tạo đơn thuốc thành công")
@@ -90,11 +100,11 @@ public class PrescriptionController {
     }
 
     @DeleteMapping("/{id}")
-    public ApiResponse<Object> deletePrescription(@PathVariable String id) {
+    public ApiResponse<Object> deletePrescription(@PathVariable String id) throws JsonProcessingException {
         return ApiResponse.builder()
                 .apiCode(200)
                 .message("Xóa đơn thuốc thành công")
-                .result(prescriptionService.deletePrescription(id))
+                .result(prescriptionService.deleteVariablePrescription(id))
                 .build();
     }
 

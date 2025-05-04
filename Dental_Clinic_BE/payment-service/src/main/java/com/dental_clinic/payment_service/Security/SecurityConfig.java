@@ -29,7 +29,7 @@ public class SecurityConfig  {
                 .authorizeHttpRequests(authz -> authz
                         // Allow access to /auth/register and /auth/login without JWT
                         .requestMatchers( "/payment/**")
-                            .hasRole(RoleUtils.ADMIN.toString())
+                            .hasAnyRole(RoleUtils.ADMIN.toString(),RoleUtils.RECEPTIONIST.toString())
                         .requestMatchers( "/user/**")
                             .permitAll()
                         .requestMatchers(HttpMethod.GET, "/images/**")

@@ -25,12 +25,15 @@ public class CreateDentalServiceDTO {
     @Min(value = 0, message = "Giá bán phải lớn hơn hoặc bằng 0")
     private Integer price;
 
+    @NotNull (message = "Giá bán không được để trống")
     @NotBlank(message = "Người phụ trách không được để trống")
     private String cared_actor;
 
+    @NotNull (message = "Mô tả không được để trống")
     @NotBlank(message = "Mô tả không được để trống")
     private String description;
 
+    @NotNull (message = "Hình ảnh không được để trống")
     @NotBlank(message = "Đơn vị tính không được để trống")
     private String unit;
 }

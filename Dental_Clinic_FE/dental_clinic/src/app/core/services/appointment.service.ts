@@ -11,7 +11,7 @@ export class AppointmentService {
     private apiUrl = 'http://localhost:8060/schedule/appointment';
 
     constructor(
-        private http: HttpClient
+        private http: HttpClient,
     ) {
     }
 

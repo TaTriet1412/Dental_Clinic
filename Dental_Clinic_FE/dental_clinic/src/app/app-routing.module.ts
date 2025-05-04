@@ -4,6 +4,7 @@ import { ROUTES } from './core/constants/routes.constant';
 import { NotFoundComponent } from './Modules/error/not-found/not-found.component';
 import { AuthAdminGuard } from './core/guards/auth_admin.guard';
 import { AuthRedirectGuard } from './core/guards/auth_redirect.guard';
+import { ServerError500Component } from './Modules/error/server-error-500/server-error-500.component';
 
 const default_url_role = ROUTES.USER.path;
 
@@ -37,6 +38,7 @@ const routes: Routes = [
   },
   //Khi không tìm thấy đường dẫn nào thì trả về trang không tìm thấy
   { path: ROUTES.NOT_FOUND.path, component: NotFoundComponent },
+  { path: ROUTES.SERVER_ERROR.path, component: ServerError500Component},
   //Tất cả đường dẫn không tồn tại thì trả về path not found
   { path: '**', redirectTo: ROUTES.NOT_FOUND.path } // Assuming you have a NotFoundErrorComponent to handle 404 errors,
 ];

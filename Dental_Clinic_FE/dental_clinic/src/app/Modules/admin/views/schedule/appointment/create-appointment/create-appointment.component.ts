@@ -1,20 +1,20 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup, FormsModule, NgForm, ReactiveFormsModule } from '@angular/forms';
-import { ButtonDirective, CardModule, ColComponent, ColDirective, FormDirective, FormFeedbackComponent, FormSelectDirective, InputGroupTextDirective, RowComponent } from '@coreui/angular';
-import { DatePickerModule, FormControlDirective, TimePickerModule } from '@coreui/angular-pro';
-import { NameIdUserResponse } from '../../../../../../share/dto/response/name-id-user-response';
 import { CommonModule } from '@angular/common';
-import { NameIdPatientResponse } from '../../../../../../share/dto/response/name-id-patient-response';
-import { PatientService } from '../../../../../../core/services/patient.service';
-import { UserService } from '../../../../../../core/services/user.service';
-import { DateSupportService } from '../../../../../../core/services/support/date.service';
-import { AppointmentCreateReq } from '../../../../../../share/dto/request/appointment-create-req';
-import { AppointmentService } from '../../../../../../core/services/appointment.service';
-import { firstValueFrom } from 'rxjs';
-import { SnackBarService } from '../../../../../../core/services/snack-bar.service';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { FormsModule, NgForm, ReactiveFormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
-import { ROUTES } from '../../../../../../core/constants/routes.constant';
+import { ButtonDirective, CardModule, ColComponent, FormDirective, FormFeedbackComponent, FormSelectDirective, RowComponent } from '@coreui/angular';
+import { DatePickerModule, FormControlDirective, TimePickerModule } from '@coreui/angular-pro';
 import { NgxSpinnerService } from 'ngx-spinner';
+import { firstValueFrom } from 'rxjs';
+import { ROUTES } from '../../../../../../core/constants/routes.constant';
+import { AppointmentService } from '../../../../../../core/services/appointment.service';
+import { PatientService } from '../../../../../../core/services/patient.service';
+import { SnackBarService } from '../../../../../../core/services/snack-bar.service';
+import { DateSupportService } from '../../../../../../core/services/support/date.service';
+import { UserService } from '../../../../../../core/services/user.service';
+import { AppointmentCreateReq } from '../../../../../../share/dto/request/appointment-create-req';
+import { NameIdPatientResponse } from '../../../../../../share/dto/response/name-id-patient-response';
+import { NameIdUserResponse } from '../../../../../../share/dto/response/name-id-user-response';
 @Component({
   selector: 'app-create-appointment',
   standalone: true,

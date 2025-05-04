@@ -100,11 +100,10 @@ public class DentalController {
     public ApiResponse<Object> toggleAble(@PathVariable String id) {
         Dental dental = dentalService.toggleAble(id);
         return ApiResponse.builder()
-                .result(dental.isAble() ?
+                .apiCode(200)
+                .message(dental.isAble() ?
                         "Đã mở dịch vụ" :
                         "Đã đóng dịch vụ")
-                .apiCode(200)
-                .message("Thay đổi trạng thái dịch vụ thành công!")
                 .build();
     }
 }

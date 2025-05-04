@@ -4,16 +4,19 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
 
 import java.time.Instant;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
 @Entity
+@AllArgsConstructor
+@Builder
 @Table( name = "payment_transaction" )
+@NoArgsConstructor
 public class PaymentTransaction {
     @Id
     @GeneratedValue( strategy = GenerationType.IDENTITY )
@@ -37,7 +40,7 @@ public class PaymentTransaction {
 
     @ColumnDefault( "CURRENT_TIMESTAMP" )
     @Column( name = "created_at" )
-    private Instant createdAt;
+    private LocalDateTime createdAt;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "bill_id")

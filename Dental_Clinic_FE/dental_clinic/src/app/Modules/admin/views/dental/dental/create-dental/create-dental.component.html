@@ -1,0 +1,242 @@
+<div class="p-20">
+  <h1>Thêm dịch vụ</h1>
+
+  <c-row ngPreserveWhitespaces>
+    <c-col xs="12">
+      <c-card class="mb-40">
+        <c-card-header
+          class="d-flex justify-content-between align-items-center"
+        >
+          <strong>Thêm dịch vụ</strong>
+        </c-card-header>
+        <c-card-body>
+          <form
+            #tooltipForm="ngForm"
+            (ngSubmit)="onSubmit(tooltipForm)"
+            [validated]="validated"
+            cForm
+            class="needs-validation"
+            novalidate
+          >
+            <c-row>
+              <c-col [md]="8" class="pl-20 pr-40">
+                <c-row [md]="6" class="mb-4">
+                  <c-col class="position-relative mb-4" [md]="6">
+                    <label cLabel for="category" class="me-2">Phân loại:</label>
+                    <select
+                      cSelect
+                      id="category"
+                      name="category"
+                      cFormControl
+                      required
+                      #categoryControl="ngModel"
+                      [(ngModel)]="selectedCategory"
+                      class="form-select me-3"
+                      [class.is-invalid]="validated && categoryControl.invalid"
+                    >
+                      <option value="" disabled selected>Chọn phân loại</option>
+                      <option
+                        *ngFor="let category of categoryList"
+                        [value]="category.id"
+                      >
+                        {{ category.name }}
+                      </option>
+                    </select>
+                    <c-form-feedback
+                      *ngIf="validated && categoryControl.invalid"
+                      [valid]="false"
+                      tooltip
+                    >
+                      Vui lòng chọn phân loại.
+                    </c-form-feedback>
+                  </c-col>
+
+                  <c-col class="position-relative mb-4" [md]="6">
+                    <label cLabel for="name">Tên dịch vụ</label>
+                    <input
+                      cFormControl
+                      id="name"
+                      name="name"
+                      required
+                      [(ngModel)]="name"
+                      #nameControl="ngModel"
+                      [class.is-invalid]="validated && nameControl.invalid"
+                      placeholder="Nhập tên dịch vụ"
+                      rows="4"
+                    />
+                    <c-form-feedback
+                      *ngIf="validated && nameControl.invalid"
+                      [valid]="false"
+                      tooltip
+                    >
+                      Vui lòng nhập tên dịch vụ.
+                    </c-form-feedback>
+                  </c-col>
+                </c-row>
+                <c-row [md]="6" class="mb-4">
+                  <c-col class="position-relative mb-4" [md]="6">
+                    <label cLabel for="cost">Chi phí</label>
+
+                    <c-input-group>
+                      <input
+                        cFormControl
+                        id="cost"
+                        name="cost"
+                        type="number"
+                        required
+                        [(ngModel)]="cost"
+                        #costControl="ngModel"
+                        [class.is-invalid]="validated && costControl.invalid"
+                        placeholder="Nhập chi phí"
+                        rows="4"
+                      />
+                      <span cInputGroupText>VND</span>
+                      <c-form-feedback
+                        *ngIf="validated && costControl.invalid"
+                        [valid]="false"
+                        tooltip
+                      >
+                        Vui lòng nhập chi phí.
+                      </c-form-feedback>
+                    </c-input-group>
+                  </c-col>
+                  <c-col class="position-relative mb-4" [md]="6">
+                    <label cLabel for="price">Giá</label>
+                    <c-input-group>
+                      <input
+                        cFormControl
+                        id="price"
+                        name="price"
+                        type="number"
+                        required
+                        [(ngModel)]="price"
+                        #priceControl="ngModel"
+                        [class.is-invalid]="validated && priceControl.invalid"
+                        placeholder="Nhập giá"
+                        rows="4"
+                      />
+                      <span cInputGroupText>VND</span>
+                      <c-form-feedback
+                        *ngIf="validated && priceControl.invalid"
+                        [valid]="false"
+                        tooltip
+                      >
+                        Vui lòng nhập giá.
+                      </c-form-feedback>
+                    </c-input-group>
+                  </c-col>
+                </c-row>
+                <c-row [md]="6" class="mb-4">
+                  <c-col class="mb-4" [md]="6">
+                    <div class="position-relative mb-40">
+                      <label cLabel for="cared_actor">Đối tương sử dụng</label>
+                      <input
+                        cFormControl
+                        id="cared_actor"
+                        name="cared_actor"
+                        required
+                        [(ngModel)]="cared_actor"
+                        #cared_actorControl="ngModel"
+                        [class.is-invalid]="
+                          validated && cared_actorControl.invalid
+                        "
+                        placeholder="Nhập đối tượng sử dụng"
+                        rows="4"
+                      />
+                      <c-form-feedback
+                        *ngIf="validated && cared_actorControl.invalid"
+                        [valid]="false"
+                        tooltip
+                      >
+                        Vui lòng nhập đối tượng sử dụng.
+                      </c-form-feedback>
+                    </div>
+                    <div class="position-relative mb-4">
+                      <label cLabel for="unit">Đơn vị</label>
+                      <input
+                        cFormControl
+                        id="unit"
+                        name="unit"
+                        required
+                        [(ngModel)]="unit"
+                        #unitControl="ngModel"
+                        [class.is-invalid]="validated && unitControl.invalid"
+                        placeholder="Nhập đơn vị"
+                        rows="4"
+                      />
+                      <c-form-feedback
+                        *ngIf="validated && unitControl.invalid"
+                        [valid]="false"
+                        tooltip
+                      >
+                        Vui lòng nhập đơn vị.
+                      </c-form-feedback>
+                    </div>
+                  </c-col>
+                  <c-col class="position-relative mb-4" [md]="6">
+                    <div class="position-relative">
+                      <label cLabel for="description">Mô tả</label>
+                      <textarea
+                        cFormControl
+                        id="description"
+                        name="description"
+                        required
+                        [(ngModel)]="description"
+                        #descriptionControl="ngModel"
+                        [class.is-invalid]="
+                          validated && descriptionControl.invalid
+                        "
+                        placeholder="Nhập mô tả"
+                        rows="3"
+                        class="form-control"
+                      ></textarea>
+                      <c-form-feedback
+                        *ngIf="validated && descriptionControl.invalid"
+                        [valid]="false"
+                        tooltip
+                      >
+                        Vui lòng nhập mô tả.
+                      </c-form-feedback>
+                    </div>
+                  </c-col>
+                </c-row>
+              </c-col>
+              <c-col [md]="4" class="d-flex flex-column align-items-center">
+                <img
+                  cImg
+                  rounded
+                  class="mb-2"
+                  [src]="selectedImage"
+                  height="200"
+                  alt="Ảnh đại diện"
+                />
+                <c-input-group class="mb-3">
+                  <input
+                    cFormControl
+                    id="inputGroupFile01"
+                    type="file"
+                    accept="image/*"
+                    (change)="onFileSelected($event)"
+                  />
+                </c-input-group>
+              </c-col>
+            </c-row>
+            <c-row class="g-4">
+              <c-col class="text-end">
+                <button
+                  cButton
+                  color="success"
+                  type="submit"
+                  [disabled]="disabledBtnSubmit"
+                >
+                  <i class="fas fa-plus me-2"></i>
+                  Thêm mới
+                </button>
+              </c-col>
+            </c-row>
+          </form>
+        </c-card-body>
+      </c-card>
+    </c-col>
+  </c-row>
+</div>

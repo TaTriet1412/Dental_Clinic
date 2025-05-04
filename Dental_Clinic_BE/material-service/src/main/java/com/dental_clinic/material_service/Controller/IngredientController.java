@@ -32,9 +32,19 @@ public class IngredientController {
         this.gson = gson;
     }
 
+    //   Get By Id
+    @GetMapping("/{id}")
+    public ApiResponse<Object> getIngredientById(@PathVariable Long id) {
+        return ApiResponse.builder()
+                .apiCode(200)
+                .message("Lấy nguyên liệu thành công")
+                .result(ingredientService.getById(id))
+                .build();
+    }
+
     //    Create new
     @ResponseStatus(HttpStatus.CREATED)
-    @PostMapping("")
+    @PostMapping
     public ApiResponse<Object> createNewIngredient(@Valid @RequestBody CreateIngredient req) {
         return ApiResponse.builder()
                 .apiCode(201)
@@ -44,7 +54,7 @@ public class IngredientController {
     }
 
     //  Update
-    @PutMapping("")
+    @PutMapping
     public ApiResponse<Object> updateIngredient(@Valid @RequestBody UpdateIngredient req) {
         return ApiResponse.builder()
                 .apiCode(200)
@@ -68,6 +78,15 @@ public class IngredientController {
                 .apiCode(200)
                 .message("Lấy danh sách nguyên liệu thành công")
                 .result(ingredientService.getIngredientAbleTrue())
+                .build();
+    }
+
+    @GetMapping
+    public ApiResponse<Object> getAllIngredient() {
+        return ApiResponse.builder()
+                .apiCode(200)
+                .message("Lấy danh sách nguyên liệu thành công")
+                .result(ingredientService.getAll())
                 .build();
     }
 }

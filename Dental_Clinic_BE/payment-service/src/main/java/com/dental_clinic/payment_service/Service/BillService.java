@@ -63,8 +63,6 @@ public class BillService {
 
     // Method to create a new bill
     public Bill createBill(CreateBillReq req) throws JsonProcessingException {
-        PriceCostDentalRes priceCostDentalApiRes = null;
-        PricePrescriptionRes pricePrescriptionRes = null;
         try {
             List<BillDental> billDentals = getBillDentals(req.services());
 
@@ -74,7 +72,7 @@ public class BillService {
             // Lấy giá toa thuốc
             ApiResponse<Object> pricePrescriptionApiRes = prescriptionClient.getPrice(req.prescriptionId());
             Object result =  pricePrescriptionApiRes.getResult();
-            pricePrescriptionRes = objectMapper.convertValue(result, PricePrescriptionRes.class);
+            PricePrescriptionRes pricePrescriptionRes = objectMapper.convertValue(result, PricePrescriptionRes.class);
 
             // Kiểm tra bệnh nhân tồn tại không
             ApiResponse<Object> checkPatientApi = patientClient.getPatientById(req.patientId());
@@ -132,11 +130,11 @@ public class BillService {
     }
 
     public Bill updateBill(UpdateBillReq req) throws JsonProcessingException {
-        PriceCostDentalRes priceCostDentalApiRes = null;
-        PricePrescriptionRes pricePrescriptionRes = null;
         boolean isNewPreId = false;
         try {
             Bill bill = getBillById(req.id());
+            if(isEndStatusOfBill(BillStatus.valueOf(bill.getStatus().toUpperCase())))
+                throw new AppException(ErrorCode.INVALID_REQUEST, "Không thể cập nhật hóa đơn đã thanh toán hoặc đã hủy");
 
             List<BillDental> billDentals = getBillDentals(req.services());
 
@@ -145,14 +143,17 @@ public class BillService {
                 isNewPreId = true;
             }
 
-            if(isNewPreId)
+            if(isNewPreId) {
+                prescriptionClient.removeBillIdForPrescription(bill.getPrescriptionId());
                 prescriptionClient.getPrescriptionHasBillNullById(req.prescriptionId());
+
+            }
 
 
             // Lấy giá toa thuốc
             ApiResponse<Object> pricePrescriptionApiRes = prescriptionClient.getPrice(req.prescriptionId());
             Object result =  pricePrescriptionApiRes.getResult();
-            pricePrescriptionRes = objectMapper.convertValue(result, PricePrescriptionRes.class);
+            PricePrescriptionRes pricePrescriptionRes = objectMapper.convertValue(result, PricePrescriptionRes.class);
 
             // Tạo hóa đơn
             // Tính tổng giá trị dịch vụ
@@ -186,7 +187,6 @@ public class BillService {
 
             if(isNewPreId) {
                 // Xóa mã hóa đơn cũ của prescription
-                prescriptionClient.removeBillIdForPrescription(bill.getPrescriptionId());
 
 
                 // Lưu mã hóa đơn cho prescription
@@ -213,6 +213,44 @@ public class BillService {
             throw new AppException(ErrorCode.INVALID_REQUEST,
                     errorResponse.getMessage());
         }
+    }
+
+    public boolean isEndStatusOfBill(BillStatus status) {
+        return (status == BillStatus.CANCELLED || status == BillStatus.PAID);
+    }
+
+    public void cancelBill(Long id) throws JsonProcessingException {
+        Bill bill = getBillById(id);
+        try {
+            if(isEndStatusOfBill(BillStatus.valueOf(bill.getStatus().toUpperCase())))
+                throw new AppException(ErrorCode.INVALID_REQUEST, "Không thể hủy hóa đơn đã thanh toán hoặc đã hủy");
+            bill.setStatus(BillStatus.CANCELLED.getStatus());
+            if(bill.getPrescriptionId() != null) {
+                prescriptionClient.removeBillIdForPrescription(bill.getPrescriptionId());
+            }
+
+            billRepository.save(bill);
+
+        } catch (AppException e) {
+            throw  e;
+        } catch (WebClientResponseException ex) {
+            String errorBody = ex.getResponseBodyAsString(); // <-- lấy lỗi gốc
+            int statusCode = ex.getRawStatusCode(); // ví dụ 400, 404, 500
+
+            // Nếu body trả về dạng JSON, bạn parse như này:
+            ApiResponse<?> errorResponse = objectMapper.readValue(errorBody, ApiResponse.class);
+
+            throw new AppException(ErrorCode.INVALID_REQUEST,
+                    errorResponse.getMessage());
+        }
+    }
+
+    public void updateBillPayed(Long id) {
+        Bill bill = getBillById(id);
+        if(isEndStatusOfBill(BillStatus.valueOf(bill.getStatus().toUpperCase())))
+            throw new AppException(ErrorCode.INVALID_REQUEST, "Không thể cập nhật hóa đơn đã thanh toán hoặc đã hủy");
+        bill.setStatus(BillStatus.PAID.getStatus());
+        billRepository.save(bill);
     }
 
 

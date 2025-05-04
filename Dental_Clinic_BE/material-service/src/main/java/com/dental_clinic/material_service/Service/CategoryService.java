@@ -17,10 +17,10 @@ import java.util.List;
 @Service
 public class CategoryService {
     private final CategoryRepository categoryRepository;
-    @Lazy
     private final MaterialService materialService;
 
     @Autowired
+    @Lazy
     public CategoryService(CategoryRepository categoryRepository, MaterialService materialService) {
         this.categoryRepository = categoryRepository;
         this.materialService = materialService;

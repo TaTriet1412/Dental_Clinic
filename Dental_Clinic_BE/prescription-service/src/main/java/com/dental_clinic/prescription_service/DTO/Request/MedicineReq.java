@@ -10,6 +10,10 @@ public record MedicineReq(
 
         @NotNull(message = "Số lượng thuốc không được để trống")
         @Min(value = 1, message = "Số lượng thuốc phải lớn hơn 0")
-        Integer quantity_medicine
+        Integer quantity_medicine,
+
+        @NotNull (message = "Giá thuốc không được để trống")
+        @Min(value = 1, message = "Giá thuốc phải lớn hơn 0")
+        Integer price
 ) {
 }

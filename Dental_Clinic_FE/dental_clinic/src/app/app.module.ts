@@ -31,6 +31,7 @@ import { IconModule, IconSetModule, IconSetService } from '@coreui/icons-angular
 import * as allIcons from '@coreui/icons';
 import { HTTP_INTERCEPTORS, HttpClientModule, provideHttpClient } from '@angular/common/http';
 import { JwtInterceptor } from './core/interceptors/jwt.interceptor';
+import { ErrorInterceptor } from './core/interceptors/error.interceptor';
 
 registerLocaleData(localeVi);
 @NgModule({
@@ -83,6 +84,11 @@ registerLocaleData(localeVi);
       provide: HTTP_INTERCEPTORS,
       useClass: JwtInterceptor,
       multi: true
+    },
+    { 
+      provide: HTTP_INTERCEPTORS, 
+      useClass: ErrorInterceptor, 
+      multi: true 
     },
   ],
   bootstrap: [AppComponent]

@@ -11,8 +11,8 @@ import java.util.List;
 
 public record CreatePrescriptionReq(
         @NotNull(message = "Mã bệnh nhân không được để trống")
-        @Min(value = 1, message = "Mã bệnh nhân phải lớn hơn 0")
-        Long pat_id,
+        @NotBlank (message = "Mã bệnh nhân không được để trống")
+        String pat_id,
 
         @NotNull(message = "Mã nha sĩ không được để trống")
         @Min(value = 1, message = "Mã nha sĩ phải lớn hơn 0")
