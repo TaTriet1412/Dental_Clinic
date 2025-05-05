@@ -10,6 +10,8 @@ import { distinctUntilChanged, map, startWith, takeUntil, tap } from 'rxjs/opera
 import { ROUTES } from '../../../../core/constants/routes.constant';
 import { SnackBarService } from '../../../../core/services/snack-bar.service';
 import { PrescriptionService } from '../../../../core/services/prescription.service';
+import { AuthService } from '../../../../core/services/auth.service';
+import { DeletePrescriptionReq } from '../../../../share/dto/request/prescription-delete-req';
 
 @Component({
   selector: 'app-prescription',
@@ -51,6 +53,9 @@ export class PrescriptionComponent implements OnInit, OnDestroy {
   readonly errorMessage$ = new Subject<string>();
   readonly #destroy$ = new Subject<boolean>();
 
+  userId: number = -1;
+  actorName: string = '';
+
   // --- Data Streams ---
   readonly apiParams$: Observable<any>;
   readonly props$: Observable<any>;
@@ -72,8 +77,12 @@ export class PrescriptionComponent implements OnInit, OnDestroy {
     private prescriptionService: PrescriptionService,
     private router: Router,
     private spinner: NgxSpinnerService,
-    private datePipe: DatePipe // Inject DatePipe if not already done implicitly by providers
+    private datePipe: DatePipe,
+    private authService: AuthService,
   ) {
+    this.userId = this.authService.getUserId() || -1;
+    this.actorName = this.authService.getName() || '';
+
     this.spinner.show();
     this.apiParams$ = combineLatest([this.pagination$, this.sortFields$]).pipe(
       map(([pagination, sortFields]) => ({
@@ -210,7 +219,12 @@ export class PrescriptionComponent implements OnInit, OnDestroy {
   }
 
   deletePrescription(prescriptionId: string) {
-    this.prescriptionService.deletePrescription(prescriptionId).subscribe({
+    const deletePrescriptionReq : DeletePrescriptionReq = {
+      userId: this.userId,
+      actorName: this.actorName
+    }
+
+    this.prescriptionService.deletePrescription(prescriptionId,deletePrescriptionReq).subscribe({
       next: (response) => {
         this.snackbar.notifySuccess(response.message);
         // --- Cần trigger fetch lại dữ liệu hoặc cập nhật local state đúng cách ---

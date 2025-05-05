@@ -3,6 +3,7 @@ import { Injectable } from "@angular/core";
 import { Observable } from "rxjs";
 import { CreatePrescriptionReq } from "../../share/dto/request/prescription-create-req";
 import { UpdatePrescriptionReq } from "../../share/dto/request/prescriptioin-update-req";
+import { DeletePrescriptionReq } from "../../share/dto/request/prescription-delete-req";
 
 @Injectable({
     providedIn: 'root',
@@ -27,8 +28,12 @@ export class PrescriptionService {
         return this.http.get<any>(`${this.apiUrl}/patient/${patientId}`);
     }
 
-    deletePrescription(prescriptionId: string): Observable<any> {
-        return this.http.delete<any>(`${this.apiUrl}/${prescriptionId}`);
+    getPrescriptionByDentistId(dentistId: number): Observable<any> {
+        return this.http.get<any>(`${this.apiUrl}/dentist/${dentistId}`);
+    }
+
+    deletePrescription(prescriptionId: string, deletePrescriptionReq: DeletePrescriptionReq): Observable<any> {
+        return this.http.delete<any>(`${this.apiUrl}/${prescriptionId}`, { body: deletePrescriptionReq });
     }
 
     createPrescription(prescription: CreatePrescriptionReq): Observable<any> {

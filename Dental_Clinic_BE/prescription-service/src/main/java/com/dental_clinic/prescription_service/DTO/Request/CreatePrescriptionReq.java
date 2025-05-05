@@ -18,6 +18,9 @@ public record CreatePrescriptionReq(
         @Min(value = 1, message = "Mã nha sĩ phải lớn hơn 0")
         Long den_id,
 
+        @NotNull(message = "Tên nha sĩ không được để trống")
+        String den_name,
+
         @NotBlank(message = "Ghi chú không được để trống")
         @Size(max = 1000, message = "Ghi chú không được vượt quá 1000 ký tự")
         String note,

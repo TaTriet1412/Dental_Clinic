@@ -46,7 +46,7 @@ export class FacultyComponent implements OnInit, OnDestroy {
 
   // --- State Management ---
   readonly pagination$ = new BehaviorSubject<{ page: number; size: number }>({ page: 1, size: 5 });
-  readonly sortFields$ = new BehaviorSubject<ISorterValue>({ column: 'facultyDate', state: 'asc' });
+  readonly sortFields$ = new BehaviorSubject<ISorterValue>({ column: 'createdAt', state: 'asc' });
   readonly loading$ = new BehaviorSubject<boolean>(true);
   readonly totalPages$ = new BehaviorSubject<number>(1);
   readonly errorMessage$ = new Subject<string>();
@@ -99,52 +99,87 @@ export class FacultyComponent implements OnInit, OnDestroy {
     );
 
     // Fetch data based on API parameters
-    this.data$ = combineLatest([this.apiParams$, this.facultyService.getAllFaculty()]).pipe(
+    this.data$ = combineLatest([
+      this.apiParams$,
+      this.facultyService.getAllFaculty().pipe(
+        // Tạo trường Date gốc trước
+        map(response => {
+          const data = Array.isArray(response?.result) ? response.result : [];
+          return data.map((item: any) => ({
+            ...item,
+            _original_createdAt: new Date(item.createdAt) // Tạo đối tượng Date gốc
+          }));
+        })
+      )
+    ]).pipe(
       tap(() => {
         this.loading$.next(true);
         this.errorMessage$.next('');
       }),
-      map(([params, response]) => {
-        // Đảm bảo response.result là một mảng
-        const data = Array.isArray(response?.result) ? response.result : [];
+      map(([params, allDataWithOriginalDate]) => { // allData giờ có _original_createdAt
 
-        // Định dạng dữ liệu trước khi truyền vào bảng
-        const formattedData = data.map((item: any) => ({
-          ...item,
-          createdAt: new Date(item.createdAt).toLocaleString('vi-VN', { hour12: false }),
-        }));
+        // Bỏ data.reverse()
+        let processedData = [...allDataWithOriginalDate];
 
-        // Lọc, sắp xếp và phân trang dữ liệu cục bộ
-        let filteredData = [...formattedData];
-
-        // Áp dụng sắp xếp
+        // Áp dụng sắp xếp TRƯỚC KHI ĐỊNH DẠNG
         if (params.sort) {
           const [key, direction] = params.sort.split(',');
-          filteredData.sort((a: any, b: any) => {
-            if (a[key] < b[key]) return direction === 'asc' ? -1 : 1;
-            if (a[key] > b[key]) return direction === 'asc' ? 1 : -1;
+
+          processedData.sort((a: any, b: any) => {
+            let valA: any;
+            let valB: any;
+
+            // --- Xử lý sắp xếp cho cột ngày tháng ---
+            if (key === 'createdAt') {
+              const dateA = a._original_createdAt;
+              const dateB = b._original_createdAt;
+              // Xử lý Invalid Date nếu cần (tương tự component trước)
+              valA = dateA instanceof Date && !isNaN(dateA.getTime()) ? dateA.getTime() : (direction === 'asc' ? Infinity : -Infinity);
+              valB = dateB instanceof Date && !isNaN(dateB.getTime()) ? dateB.getTime() : (direction === 'asc' ? Infinity : -Infinity);
+            } else {
+              // Sắp xếp các cột khác
+              valA = a[key];
+              valB = b[key];
+              // Xử lý null/undefined nếu cần
+              valA = valA ?? (direction === 'asc' ? Infinity : -Infinity);
+              valB = valB ?? (direction === 'asc' ? Infinity : -Infinity);
+            }
+
+            // Thực hiện so sánh
+            if (valA < valB) return direction === 'asc' ? -1 : 1;
+            if (valA > valB) return direction === 'asc' ? 1 : -1;
             return 0;
           });
         }
 
-        // Áp dụng phân trang
+        // Định dạng ngày tháng SAU KHI sắp xếp
+        const formattedData = processedData.map((item: any) => ({
+          ...item,
+          // Định dạng từ đối tượng Date gốc
+          createdAt: item._original_createdAt instanceof Date && !isNaN(item._original_createdAt.getTime())
+                     ? item._original_createdAt.toLocaleString('vi-VN', { hour12: false })
+                     : 'Invalid Date' // Hoặc dùng DatePipe nếu muốn
+        }));
+
+        // Áp dụng phân trang trên dữ liệu đã sắp xếp và định dạng
         const startIndex = (params.page - 1) * params.size;
         const endIndex = startIndex + params.size;
-        const paginatedData = filteredData.slice(startIndex, endIndex);
+        // Phân trang trên formattedData (đã đúng thứ tự)
+        const paginatedData = formattedData.slice(startIndex, endIndex);
 
-        // Cập nhật tổng số trang
-        const totalPages = Math.ceil(filteredData.length / params.size);
+        // Cập nhật tổng số trang dựa trên tổng số dữ liệu TRƯỚC khi phân trang
+        const totalPages = Math.ceil(formattedData.length / params.size);
         this.totalPages$.next(totalPages);
 
         this.loading$.next(false);
-        this.cdr.markForCheck();
+        this.cdr.markForCheck(); // Đảm bảo view cập nhật
 
-        return paginatedData;
+        return paginatedData; // Trả về dữ liệu đã phân trang
       }),
-      startWith([]),
-      takeUntil(this.#destroy$)
+      startWith([]), // Bắt đầu với mảng rỗng
+      takeUntil(this.#destroy$) // Hủy subscription khi component bị destroy
     );
-    this.spinner.hide(); // Hide spinner when data is loaded
+    this.spinner.hide(); // Hide spinner when data stream setup is complete
   }
 
   ngOnInit(): void {
@@ -174,21 +209,22 @@ export class FacultyComponent implements OnInit, OnDestroy {
   // --- Utility Methods ---
   private formatSortParam(sorter: ISorterValue): string {
     if (!sorter || !sorter.column || !sorter.state) {
-      return 'facultyDate,asc'; // Default sort
+      // Đảm bảo key khớp với logic sắp xếp (createdAt)
+      return 'createdAt,asc'; // Hoặc 'desc' tùy theo mặc định bạn muốn
     }
     return `${sorter.column},${sorter.state}`;
   }
 
   goToCreateFaculty() {
-    this.router.navigate([ROUTES.ADMIN.children.FACULTY.children.CREATE.fullPath]);
+    this.router.navigate([ROUTES.RECEPTIONIST.children.FACULTY.children.CREATE.fullPath]);
   }
 
   goToDetailFaculty(id: string) {
-    this.router.navigate([ROUTES.ADMIN.children.FACULTY.children.DETAIL.fullPath(id)]);
+    this.router.navigate([ROUTES.RECEPTIONIST.children.FACULTY.children.DETAIL.fullPath(id)]);
   }
 
   goToEditFaculty(id: string) {
-    this.router.navigate([ROUTES.ADMIN.children.FACULTY.children.EDIT.fullPath(id)]);
+    this.router.navigate([ROUTES.RECEPTIONIST.children.FACULTY.children.EDIT.fullPath(id)]);
   }
 
   toggleAbleFaculty(id: number) {

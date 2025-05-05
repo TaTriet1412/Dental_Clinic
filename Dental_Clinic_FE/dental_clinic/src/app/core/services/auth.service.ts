@@ -92,6 +92,10 @@ export class AuthService implements OnDestroy {
     return localStorage.getItem('email')!;
   }
 
+  getName(): string {
+    return localStorage.getItem('name')!;
+  }
+
   toggleBanUser(userId: number) {
     return this.http.put<any>(`${this.apiUrl}/toggle_ban/${userId}`, {});
   }

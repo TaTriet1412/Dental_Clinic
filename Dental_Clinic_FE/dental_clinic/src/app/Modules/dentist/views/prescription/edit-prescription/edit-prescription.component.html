@@ -76,62 +76,6 @@
                 </c-col>
               </c-row>
   
-              <!-- Row 2: Mã bác sĩ và Tên bác sĩ -->
-              <c-row class="g-4 mb-40">
-                <c-col [md]="6" class="position-relative">
-                  <label cLabel for="validationTooltipDenId">Mã bác sĩ</label>
-                  <input
-                    cFormControl
-                    id="validationTooltipDenId"
-                    name="denId"
-                    type="text"
-                    required
-                    [(ngModel)]="denId"
-                    #denIdModel="ngModel"
-                    (input)="onDenIdInput($event)"
-                    [class.is-invalid]="validated && denIdModel.invalid"
-                    placeholder="Nhập mã bác sĩ"
-                  />
-                  <c-form-feedback
-                    *ngIf="validated && denIdModel.invalid"
-                    [valid]="false"
-                    tooltip
-                  >
-                    Vui lòng nhập mã bác sĩ.
-                  </c-form-feedback>
-                </c-col>
-  
-                <c-col [md]="6" class="position-relative">
-                  <label cLabel for="validationTooltipDentist">Tên bác sĩ</label>
-                  <select
-                    cSelect
-                    cFormControl
-                    id="validationTooltipDentist"
-                    name="dentist"
-                    required
-                    [(ngModel)]="selectedDentist"
-                    #dentistModel="ngModel"
-                    (change)="onDentistChange($event)"
-                    [class.is-invalid]="validated && dentistModel.invalid"
-                  >
-                    <option value="" disabled selected>Chọn bác sĩ</option>
-                    <option
-                      *ngFor="let dentist of dentistList"
-                      [value]="dentist.name"
-                    >
-                      {{ dentist.name }}
-                    </option>
-                  </select>
-                  <c-form-feedback
-                    *ngIf="validated && dentistModel.invalid"
-                    [valid]="false"
-                    tooltip
-                  >
-                    Vui lòng chọn bác sĩ.
-                  </c-form-feedback>
-                </c-col>
-              </c-row>
-  
               <!-- Row 3: Ghi chú -->
               <c-row class="g-4 mb-40">
                 <c-col [md]="12" class="position-relative">

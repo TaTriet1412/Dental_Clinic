@@ -1,0 +1,360 @@
+<div class="p-20">
+  <h1>Thêm lịch hẹn</h1>
+
+  <c-row ngPreserveWhitespaces>
+    <c-col xs="12">
+      <c-card class="mb-40">
+        <c-card-header
+          class="d-flex justify-content-between align-items-center"
+        >
+          <strong>Thêm lịch hẹn</strong>
+        </c-card-header>
+        <c-card-body>
+          <form
+            #tooltipForm="ngForm"
+            (ngSubmit)="onSubmit(tooltipForm)"
+            [validated]="validated"
+            cForm
+            class="needs-validation"
+            novalidate
+          >
+            <!-- Row 1: Mã bệnh nhân và Tên bệnh nhân -->
+            <c-row class="g-4 mb-40">
+              <c-col [md]="6" class="position-relative">
+                <label cLabel for="validationTooltipCode">Mã bệnh nhân</label>
+                <input
+                  cFormControl
+                  id="validationTooltipPatId"
+                  name="patId"
+                  type="text"
+                  required
+                  [(ngModel)]="patId"
+                  #code="ngModel"
+                  (input)="onPatIdInput($event)"
+                  [class.is-invalid]="validated && code.invalid"
+                  placeholder="Nhập mã bệnh nhân"
+                />
+                <c-form-feedback
+                  *ngIf="validated && code.invalid"
+                  [valid]="false"
+                  tooltip
+                >
+                  Vui lòng nhập mã bệnh nhân.
+                </c-form-feedback>
+              </c-col>
+
+              <c-col [md]="6" class="position-relative">
+                <label cLabel for="validationTooltipPatient"
+                  >Tên bệnh nhân</label
+                >
+                <select
+                  cSelect
+                  cFormControl
+                  id="validationTooltipPatient"
+                  name="patient"
+                  required
+                  [(ngModel)]="selectedPatient"
+                  #patientCode="ngModel"
+                  (change)="onPatientChange($event)"
+                  [class.is-invalid]="validated && patientCode.invalid"
+                >
+                  <option value="" disabled selected>Chọn bệnh nhân</option>
+                  <option
+                    *ngFor="let patient of patientList"
+                    [value]="patient.name"
+                  >
+                    {{ patient.name }}
+                  </option>
+                </select>
+                <c-form-feedback
+                  *ngIf="validated && patientCode.invalid"
+                  [valid]="false"
+                  tooltip
+                >
+                  Vui lòng chọn bệnh nhân.
+                </c-form-feedback>
+              </c-col>
+            </c-row>
+
+            <!-- Row 2: Mã bác sĩ và Tên bác sĩ -->
+            <c-row class="g-4 mb-40">
+              <c-col [md]="6" class="position-relative">
+                <label cLabel for="validationTooltipDenId">Mã bác sĩ</label>
+                <input
+                  cFormControl
+                  id="validationTooltipDenId"
+                  name="denId"
+                  type="text"
+                  required
+                  [(ngModel)]="denId"
+                  #denCode="ngModel"
+                  (input)="onDenIdInput($event)"
+                  [class.is-invalid]="validated && denCode.invalid"
+                  placeholder="Nhập mã bác sĩ"
+                />
+                <c-form-feedback
+                  *ngIf="validated && denCode.invalid"
+                  [valid]="false"
+                  tooltip
+                >
+                  Vui lòng nhập mã bác sĩ.
+                </c-form-feedback>
+              </c-col>
+
+              <c-col [md]="6" class="position-relative">
+                <label cLabel for="validationTooltipDentist">Tên bác sĩ</label>
+                <select
+                  cSelect
+                  cFormControl
+                  id="validationTooltipDentist"
+                  name="dentist"
+                  required
+                  [(ngModel)]="selectedDentist"
+                  #dentist="ngModel"
+                  (change)="onDentistChange($event)"
+                  [class.is-invalid]="validated && dentist.invalid"
+                >
+                  <option value="" disabled selected>Chọn bác sĩ</option>
+                  <option
+                    *ngFor="let dentist of dentistList"
+                    [value]="dentist.name"
+                  >
+                    {{ dentist.name }}
+                  </option>
+                </select>
+                <c-form-feedback
+                  *ngIf="validated && dentist.invalid"
+                  [valid]="false"
+                  tooltip
+                >
+                  Vui lòng chọn bác sĩ.
+                </c-form-feedback>
+              </c-col>
+            </c-row>
+
+            <!-- Row 3: Mã phụ tá và Tên phụ tá -->
+            <c-row class="g-4 mb-40">
+              <c-col [md]="6" class="position-relative">
+                <label cLabel for="validationTooltipAssiId">Mã phụ tá</label>
+                <input
+                  cFormControl
+                  id="validationTooltipAssiId"
+                  name="assiId"
+                  type="text"
+                  required
+                  [(ngModel)]="assiId"
+                  #assiCode="ngModel"
+                  (input)="onAssiIdInput($event)"
+                  [class.is-invalid]="validated && assiCode.invalid"
+                  placeholder="Nhập mã phụ tá"
+                />
+                <c-form-feedback
+                  *ngIf="validated && assiCode.invalid"
+                  [valid]="false"
+                  tooltip
+                >
+                  Vui lòng nhập mã phụ tá.
+                </c-form-feedback>
+              </c-col>
+
+              <c-col [md]="6" class="position-relative">
+                <label cLabel for="validationTooltipAssistant"
+                  >Tên phụ tá</label
+                >
+                <select
+                  cSelect
+                  cFormControl
+                  id="validationTooltipAssistant"
+                  name="assistant"
+                  required
+                  [(ngModel)]="selectedAssistant"
+                  #assistant="ngModel"
+                  (change)="onAssistantChange($event)"
+                  [class.is-invalid]="validated && assistant.invalid"
+                >
+                  <option value="" disabled selected>Chọn phụ tá</option>
+                  <option
+                    *ngFor="let assistant of assistantList"
+                    [value]="assistant.name"
+                  >
+                    {{ assistant.name }}
+                  </option>
+                </select>
+                <c-form-feedback
+                  *ngIf="validated && assistant.invalid"
+                  [valid]="false"
+                  tooltip
+                >
+                  Vui lòng chọn phụ tá.
+                </c-form-feedback>
+              </c-col>
+            </c-row>
+
+            <!-- Row 4: Ngày giờ bắt đầu -->
+            <c-row class="g-4 align-items-center mb-2">
+              <c-col [md]="6" class="position-relative">
+                <label cLabel for="dateStartValuePicker" class="mt-3"
+                  >Ngày bắt đầu</label
+                >
+                <c-date-picker
+                  cFormControl
+                  id="dateStartValuePicker"
+                  name="startDate"
+                  required
+                  [(ngModel)]="startDate"
+                  #startDateControl="ngModel"
+                  [locale]="'vi-VN'"
+                  [minDate]="minDateForDatePicker(minStartDate)"
+                  placeholder="Chọn ngày bắt đầu"
+                  closeOnSelect
+                  inputReadOnly
+                  [class.is-invalid]="validated && startDateControl.invalid"
+                ></c-date-picker>
+                <c-form-feedback
+                  *ngIf="validated && startDateControl.invalid"
+                  [valid]="false"
+                  tooltip
+                >
+                  Vui lòng chọn ngày bắt đầu.
+                </c-form-feedback>
+              </c-col>
+
+              <c-col [md]="6" class="position-relative">
+                <label cLabel for="timeStartValuePicker">Giờ bắt đầu</label>
+                <c-time-picker
+                  cFormControl
+                  id="timeStartValuePicker"
+                  name="startTime"
+                  required
+                  [(ngModel)]="startTime"
+                  #startTimeControl="ngModel"
+                  [locale]="'vi-VN'"
+                  placeholder="Chọn giờ bắt đầu"
+                  inputReadOnly
+                  [class.is-invalid]="validated && startTimeControl.invalid"
+                ></c-time-picker>
+                <c-form-feedback
+                  *ngIf="validated && startTimeControl.invalid"
+                  [valid]="false"
+                  tooltip
+                >
+                  Vui lòng chọn giờ bắt đầu.
+                </c-form-feedback>
+              </c-col>
+            </c-row>
+
+            <!-- Row 5: Ngày giờ kết thúc -->
+            <c-row class="g-4 align-items-center mb-2">
+              <c-col [md]="6" class="position-relative">
+                <label cLabel for="dateEndValuePicker" class="mt-3"
+                  >Ngày kết thúc</label
+                >
+                <c-date-picker
+                  cFormControl
+                  id="dateEndValuePicker"
+                  name="endDate"
+                  required
+                  [(ngModel)]="endDate"
+                  #endDateControl="ngModel"
+                  [locale]="'vi-VN'"
+                  [minDate]="minDateForDatePicker(minEndDate)"
+                  placeholder="Chọn ngày kết thúc"
+                  closeOnSelect
+                  inputReadOnly
+                  [class.is-invalid]="validated && endDateControl.invalid"
+                ></c-date-picker>
+                <c-form-feedback
+                  *ngIf="validated && endDateControl.invalid"
+                  [valid]="false"
+                  tooltip
+                >
+                  Vui lòng chọn ngày kết thúc.
+                </c-form-feedback>
+              </c-col>
+
+              <c-col [md]="6" class="position-relative">
+                <label cLabel for="timeEndValuePicker">Giờ kết thúc</label>
+                <c-time-picker
+                  cFormControl
+                  id="timeEndValuePicker"
+                  name="endTime"
+                  required
+                  [(ngModel)]="endTime"
+                  #endTimeControl="ngModel"
+                  [locale]="'vi-VN'"
+                  placeholder="Chọn giờ kết thúc"
+                  inputReadOnly
+                  [class.is-invalid]="validated && endTimeControl.invalid"
+                ></c-time-picker>
+                <c-form-feedback
+                  *ngIf="validated && endTimeControl.invalid"
+                  [valid]="false"
+                  tooltip
+                >
+                  Vui lòng chọn giờ kết thúc.
+                </c-form-feedback>
+              </c-col>
+            </c-row>
+
+            <!-- Row 6: Triệu chứng và Ghi chú -->
+            <c-row class="g-4 mb-40">
+              <c-col [md]="6" class="position-relative">
+                <label cLabel for="symptom">Triệu chứng</label>
+                <textarea
+                  cFormControl
+                  id="symptom"
+                  name="symptom"
+                  required
+                  [(ngModel)]="symptom"
+                  #symptomControl="ngModel"
+                  [class.is-invalid]="validated && symptomControl.invalid"
+                  placeholder="Nhập triệu chứng"
+                  rows="4"
+                ></textarea>
+                <c-form-feedback
+                  *ngIf="validated && symptomControl.invalid"
+                  [valid]="false"
+                  tooltip
+                >
+                  Vui lòng nhập triệu chứng.
+                </c-form-feedback>
+              </c-col>
+
+              <c-col [md]="6" class="position-relative">
+                <label cLabel for="note">Ghi chú</label>
+                <textarea
+                  cFormControl
+                  id="note"
+                  name="note"
+                  required
+                  [(ngModel)]="note"
+                  #noteControl="ngModel"
+                  [class.is-invalid]="validated && noteControl.invalid"
+                  placeholder="Nhập ghi chú"
+                  rows="4"
+                ></textarea>
+                <c-form-feedback
+                  *ngIf="validated && noteControl.invalid"
+                  [valid]="false"
+                  tooltip
+                >
+                  Vui lòng nhập ghi chú.
+                </c-form-feedback>
+              </c-col>
+            </c-row>
+
+            <!-- Row 7: Nút Thêm mới -->
+            <c-row class="g-4">
+              <c-col class="text-end">
+                <button cButton color="success" type="submit" [disabled]="disabledBtnSubmit">
+                  <i class="fas fa-plus me-2"></i>
+                  Thêm mới
+                </button>
+              </c-col>
+            </c-row>
+          </form>
+        </c-card-body>
+      </c-card>
+    </c-col>
+  </c-row>
+</div>

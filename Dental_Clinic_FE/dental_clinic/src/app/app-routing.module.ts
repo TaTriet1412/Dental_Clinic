@@ -6,6 +6,7 @@ import { AuthAdminGuard } from './core/guards/auth_admin.guard';
 import { AuthRedirectGuard } from './core/guards/auth_redirect.guard';
 import { ServerError500Component } from './Modules/error/server-error-500/server-error-500.component';
 import { AuthDentistGuard } from './core/guards/auth_dentist.guard';
+import { AuthReceptionistGuard } from './core/guards/auth_receptionist.guard';
 
 const default_url_role = ROUTES.USER.path;
 
@@ -25,12 +26,11 @@ const routes: Routes = [
     loadChildren: () => import('./Modules/dentist/dentist.module').then(m => m.DentistModule),
     canActivate: [AuthDentistGuard]
   },
-  // {
-  //   path: ROUTES.CHEF.path,
-  //   loadChildren: () => import('./Modules/chef/chef.module').then(m => m.ChefModule),
-  //   canActivate: [AuthChefGuard]
-  // },
-
+  {
+    path: ROUTES.RECEPTIONIST.path,
+    loadChildren: () => import('./Modules/receptionist/receptionist.module').then(m => m.ReceptionistModule),
+    canActivate: [AuthReceptionistGuard]
+  },
   //Khi trang rỗng (ban đầu) thì trang trả về path user
   {
     path: '',

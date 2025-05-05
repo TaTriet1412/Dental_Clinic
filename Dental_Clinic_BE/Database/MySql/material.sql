@@ -26,6 +26,15 @@ CREATE TABLE material
   CONSTRAINT fk_material_category FOREIGN KEY (category_id) REFERENCES category(id)
 );
 
+CREATE TABLE material_log
+(
+  id BIGINT PRIMARY KEY AUTO_INCREMENT,
+  message LONGTEXT NOT NULL,
+  created_at DATETIME NOT NULL DEFAULT NOW(),
+  material_id BIGINT NOT NULL,
+  CONSTRAINT fk_material_material_log FOREIGN KEY (material_id) REFERENCES material(id)
+);
+
 CREATE TABLE fixed_material
 (
   id BIGINT PRIMARY KEY,
@@ -59,10 +68,10 @@ CREATE TABLE ingredient_consumable_material
 
 CREATE TABLE medicine
 (
-  id BIGINT PRIMARY KEY AUTO_INCREMENT,
+  id BIGINT PRIMARY KEY,
   cared_actor TEXT(200) NOT NULL,
   cost INT NOT NULL check(cost>=0),
-  price INT NOT NULL check(revenue>=0),
+  price INT NOT NULL check(price>=0),
   instruction LONGTEXT NOT NULL,
   created_at DATETIME NOT NULL DEFAULT NOW(),
   able BIT NOT NULL DEFAULT 1,
@@ -455,4 +464,192 @@ INSERT INTO ingredient_consumable_material (ingredient_id, con_mat_id) VALUES
 (60, 62);
 
 
+-- Logs for fixed materials (tools and equipment - số lượng thường không thay đổi)
+INSERT INTO material_log (material_id, message) VALUES
+-- Mũi cạo vôi (ID 1 - Số lượng 10)
+(1, 'Nhập kho: +10, tổng 10'),
 
+-- Kềm 150 (ID 2 - Số lượng 10)
+(2, 'Nhập kho: +10, tổng 10'),
+
+-- Kềm 151 (ID 3 - Số lượng 10)
+(3, 'Nhập kho: +10, tổng 10'),
+
+-- Kềm 50 (ID 4 - Số lượng 10)
+(4, 'Nhập kho: +10, tổng 10'),
+
+-- Kềm 51 (ID 5 - Số lượng 10)
+(5, 'Nhập kho: +10, tổng 10'),
+
+-- Nạy 1 (ID 6 - Số lượng 12)
+(6, 'Nhập kho: +12, tổng 12'),
+
+-- Nạy 2 (ID 7 - Số lượng 12)
+(7, 'Nhập kho: +12, tổng 12'),
+
+-- Nạy 3 (ID 8 - Số lượng 12)
+(8, 'Nhập kho: +12, tổng 12'),
+
+-- Gương nha khoa (ID 9 - Số lượng 6)
+(9, 'Nhập kho: +6, tổng 6'),
+
+-- Thám trâm (ID 10 - Số lượng 9)
+(10, 'Nhập kho: +9, tổng 9'),
+
+-- Nạo ngà (ID 11 - Số lượng 21)
+(11, 'Nhập kho: +21, tổng 21'),
+
+-- Kẹp (ID 12 - Số lượng 8)
+(12, 'Nhập kho: +8, tổng 8'),
+
+-- Bay trám (ID 13 - Số lượng 8)
+(13, 'Nhập kho: +8, tổng 8'),
+
+-- Cây đo túi nướu (ID 14 - Số lượng 8)
+(14, 'Nhập kho: +8, tổng 8'),
+
+-- Đèn quang trùng hợp (ID 15 - Số lượng 8)
+(15, 'Nhập kho: +8, tổng 8'),
+
+-- Ống chích sắt (ID 16 - Số lượng 8)
+(16, 'Nhập kho: +8, tổng 8');
+
+-- Logs for consumable materials (vật liệu tiêu hao)
+INSERT INTO material_log (material_id, message) VALUES
+-- Composite đặc màu A2 (ID 17 - Số lượng 2)
+(17, 'Nhập kho: +2, tổng 2'),
+
+-- Composite đặc màu A3 (ID 18 - Số lượng 2)
+(18, 'Nhập kho: +2, tổng 2'),
+
+-- Composite đặc màu A3.5 (ID 19 - Số lượng 2)
+(19, 'Nhập kho: +2, tổng 2'),
+
+-- Composite đặc màu A4 (ID 20 - Số lượng 2)
+(20, 'Nhập kho: +2, tổng 2'),
+
+-- Composite đặc màu ngà (ID 21 - Số lượng 2)
+(21, 'Nhập kho: +2, tổng 2'),
+
+-- Composite đặc màu men tự nhiên (ID 22 - Số lượng 2)
+(22, 'Nhập kho: +2, tổng 2'),
+
+-- Composite lỏng màu A2 (ID 23 - Số lượng 2)
+(23, 'Nhập kho: +2, tổng 2'),
+
+-- Composite lỏng màu A3 (ID 24 - Số lượng 2)
+(24, 'Nhập kho: +2, tổng 2'),
+
+-- Composite lỏng màu A3.5 (ID 25 - Số lượng 2)
+(25, 'Nhập kho: +2, tổng 2'),
+
+-- Composite lỏng màu A4 (ID 26 - Số lượng 2)
+(26, 'Nhập kho: +2, tổng 2'),
+
+-- Composite lỏng màu ngà (ID 27 - Số lượng 2)
+(27, 'Nhập kho: +2, tổng 2'),
+
+-- Composite lỏng màu men tự nhiên (ID 28 - Số lượng 2)
+(28, 'Nhập kho: +2, tổng 2'),
+
+-- Bonding (ID 29 - Số lượng 5)
+(29, 'Nhập kho: +5, tổng 5'),
+
+-- Cọ bond (ID 30 - Số lượng 5)
+(30, 'Nhập kho: +5, tổng 5'),
+
+-- Bông gòn 1kg (ID 31 - Số lượng 50)
+(31, 'Nhập kho: +50, tổng 50'),
+
+-- Mũi khoan kim cương (ID 32 - Số lượng 5)
+(32, 'Nhập kho: +5, tổng 5'),
+
+-- Sealer trám bít (ID 33 - Số lượng 5)
+(33, 'Nhập kho: +5, tổng 5'),
+
+-- Cone giấy (ID 34 - Số lượng 15)
+(34, 'Nhập kho: +15, tổng 15'),
+
+-- Cone chính (ID 35 - Số lượng 15)
+(35, 'Nhập kho: +15, tổng 15'),
+
+-- NaOCL (ID 36 - Số lượng 15)
+(36, 'Nhập kho: +15, tổng 15'),
+
+-- Nacl (ID 37 - Số lượng 15)
+(37, 'Nhập kho: +15, tổng 15'),
+
+-- EDTA (ID 38 - Số lượng 15)
+(38, 'Nhập kho: +15, tổng 15'),
+
+-- Trâm tay (ID 39 - Số lượng 5)
+(39, 'Nhập kho: +5, tổng 5'),
+
+-- Trâm máy (ID 40 - Số lượng 5)
+(40, 'Nhập kho: +5, tổng 5'),
+
+-- Spongel (ID 41 - Số lượng 5)
+(41, 'Nhập kho: +5, tổng 5'),
+
+-- Mũi đánh bóng (ID 42 - Số lượng 40)
+(42, 'Nhập kho: +40, tổng 40'),
+
+-- Chổi đánh bóng (ID 43 - Số lượng 45)
+(43, 'Nhập kho: +45, tổng 45'),
+
+-- Sò đánh bóng (ID 44 - Số lượng 5)
+(44, 'Nhập kho: +5, tổng 5'),
+
+-- Chỉ khâu (ID 45 - Số lượng 45)
+(45, 'Nhập kho: +45, tổng 45'),
+
+-- Thuốc tê (ID 46 - Số lượng 65)
+(46, 'Nhập kho: +65, tổng 65'),
+
+-- Formocresol (ID 47 - Số lượng 15)
+(47, 'Nhập kho: +15, tổng 15'),
+
+-- ZnO (ID 48 - Số lượng 6)
+(48, 'Nhập kho: +6, tổng 6'),
+
+-- MTA (ID 49 - Số lượng 5)
+(49, 'Nhập kho: +5, tổng 5'),
+
+-- GIC (ID 50 - Số lượng 5)
+(50, 'Nhập kho: +5, tổng 5'),
+
+-- Amoxicillin 500mg (ID 51 - Số lượng 500)
+(51, 'Nhập kho: +500, tổng 500'),
+
+-- Amoxicillin 625mg (ID 52 - Số lượng 350)
+(52, 'Nhập kho: +350, tổng 350'),
+
+-- Amoxicillin 875mg (ID 53 - Số lượng 500)
+(53, 'Nhập kho: +500, tổng 500'),
+
+-- Amoxicillin 1000mg (ID 54 - Số lượng 300)
+(54, 'Nhập kho: +300, tổng 300'),
+
+-- Metronidazole 200mg (ID 55 - Số lượng 500)
+(55, 'Nhập kho: +500, tổng 500'),
+
+-- Metronidazole 500mg (ID 56 - Số lượng 400)
+(56, 'Nhập kho: +400, tổng 400'),
+
+-- Cephalexin 500mg (ID 57 - Số lượng 500)
+(57, 'Nhập kho: +500, tổng 500'),
+
+-- Paracetamol 500mg (ID 58 - Số lượng 800)
+(58, 'Nhập kho: +800, tổng 800'),
+
+-- Aspirin 100mg (ID 59 - Số lượng 500)
+(59, 'Nhập kho: +500, tổng 500'),
+
+-- Ibuprofen 400mg (ID 60 - Số lượng 600)
+(60, 'Nhập kho: +600, tổng 600'),
+
+-- Naproxen 500mg (ID 61 - Số lượng 500)
+(61, 'Nhập kho: +500, tổng 500'),
+
+-- Dexamethason 0.5mg (ID 62 - Số lượng 500)
+(62, 'Nhập kho: +500, tổng 500');

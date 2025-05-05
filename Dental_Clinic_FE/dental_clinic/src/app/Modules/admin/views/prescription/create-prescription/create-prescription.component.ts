@@ -276,6 +276,7 @@ export class CreatePrescriptionComponent implements OnInit {
     const prescriptionData = {
       pat_id: this.patId,
       den_id: Number(this.denId),
+      den_name: this.selectedDentist,
       note: this.note,
       medicines: this.selectedMedicines.map(med => ({ // Format for backend
         med_id: Number(med.id),

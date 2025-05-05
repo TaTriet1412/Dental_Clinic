@@ -132,7 +132,19 @@ public class MaterialService {
                 .quantity(quantity)
                 .build();
 
-        return materialRepository.save(material);
+        Material savedMaterial = materialRepository.save(material);
+
+        MaterialLog materialLog = MaterialLog.builder()
+                .material(savedMaterial)
+                .message("Tạo mới vật liệu. Nhập kho: +" + quantity + " , tổng " + quantity)
+                .createdAt(LocalDateTime.now())
+                .build();
+
+        savedMaterial.getMaterialLogs().add(materialLog);
+
+        savedMaterial = materialRepository.save(savedMaterial);
+
+        return savedMaterial;
     }
 
 // Tạo vật liệu cố định
@@ -312,7 +324,13 @@ public class MaterialService {
         });
         request.quantity().ifPresent(quantity -> {
             FieldUtils.checkNumberIsIntegerAndNotNegative(quantity);
+            MaterialLog materialLog = MaterialLog.builder()
+                    .createdAt(LocalDateTime.now())
+                    .material(material)
+                    .message("Thay đổi số lượng vật liệu. Số lượng mới: " + quantity + " , tổng " + quantity)
+                    .build();
             material.setQuantity(quantity);
+            material.getMaterialLogs().add(materialLog);
         });
         request.func().ifPresent(func -> {
             FieldUtils.checkStrEmpty(func, "Chức năng");
@@ -370,7 +388,13 @@ public class MaterialService {
         });
         request.quantity().ifPresent(quantity -> {
             FieldUtils.checkNumberIsIntegerAndNotNegative(quantity);
+            MaterialLog materialLog = MaterialLog.builder()
+                    .createdAt(LocalDateTime.now())
+                    .material(material)
+                    .message("Thay đổi số lượng vật liệu. Số lượng mới: " + quantity + " , tổng " + quantity)
+                    .build();
             material.setQuantity(quantity);
+            material.getMaterialLogs().add(materialLog);
         });
         request.func().ifPresent(func -> {
             FieldUtils.checkStrEmpty(func, "Chức năng");
@@ -438,7 +462,13 @@ public class MaterialService {
         });
         request.quantity().ifPresent(quantity -> {
             FieldUtils.checkNumberIsIntegerAndNotNegative(quantity);
+            MaterialLog materialLog = MaterialLog.builder()
+                    .createdAt(LocalDateTime.now())
+                    .message("Thay đổi số lượng vật liệu. Số lượng mới: " + quantity + " , tổng " + quantity)
+                    .material(material)
+                    .build();
             material.setQuantity(quantity);
+            material.getMaterialLogs().add(materialLog);
         });
         request.func().ifPresent(func -> {
             FieldUtils.checkStrEmpty(func, "Chức năng");
@@ -515,6 +545,13 @@ public class MaterialService {
     public Material toggleAbleMaterial(Long id) {
         Material m = getById(id);
         m.setAble(!m.isAble());
+        MaterialLog materialLog = MaterialLog.builder()
+                .createdAt(LocalDateTime.now())
+                .message("Thay đổi trạng thái vật liệu. Trạng thái mới: " +
+                        (m.isAble() ? "Đang hoạt động" : "Không hoạt động"))
+                .material(m)
+                .build();
+        m.getMaterialLogs().add(materialLog);
         return materialRepository.save(m);
     }
 
@@ -561,16 +598,30 @@ public class MaterialService {
     }
 
     @Transactional
-    public void updateQuantityOfListMaterial(List<UpdateQuantityMaterialReq> req) {
-        for(UpdateQuantityMaterialReq r: req) {
+    public void updateQuantityOfListMaterial(InfoChangeQuantityMaterialReq req) {
+        String userInfo = req.actorName() + " - " + req.userId();
+        for(UpdateQuantityMaterialReq r: req.updateQuantityMaterialReqs()) {
             Material m = getById(r.id());
             Integer Sum = m.getQuantity() + r.quantity();
             if(Sum < 0)
                 throw new AppException(ErrorCode.INVALID_REQUEST,"Số lượng vật liệu '" + m.getName() + "' không đủ");
+            MaterialLog materialLog = MaterialLog.builder()
+                    .createdAt(LocalDateTime.now())
+                    .message("Thay đổi số lượng vật liệu vì toa thuốc. Số lượng cũ: " + m.getQuantity() + " , mới: " + Sum + " . Người thực hiện: " + userInfo)
+                    .material(m)
+                    .build();
+            m.getMaterialLogs().add(materialLog);
             m.setQuantity(Sum);
             materialRepository.save(m);
         }
     }
 
 
+    public List<MaterialLog> getListLogOfMaterialById(Long id) {
+        Material material = getById(id);
+        if (material.getMaterialLogs() == null) {
+            return new ArrayList<>();
+        }
+        return new ArrayList<>(material.getMaterialLogs());
+    }
 }

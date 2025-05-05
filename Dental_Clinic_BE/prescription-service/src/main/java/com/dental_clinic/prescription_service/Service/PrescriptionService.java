@@ -4,8 +4,10 @@ import com.dental_clinic.common_lib.dto.response.ApiResponse;
 import com.dental_clinic.common_lib.exception.AppException;
 import com.dental_clinic.common_lib.exception.ErrorCode;
 import com.dental_clinic.prescription_service.Client.MaterialClient;
+import com.dental_clinic.prescription_service.DTO.Client.InfoChangeQuantityMaterialReq;
 import com.dental_clinic.prescription_service.DTO.Client.UpdateQuantityMaterialReq;
 import com.dental_clinic.prescription_service.DTO.Request.CreatePrescriptionReq;
+import com.dental_clinic.prescription_service.DTO.Request.DeletePrescriptionReq;
 import com.dental_clinic.prescription_service.DTO.Request.MedicineReq;
 import com.dental_clinic.prescription_service.DTO.Request.UpdatePrescriptionReq;
 import com.dental_clinic.prescription_service.DTO.Response.PricePrescriptionRes;
@@ -62,7 +64,7 @@ public class PrescriptionService {
     }
 
     public List<Prescription> getPrescriptionsByDentistId(Long denId) {
-        return prescriptionRepository.findByDenIdAndIsDeletedFalse(denId);
+        return prescriptionRepository.findByDenId(denId);
     }
 
     public Prescription getPrescriptionHasBillNullById(String id) {
@@ -87,7 +89,12 @@ public class PrescriptionService {
                     .map(medicineReq -> new UpdateQuantityMaterialReq(medicineReq.med_id(), (- medicineReq.quantity_medicine())))
                     .toList();
 
-            materialClient.updateQuantityOfListMaterial(updateQuantityMaterialReqs);
+            InfoChangeQuantityMaterialReq infoChangeQuantityMaterialReq = new InfoChangeQuantityMaterialReq(
+                    request.den_id(),
+                    request.den_name(),
+                    updateQuantityMaterialReqs
+            );
+            materialClient.updateQuantityOfListMaterial(infoChangeQuantityMaterialReq);
 
             Prescription prescription = Prescription.builder()
                     .pat_id(request.pat_id())
@@ -120,14 +127,20 @@ public class PrescriptionService {
     }
 
     @Transactional
-    public Prescription deleteVariablePrescription(String id) throws JsonProcessingException {
+    public Prescription deleteVariablePrescription(String id, DeletePrescriptionReq req) throws JsonProcessingException {
       try {
         Prescription prescription = findPrescriptionById(id);
         List<UpdateQuantityMaterialReq> updateQuantityMaterialReqs = prescription.getMedicines().stream()
             .map(medicine -> new UpdateQuantityMaterialReq(medicine.getMed_id(), medicine.getQuantity_medicine()))
             .toList();
 
-        materialClient.updateQuantityOfListMaterial(updateQuantityMaterialReqs);
+        InfoChangeQuantityMaterialReq infoChangeQuantityMaterialReq = new InfoChangeQuantityMaterialReq(
+                req.userId(),
+                req.actorName(),
+                updateQuantityMaterialReqs
+        );
+
+        materialClient.updateQuantityOfListMaterial(infoChangeQuantityMaterialReq);
 
         checkWhetherPreDeleted(prescription);
           if (prescription.getBill_id() != null) {
@@ -195,12 +208,10 @@ public class PrescriptionService {
         });
 
 
-        request.den_id().ifPresent(denId -> {
-            if (denId < 1) {
-                throw new AppException(ErrorCode.FAIL_FORMAT_DATA, "Mã nha sĩ phải lớn hơn 0");
-            }
-            prescription.setDen_id(denId);
-        });
+        if (request.den_id() < 1) {
+            throw new AppException(ErrorCode.FAIL_FORMAT_DATA, "Mã nha sĩ phải lớn hơn 0");
+        }
+        prescription.setDen_id(request.den_id());
 
         request.pat_id().ifPresent(patId -> {
             if (patId.isBlank()) {
@@ -213,6 +224,7 @@ public class PrescriptionService {
             if (medicineReqs.isEmpty()) {
                 throw new AppException(ErrorCode.FAIL_FORMAT_DATA, "Danh sách thuốc không được để trống");
             }
+
 
             // Tính toán sự thay đổi số lượng vật liệu
             List<UpdateQuantityMaterialReq> updateQuantityMaterialReqs = medicineReqs.stream()
@@ -231,8 +243,14 @@ public class PrescriptionService {
                     })
                     .toList();
 
+            InfoChangeQuantityMaterialReq infoChangeQuantityMaterialReq = new InfoChangeQuantityMaterialReq(
+                    request.den_id(),
+                    request.den_name(),
+                    updateQuantityMaterialReqs
+            );
+
             // Gửi yêu cầu cập nhật số lượng vật liệu
-            materialClient.updateQuantityOfListMaterial(updateQuantityMaterialReqs);
+            materialClient.updateQuantityOfListMaterial(infoChangeQuantityMaterialReq);
 
             // Cập nhật danh sách thuốc và tổng giá
             BigInteger totalPrice = medicineReqs.stream()

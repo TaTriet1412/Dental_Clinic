@@ -85,10 +85,12 @@ export class EditDentistComponent implements OnInit {
       this.spinner.show();
       const fetchedAppointment = await firstValueFrom(this.userService.getUserDetailById(this.dentistId));
       this.dentist = { ...fetchedAppointment.result };
-      const fetchedFacultyList = await firstValueFrom(this.facultyService.getAllFaculty());
-      this.facultyList = fetchedFacultyList.result;
       const fetchedInfoDentist = await firstValueFrom(this.dentistService.getDentistById(this.dentistId));
       this.detailDentist = { ...fetchedInfoDentist.result };
+      const fetchedFacultyList = await firstValueFrom(this.facultyService.getAllFaculty());
+      this.facultyList = fetchedFacultyList.result.filter((faculty: any) =>
+        faculty.able || faculty.id === this.detailDentist.facID
+      ); // Lọc danh sách khoa để giữ lại khoa khả dụng hoặc khoa hiện tại của bác sĩ
 
       this.name = this.dentist.name;
       this.phone = this.dentist.phone;

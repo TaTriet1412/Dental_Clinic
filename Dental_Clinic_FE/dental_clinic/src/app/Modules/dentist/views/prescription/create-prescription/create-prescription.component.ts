@@ -25,6 +25,7 @@ import { PrescriptionService } from '../../../../../core/services/prescription.s
 import { ROUTES } from '../../../../../core/constants/routes.constant'; // Import ROUTES
 import { NameIdUserResponse } from '../../../../../share/dto/response/name-id-user-response';
 import { NameIdPatientResponse } from '../../../../../share/dto/response/name-id-patient-response';
+import { AuthService } from '../../../../../core/services/auth.service';
 
 @Component({
   selector: 'app-create-prescription',
@@ -52,11 +53,10 @@ import { NameIdPatientResponse } from '../../../../../share/dto/response/name-id
 })
 export class CreatePrescriptionComponent implements OnInit {
   patId: string = '';
-  denId: string = '';
+  denId: number = -1;
+  dentistName: string = ''; // Name of the dentist
   patientList: NameIdPatientResponse[] = [];
-  dentistList: NameIdUserResponse[] = [];
   selectedPatient: string = '';
-  selectedDentist: string = '';
   validated: boolean = false;
   note: string = '';
   disabledBtnSubmit: boolean = false;
@@ -66,6 +66,7 @@ export class CreatePrescriptionComponent implements OnInit {
   constructor(
     private patientService: PatientService,
     private userService: UserService,
+    private authService: AuthService,
     public cdf: ChangeDetectorRef,
     private snackBar: SnackBarService,
     private router: Router,
@@ -77,17 +78,13 @@ export class CreatePrescriptionComponent implements OnInit {
   async ngOnInit(): Promise<void> {
     this.spinner.show();
     try {
+      this.denId = this.authService.getUserId(); // Lấy ID của bác sĩ từ AuthService
+
       // Lấy danh sách bệnh nhân
       const patientResponse: any = await firstValueFrom(
         this.patientService.getNameIdPatientList()
       );
       this.patientList = patientResponse.result;
-
-      // Lấy danh sách bác sĩ
-      const dentistResponse: any = await firstValueFrom(
-        this.userService.getNameIdUserListByRoleId(3)
-      );
-      this.dentistList = dentistResponse.result;
 
       // Lấy danh sách thuốc
       const medicineResponse: any = await firstValueFrom(
@@ -161,35 +158,6 @@ export class CreatePrescriptionComponent implements OnInit {
       this.patId = matchedPatient.id.toString();
     } else {
       this.patId = '';
-    }
-    this.cdf.markForCheck();
-  }
-
-  onDentistChange(event: Event) {
-    const selectedName = (event.target as HTMLSelectElement).value;
-    this.selectedDentist = selectedName;
-    const matchedDentist = this.dentistList.find(
-      (dentist) => dentist.name === selectedName
-    );
-
-    if (matchedDentist) {
-      this.denId = matchedDentist.id.toString();
-    } else {
-      this.denId = '';
-    }
-    this.cdf.markForCheck();
-  }
-
-  onDenIdInput(event: Event) {
-    const inputCodeDenId = event.target as HTMLInputElement;
-    this.denId = inputCodeDenId.value;
-    const matchedDentist = this.dentistList.find(
-      (dentist) => dentist.id.toString() === this.denId
-    );
-    if (matchedDentist) {
-      this.selectedDentist = matchedDentist.name;
-    } else {
-      this.selectedDentist = '';
     }
     this.cdf.markForCheck();
   }
@@ -275,7 +243,8 @@ export class CreatePrescriptionComponent implements OnInit {
 
     const prescriptionData = {
       pat_id: this.patId,
-      den_id: Number(this.denId),
+      den_id: (this.denId),
+      den_name: this.dentistName,
       note: this.note,
       medicines: this.selectedMedicines.map(med => ({ // Format for backend
         med_id: Number(med.id),

@@ -8,6 +8,7 @@ import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Table(name = "material")
@@ -61,4 +62,8 @@ public class Material {
     @OneToOne(mappedBy = "material", fetch = FetchType.LAZY)
     @JsonIgnore
     private ConsumableMaterial consumableMaterial;
+
+    @OneToMany(mappedBy = "material", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore // Often needed to break recursion with OrderDetail having 'material' field
+    List<MaterialLog> materialLogs;
 }

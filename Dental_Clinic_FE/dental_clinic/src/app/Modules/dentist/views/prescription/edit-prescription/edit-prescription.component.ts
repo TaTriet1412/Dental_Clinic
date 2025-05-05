@@ -25,6 +25,7 @@ import { PrescriptionService } from '../../../../../core/services/prescription.s
 import { ROUTES } from '../../../../../core/constants/routes.constant'; // Import ROUTES
 import { NameIdUserResponse } from '../../../../../share/dto/response/name-id-user-response';
 import { NameIdPatientResponse } from '../../../../../share/dto/response/name-id-patient-response';
+import { AuthService } from '../../../../../core/services/auth.service';
 
 @Component({
   selector: 'app-edit-prescription',
@@ -52,11 +53,10 @@ import { NameIdPatientResponse } from '../../../../../share/dto/response/name-id
 })
 export class EditPrescriptionComponent implements OnInit {
   patId: string = '';
-  denId: string = '';
+  denId: number = -1;
+  actorName: string = ''; // Name of the dentist (den_name)
   patientList: NameIdPatientResponse[] = [];
-  dentistList: NameIdUserResponse[] = [];
   selectedPatient: string = '';
-  selectedDentist: string = '';
   validated: boolean = false;
   note: string = '';
   disabledBtnSubmit: boolean = false;
@@ -74,23 +74,21 @@ export class EditPrescriptionComponent implements OnInit {
     private url: ActivatedRoute,
     private spinner: NgxSpinnerService,
     private materialService: MaterialService,
-    private prescriptionService: PrescriptionService // Inject PrescriptionService
+    private prescriptionService: PrescriptionService,
+    private authService: AuthService,
   ) { }
 
   async ngOnInit(): Promise<void> {
     this.spinner.show();
     try {
+      this.denId = this.authService.getUserId() || -1; // Lấy denId từ authService
+      this.actorName = this.authService.getName(); // Lấy tên bác sĩ từ userService
+
       // Lấy danh sách bệnh nhân
       const patientResponse: any = await firstValueFrom(
         this.patientService.getNameIdPatientList()
       );
       this.patientList = patientResponse.result;
-
-      // Lấy danh sách bác sĩ
-      const dentistResponse: any = await firstValueFrom(
-        this.userService.getNameIdUserListByRoleId(3)
-      );
-      this.dentistList = dentistResponse.result;
 
       // Lấy danh sách thuốc
       const medicineResponse: any = await firstValueFrom(
@@ -116,10 +114,6 @@ export class EditPrescriptionComponent implements OnInit {
       this.patId = this.prescription.pat_id.toString();
       this.selectedPatient = this.patientList.find(
         (patient) => patient.id.toString() === this.patId
-      )?.name || '';
-      this.denId = this.prescription.den_id.toString();
-      this.selectedDentist = this.dentistList.find(
-        (dentist) => dentist.id.toString() === this.denId
       )?.name || '';
       this.note = this.prescription.note || '';
       this.selectedMedicines = this.prescription.medicines.map((med: any) => ({
@@ -198,34 +192,6 @@ export class EditPrescriptionComponent implements OnInit {
     this.cdf.markForCheck();
   }
 
-  onDentistChange(event: Event) {
-    const selectedName = (event.target as HTMLSelectElement).value;
-    this.selectedDentist = selectedName;
-    const matchedDentist = this.dentistList.find(
-      (dentist) => dentist.name === selectedName
-    );
-
-    if (matchedDentist) {
-      this.denId = matchedDentist.id.toString();
-    } else {
-      this.denId = '';
-    }
-    this.cdf.markForCheck();
-  }
-
-  onDenIdInput(event: Event) {
-    const inputCodeDenId = event.target as HTMLInputElement;
-    this.denId = inputCodeDenId.value;
-    const matchedDentist = this.dentistList.find(
-      (dentist) => dentist.id.toString() === this.denId
-    );
-    if (matchedDentist) {
-      this.selectedDentist = matchedDentist.name;
-    } else {
-      this.selectedDentist = '';
-    }
-    this.cdf.markForCheck();
-  }
 
   // --- Medicine Selection Logic ---
 
@@ -308,7 +274,8 @@ export class EditPrescriptionComponent implements OnInit {
     const prescriptionData = {
       id: this.prescriptionId, // ID of the prescription to be edited
       pat_id: this.patId,
-      den_id: Number(this.denId),
+      den_id: (this.denId),
+      den_name: this.actorName,
       note: this.note,
       medicines: this.selectedMedicines.map(med => ({ // Format for backend
         med_id: Number(med.id),

@@ -4,6 +4,7 @@ import com.dental_clinic.common_lib.dto.response.ApiResponse;
 import com.dental_clinic.material_service.DTO.Request.*;
 import com.dental_clinic.material_service.DTO.Response.*;
 import com.dental_clinic.material_service.Entity.Material;
+import com.dental_clinic.material_service.Entity.MaterialLog;
 import com.dental_clinic.material_service.Service.*;
 import com.google.gson.Gson;
 import jakarta.validation.Valid;
@@ -71,6 +72,16 @@ public class MaterialController {
                 .result(fixedMaterialService.getFixedResById(id))
                 .apiCode(200)
                 .message("Lấy vật liệu cố định thành công!")
+                .build();
+    }
+
+    //    Get Log Of Material
+    @GetMapping("/{id}/logs")
+    public ApiResponse<Object> getOrderLogsByOrderSessionId(@PathVariable Long id) {
+        return ApiResponse.builder()
+                .result(materialService.getListLogOfMaterialById(id))
+                .apiCode(200)
+                .message("Lấy danh sách lịch sử thay đổi của vật liệu thành công!")
                 .build();
     }
 
@@ -225,7 +236,7 @@ public class MaterialController {
 
     // Cập nhật số lượng của danh sách vật liệu
     @PutMapping("/list/update-quantity")
-    public ApiResponse<Object> updateQuantityOfListMaterial(@Valid @RequestBody List<UpdateQuantityMaterialReq> request) {
+    public ApiResponse<Object> updateQuantityOfListMaterial(@Valid @RequestBody InfoChangeQuantityMaterialReq request) {
         materialService.updateQuantityOfListMaterial(request);
         return ApiResponse.builder()
                 .apiCode(200)

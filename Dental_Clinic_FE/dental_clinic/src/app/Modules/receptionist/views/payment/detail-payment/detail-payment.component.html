@@ -1,0 +1,383 @@
+<div class="p-20">
+  <!-- Loading/Error State -->
+  <ng-container *ngIf="isLoading">
+    <div class="alert alert-info">Đang tải dữ liệu hóa đơn...</div>
+  </ng-container>
+  <ng-container *ngIf="errorMessage && !isLoading">
+    <div class="alert alert-danger">{{ errorMessage }}</div>
+  </ng-container>
+
+  <!-- Add a wrapper div with an ID -->
+  <ng-container *ngIf="bill && !isLoading && !errorMessage">
+    <!-- Header with Title and Print Button -->
+    <div class="d-flex justify-content-between align-items-center mb-3">
+      <h1>Chi tiết hóa đơn #{{ bill.id }}</h1>
+      <!-- Add Print Button Here with no-print class -->
+      <button
+        cButton
+        color="secondary"
+        variant="outline"
+        (click)="printPDF()"
+        class="no-print d-flex align-items-center"
+      >
+        <i class="fa-solid fa-print me-2"></i>
+        In PDF
+      </button>
+    </div>
+
+    <c-row
+      ngPreserveWhitespaces
+      class="bill-container"
+      id="billDetailsContainer"
+    >
+      <!-- General Info Card -->
+      <c-col xs="12">
+        <c-card class="mb-4">
+          <c-card-header
+            class="d-flex justify-content-between align-items-center"
+          >
+            <strong>Thông tin chung</strong>
+          </c-card-header>
+          <c-card-body>
+            <!-- ... General Info Table ... -->
+            <table
+              class="table table-borderless table-sm"
+              style="max-width: 600px"
+            >
+              <tbody>
+                <tr>
+                  <th style="width: 30%">ID Hóa đơn:</th>
+                  <td>{{ bill.id }}</td>
+                </tr>
+                <tr>
+                  <th>Mã bệnh nhân:</th>
+                  <td>{{ bill.patientId }}</td>
+                </tr>
+                <tr>
+                  <th>Tên bệnh nhân:</th>
+                  <td>{{ patient?.name || "Đang tải..." }}</td>
+                </tr>
+                <tr>
+                  <th>Mã toa thuốc:</th>
+                  <td>{{ bill.prescriptionId || "(Không có)" }}</td>
+                </tr>
+                <tr>
+                  <th>Ngày tạo:</th>
+                  <td>{{ bill.createdAt | date : "dd/MM/yyyy HH:mm:ss" }}</td>
+                </tr>
+                <tr>
+                  <th>Trạng thái:</th>
+                  <td [class]="getStatusInfo(bill.status).class + ' fw-bold'">
+                    {{ getStatusInfo(bill.status).text }}
+                  </td>
+                </tr>
+                <tr>
+                  <th>Ghi chú:</th>
+                  <td>{{ bill.note || "(Không có)" }}</td>
+                </tr>
+              </tbody>
+            </table>
+          </c-card-body>
+        </c-card>
+      </c-col>
+
+      <!-- Prescription Details Card (Optional) -->
+      <c-col xs="12" *ngIf="bill.prescriptionId">
+        <c-card class="mb-4">
+          <c-card-header>
+            <strong>Chi tiết toa thuốc</strong>
+          </c-card-header>
+          <c-card-body>
+            <!-- ... Prescription Table ... -->
+            <table
+              class="table table-borderless table-sm"
+              style="max-width: 600px"
+            >
+              <tbody>
+                <tr>
+                  <th style="width: 30%">Mã toa:</th>
+                  <td>{{ bill.prescriptionId }}</td>
+                </tr>
+                <tr>
+                  <th>Tổng giá toa:</th>
+                  <td class="fw-bold">
+                    {{
+                      bill.prescriptionPrice
+                        | currency : "VND" : "symbol" : "1.0-0" : "vi"
+                    }}
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </c-card-body>
+        </c-card>
+      </c-col>
+
+      <!-- Services Details Card -->
+      <c-col xs="12">
+        <c-card class="mb-4">
+          <c-card-header>
+            <strong>Chi tiết dịch vụ</strong>
+          </c-card-header>
+          <c-card-body>
+            <!-- ... Services Table ... -->
+            <ng-container *ngIf="detailedServices.length > 0; else noServices">
+              <table
+                cTable
+                class="table table-bordered table-hover"
+                [striped]="true"
+              >
+                <thead>
+                  <tr>
+                    <th>#</th>
+                    <th>Tên dịch vụ</th>
+                    <th class="text-end">Số lượng</th>
+                    <th class="text-end">Đơn giá</th>
+                    <th class="text-end">Thành tiền</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let service of detailedServices; let i = index">
+                    <td>{{ i + 1 }}</td>
+                    <td>{{ service.name }} (ID: {{ service.serviceId }})</td>
+                    <td class="text-end">
+                      {{ service.quantity | number : "1.0-0" : "vi" }}
+                    </td>
+                    <td class="text-end">
+                      {{
+                        service.unitPrice
+                          | currency : "VND" : "symbol" : "1.0-0" : "vi"
+                      }}
+                    </td>
+                    <td class="text-end fw-bold">
+                      {{
+                        service.totalPrice
+                          | currency : "VND" : "symbol" : "1.0-0" : "vi"
+                      }}
+                    </td>
+                  </tr>
+                </tbody>
+                <tfoot>
+                  <tr>
+                    <td colspan="4" class="text-end fw-bold">
+                      Tổng tiền dịch vụ:
+                    </td>
+                    <td class="text-end fw-bold">
+                      {{
+                        bill.servicesTotalPrice
+                          | currency : "VND" : "symbol" : "1.0-0" : "vi"
+                      }}
+                    </td>
+                  </tr>
+                </tfoot>
+              </table>
+            </ng-container>
+            <ng-template #noServices>
+              <div class="alert alert-secondary">
+                Không có dịch vụ nào trong hóa đơn này.
+              </div>
+            </ng-template>
+          </c-card-body>
+        </c-card>
+      </c-col>
+
+      <!-- Totals and Payment Button Card -->
+      <c-col xs="12">
+        <c-card class="mb-4">
+          <c-card-header>
+            <strong>Tổng cộng và Thanh toán</strong>
+          </c-card-header>
+          <c-card-body>
+            <c-row class="justify-content-end align-items-center">
+              <c-col md="auto" class="text-end">
+                <!-- ... Totals content ... -->
+                <div *ngIf="bill.prescriptionId" class="mb-2">
+                  <span>Tiền toa thuốc:</span>
+                  <strong class="ms-2">{{
+                    bill.prescriptionPrice
+                      | currency : "VND" : "symbol" : "1.0-0" : "vi"
+                  }}</strong>
+                </div>
+                <div class="mb-2">
+                  <span>Tiền dịch vụ:</span>
+                  <strong class="ms-2">{{
+                    bill.servicesTotalPrice
+                      | currency : "VND" : "symbol" : "1.0-0" : "vi"
+                  }}</strong>
+                </div>
+                <hr class="my-1" />
+                <div class="mb-3">
+                  <h5 class="mb-0">Tổng thanh toán:</h5>
+                  <h3 class="mb-0 text-success fw-bold">
+                    {{
+                      bill.totalPrice
+                        | currency : "VND" : "symbol" : "1.0-0" : "vi"
+                    }}
+                  </h3>
+                </div>
+              </c-col>
+              <!-- Add no-print class to the payment button container -->
+              <c-col
+                md="auto"
+                class="text-center text-md-end mt-3 mt-md-0 no-print"
+              >
+                <!-- Nút thanh toán -->
+                <button
+                  *ngIf="bill.status?.toLowerCase() != 'paid'"
+                  cButton
+                  color="success"
+                  size="lg"
+                  (click)="handlePayment()"
+                  class="d-flex align-items-center justify-content-center"
+                >
+                  <div class="payment_logo">
+                    <img
+                      height="50"
+                      src="/assets/images/payment/vnpay-logo.jpg"
+                      alt="VNPay"
+                      class="img_logo me-2"
+                    />
+                  </div>
+                  <span class="fw-bold">Thanh toán với VNPay</span>
+                </button>
+                <!-- Thông báo đã thanh toán -->
+                <div
+                  *ngIf="bill.status?.toLowerCase() == 'paid'"
+                  class="alert alert-success mb-0"
+                >
+                  <i class="fa-solid fa-check-circle me-2"></i>
+                  Hóa đơn đã được thanh toán.
+                </div>
+              </c-col>
+            </c-row>
+          </c-card-body>
+        </c-card>
+      </c-col>
+
+      <!-- Successful Transaction Details Card -->
+      <c-col
+        xs="12"
+        *ngIf="bill.status?.toLowerCase() === 'paid' && successfulTransaction"
+      >
+        <c-card class="mb-4 border-success">
+          <c-card-header class="bg-success text-white">
+            <i class="fa-solid fa-receipt me-2"></i>
+            <strong>Chi tiết giao dịch thành công</strong>
+          </c-card-header>
+          <c-card-body>
+            <!-- ... Successful Transaction Table ... -->
+            <table
+              class="table table-borderless table-sm"
+              style="max-width: 600px"
+            >
+              <tbody>
+                <tr>
+                  <th style="width: 35%">ID Giao dịch:</th>
+                  <td>{{ successfulTransaction.id }}</td>
+                </tr>
+                <tr *ngIf="successfulTransaction.vnp_TransactionNo">
+                  <th>Mã GD VNPay:</th>
+                  <td>{{ successfulTransaction.vnp_TransactionNo }}</td>
+                </tr>
+                <tr>
+                  <th>Phương thức:</th>
+                  <td>{{ successfulTransaction.paymentMethod | uppercase }}</td>
+                </tr>
+                <tr *ngIf="successfulTransaction.vnp_BankCode">
+                  <th>Ngân hàng:</th>
+                  <td>{{ successfulTransaction.vnp_BankCode }}</td>
+                </tr>
+                <tr>
+                  <th>Số tiền:</th>
+                  <td class="fw-bold">
+                    {{
+                      successfulTransaction.amountPaid
+                        | currency : "VND" : "symbol" : "1.0-0" : "vi"
+                    }}
+                  </td>
+                </tr>
+                <tr>
+                  <th>Thời gian:</th>
+                  <td>
+                    {{
+                      successfulTransaction.createdAt
+                        | date : "dd/MM/yyyy HH:mm:ss"
+                    }}
+                  </td>
+                </tr>
+                <tr>
+                  <th>Trạng thái GD:</th>
+                  <td
+                    [class]="
+                      getTransactionStatusInfo(successfulTransaction.status)
+                        .class + ' fw-bold'
+                    "
+                  >
+                    {{
+                      getTransactionStatusInfo(successfulTransaction.status)
+                        .text
+                    }}
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </c-card-body>
+        </c-card>
+      </c-col>
+    </c-row>
+  </ng-container>
+</div>
+<!-- End of billDetailsContainer -->
+
+<!-- Optional: Add CSS to hide elements during printing -->
+<style>
+  @media print {
+    .no-print {
+      display: none !important;
+    }
+    body {
+      margin: 0;
+    }
+    .p-20 {
+      padding: 0 !important;
+    }
+    c-card {
+      border: 1px solid #dee2e6 !important;
+      box-shadow: none !important;
+      margin-bottom: 1rem !important;
+      /* Ensure cards don't break across pages if possible */
+      page-break-inside: avoid;
+    }
+    table {
+      width: 100% !important;
+      border-collapse: collapse !important;
+      page-break-inside: auto; /* Allow tables to break across pages */
+    }
+    tr {
+      page-break-inside: avoid; /* Try to keep table rows together */
+      page-break-after: auto;
+    }
+    thead {
+      display: table-header-group; /* Repeat table header on each page */
+    }
+    tfoot {
+      display: table-footer-group; /* Repeat table footer on each page */
+    }
+    th,
+    td {
+      border: 1px solid #dee2e6 !important;
+      padding: 0.4rem !important; /* Adjust padding for print */
+      font-size: 9pt; /* Adjust font size for print */
+    }
+    h1 {
+      font-size: 16pt;
+    }
+    h3 {
+      font-size: 12pt;
+    }
+    h5 {
+      font-size: 10pt;
+    }
+    /* Add any other print-specific styles */
+  }
+</style>

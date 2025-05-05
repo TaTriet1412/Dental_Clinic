@@ -67,7 +67,7 @@ export class CreateDentistComponent implements OnInit {
 
   async ngOnInit(): Promise<void> {
     const fetchedFacultyList = await firstValueFrom(this.facultyService.getAllFaculty());
-    this.facultyList = fetchedFacultyList.result;
+    this.facultyList = fetchedFacultyList.result.filter((faculty: any) => faculty.able == true);
   }
 
   onFileSelected(event: any): void {

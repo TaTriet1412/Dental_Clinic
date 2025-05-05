@@ -1,0 +1,62 @@
+<h1 mat-dialog-title>{{ dialogTitle }}</h1>
+
+<div mat-dialog-content [formGroup]="eventForm">
+  <!-- Trường Start Date -->
+  <mat-form-field appearance="fill" class="full-width">
+    <mat-label>Ngày bắt đầu</mat-label>
+    <input matInput [matDatepicker]="startDatePicker" formControlName="startDate" [min]="minStartDate" [readonly]="isViewMode"> <!-- Thêm readonly -->
+    <mat-datepicker-toggle matSuffix [for]="startDatePicker" [disabled]="isViewMode"></mat-datepicker-toggle> <!-- Thêm disabled -->
+    <mat-datepicker #startDatePicker [disabled]="isViewMode"></mat-datepicker> <!-- Thêm disabled -->
+    <mat-error *ngIf="eventForm.get('startDate')?.hasError('required')">Ngày bắt đầu là bắt buộc.</mat-error>
+  </mat-form-field>
+
+  <!-- Trường Start Time -->
+  <mat-form-field appearance="fill" class="full-width">
+      <mat-label>Giờ bắt đầu</mat-label>
+      <input matInput type="time" formControlName="startTime" [readonly]="isViewMode"> <!-- Thêm readonly -->
+      <mat-error *ngIf="eventForm.get('startTime')?.hasError('required')">Giờ bắt đầu là bắt buộc.</mat-error>
+  </mat-form-field>
+  <!-- Nếu dùng NgxMatTimepicker -->
+  <!-- <mat-form-field appearance="fill" class="full-width">
+    <mat-label>Giờ bắt đầu</mat-label>
+    <input matInput [ngxMatTimepicker]="startTimePicker" formControlName="startTime" [readonly]="isViewMode">
+    <mat-icon matSuffix (click)="!isViewMode && startTimePicker.open()">watch_later</mat-icon>
+    <ngx-mat-timepicker #startTimePicker [disabled]="isViewMode"></ngx-mat-timepicker>
+     <mat-error *ngIf="eventForm.get('startTime')?.hasError('required')">Giờ bắt đầu là bắt buộc.</mat-error>
+  </mat-form-field> -->
+
+
+  <!-- Trường End Date -->
+  <mat-form-field appearance="fill" class="full-width">
+    <mat-label>Ngày kết thúc</mat-label>
+    <input matInput [matDatepicker]="endDatePicker" formControlName="endDate" [min]="eventForm.get('startDate')?.value || minEndDate" [readonly]="isViewMode"> <!-- Thêm readonly -->
+    <mat-datepicker-toggle matSuffix [for]="endDatePicker" [disabled]="isViewMode"></mat-datepicker-toggle> <!-- Thêm disabled -->
+    <mat-datepicker #endDatePicker [disabled]="isViewMode"></mat-datepicker> <!-- Thêm disabled -->
+    <mat-error *ngIf="eventForm.get('endDate')?.hasError('required')">Ngày kết thúc là bắt buộc.</mat-error>
+  </mat-form-field>
+
+  <!-- Trường End Time -->
+   <mat-form-field appearance="fill" class="full-width">
+      <mat-label>Giờ kết thúc</mat-label>
+      <input matInput type="time" formControlName="endTime" [readonly]="isViewMode"> <!-- Thêm readonly -->
+      <mat-error *ngIf="eventForm.get('endTime')?.hasError('required')">Giờ kết thúc là bắt buộc.</mat-error>
+  </mat-form-field>
+  <!-- Nếu dùng NgxMatTimepicker -->
+  <!-- <mat-form-field appearance="fill" class="full-width">
+    <mat-label>Giờ kết thúc</mat-label>
+    <input matInput [ngxMatTimepicker]="endTimePicker" formControlName="endTime" [readonly]="isViewMode">
+    <mat-icon matSuffix (click)="!isViewMode && endTimePicker.open()">watch_later</mat-icon>
+    <ngx-mat-timepicker #endTimePicker [disabled]="isViewMode"></ngx-mat-timepicker>
+     <mat-error *ngIf="eventForm.get('endTime')?.hasError('required')">Giờ kết thúc là bắt buộc.</mat-error>
+  </mat-form-field> -->
+
+</div>
+
+<div mat-dialog-actions align="end">
+  <!-- Nút Đóng/Cancel luôn hiển thị -->
+  <button mat-button (click)="onCancel()">Đóng</button>
+  <!-- Nút Lưu chỉ hiển thị khi không phải view mode -->
+  <button mat-raised-button color="primary" *ngIf="!isViewMode" (click)="onSave()" [disabled]="eventForm.invalid">Lưu</button>
+  <!-- Nút Xóa chỉ hiển thị khi là edit mode -->
+  <button mat-raised-button color="warn" *ngIf="mode === 'edit'" (click)="onDelete()">Xóa</button>
+</div>

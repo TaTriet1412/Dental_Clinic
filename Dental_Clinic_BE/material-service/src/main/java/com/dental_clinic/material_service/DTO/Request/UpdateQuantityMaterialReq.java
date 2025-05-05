@@ -7,5 +7,6 @@ public record UpdateQuantityMaterialReq(
         Long id,
         @NotNull (message = "Số lượng không được để trống")
         Integer quantity
+
 ) {
 }

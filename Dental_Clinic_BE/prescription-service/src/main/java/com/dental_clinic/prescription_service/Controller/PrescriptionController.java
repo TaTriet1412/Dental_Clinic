@@ -2,6 +2,7 @@ package com.dental_clinic.prescription_service.Controller;
 
 import com.dental_clinic.common_lib.dto.response.ApiResponse;
 import com.dental_clinic.prescription_service.DTO.Request.CreatePrescriptionReq;
+import com.dental_clinic.prescription_service.DTO.Request.DeletePrescriptionReq;
 import com.dental_clinic.prescription_service.DTO.Request.UpdateBillIdForPrescriptionReq;
 import com.dental_clinic.prescription_service.DTO.Request.UpdatePrescriptionReq;
 import com.dental_clinic.prescription_service.Service.PrescriptionService;
@@ -100,11 +101,11 @@ public class PrescriptionController {
     }
 
     @DeleteMapping("/{id}")
-    public ApiResponse<Object> deletePrescription(@PathVariable String id) throws JsonProcessingException {
+    public ApiResponse<Object> deletePrescription(@PathVariable String id, @Valid @RequestBody DeletePrescriptionReq req) throws JsonProcessingException {
         return ApiResponse.builder()
                 .apiCode(200)
                 .message("Xóa đơn thuốc thành công")
-                .result(prescriptionService.deleteVariablePrescription(id))
+                .result(prescriptionService.deleteVariablePrescription(id,req))
                 .build();
     }
 

@@ -10,6 +10,8 @@ import { distinctUntilChanged, map, startWith, takeUntil, tap } from 'rxjs/opera
 import { ROUTES } from '../../../../core/constants/routes.constant';
 import { SnackBarService } from '../../../../core/services/snack-bar.service';
 import { PrescriptionService } from '../../../../core/services/prescription.service';
+import { AuthService } from '../../../../core/services/auth.service';
+import { DeletePrescriptionReq } from '../../../../share/dto/request/prescription-delete-req';
 
 @Component({
   selector: 'app-prescription',
@@ -42,6 +44,8 @@ export class PrescriptionComponent implements OnInit, OnDestroy {
 
   private snackbar = inject(SnackBarService);
   private cdr = inject(ChangeDetectorRef);
+  private userId : number = -1
+  private actorName: string = '';
 
   // --- State Management ---
   readonly pagination$ = new BehaviorSubject<{ page: number; size: number }>({ page: 1, size: 5 });
@@ -60,7 +64,6 @@ export class PrescriptionComponent implements OnInit, OnDestroy {
   readonly columns: (IColumn | string)[] = [
     { key: 'id', label: 'ID' },
     { key: 'pat_id', label: 'ID bệnh nhân' },
-    { key: 'den_id', label: 'ID nha sĩ' },
     { key: 'bill_id', label: 'ID hóa đơn' },
     { key: 'note', label: 'Ghi chú' },
     { key: 'total_price', label: 'Tổng giá' },
@@ -72,8 +75,12 @@ export class PrescriptionComponent implements OnInit, OnDestroy {
     private prescriptionService: PrescriptionService,
     private router: Router,
     private spinner: NgxSpinnerService,
-    private datePipe: DatePipe // Inject DatePipe if not already done implicitly by providers
+    private datePipe: DatePipe,
+    private authService: AuthService,
   ) {
+    this.userId = this.authService.getUserId() || -1; // Lấy ID người dùng từ AuthService
+    this.actorName = this.authService.getName() || ''; // Lấy tên người dùng từ AuthService
+
     this.spinner.show();
     this.apiParams$ = combineLatest([this.pagination$, this.sortFields$]).pipe(
       map(([pagination, sortFields]) => ({
@@ -99,7 +106,7 @@ export class PrescriptionComponent implements OnInit, OnDestroy {
     this.data$ = combineLatest([
       this.apiParams$,
       // Fetch all data once
-      this.prescriptionService.getAllPrescription().pipe(
+      this.prescriptionService.getPrescriptionByDentistId(this.userId).pipe(
         map(response => Array.isArray(response?.result) ? response.result : []), // Get the raw data array
         // Store original date before formatting if needed, or use it directly in sort
         map(data => data.map((item: { created_at: string | number | Date; }) => ({ ...item, _original_created_at: new Date(item.created_at) }))) // Store original Date
@@ -135,6 +142,8 @@ export class PrescriptionComponent implements OnInit, OnDestroy {
           }
         }
 
+        console.log('Sorted data:', processedData); // Debugging line to check sorted data
+
         // Định dạng ngày tháng *sau khi* sắp xếp
         const formattedData = processedData.map((item: any) => ({
           ...item,
@@ -142,6 +151,7 @@ export class PrescriptionComponent implements OnInit, OnDestroy {
           created_at: this.datePipe.transform(item._original_created_at, 'dd/MM/yyyy, HH:mm:ss', 'vi-VN') || '',
           // Hoặc: created_at: item._original_created_at.toLocaleString('vi-VN', { hour12: false }),
         }));
+
 
 
         // Áp dụng phân trang trên dữ liệu đã sắp xếp và định dạng
@@ -210,7 +220,12 @@ export class PrescriptionComponent implements OnInit, OnDestroy {
   }
 
   deletePrescription(prescriptionId: string) {
-    this.prescriptionService.deletePrescription(prescriptionId).subscribe({
+    const deletePrescriptionReq :  DeletePrescriptionReq = {
+      userId: this.userId,
+      actorName: this.actorName
+    }
+
+    this.prescriptionService.deletePrescription(prescriptionId,deletePrescriptionReq).subscribe({
       next: (response) => {
         this.snackbar.notifySuccess(response.message);
         // --- Cần trigger fetch lại dữ liệu hoặc cập nhật local state đúng cách ---
