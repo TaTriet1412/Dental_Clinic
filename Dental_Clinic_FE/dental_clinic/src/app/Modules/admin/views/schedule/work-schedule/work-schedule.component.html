@@ -1,7 +1,19 @@
-<div class="schedule-page-container">
+<div class="d-flex justify-content-end align-items-center mb-3">
+  <button
+    cButton
+    color="secondary"
+    variant="outline"
+    (click)="printPDF()"
+    class="no-print d-flex align-items-center"
+  >
+    <i class="fa-solid fa-print me-2"></i>
+    In PDF
+  </button>
+</div>
+<div class="schedule-page-container" id="DetailsContainer">
   <h1>Lịch làm việc nhân viên</h1>
 
-  <c-row ngPreserveWhitespaces>
+  <c-row ngPreserveWhitespaces id="DetailsContainer">
     <c-col xs="12">
       <c-card class="mb-4">
         <c-card-header

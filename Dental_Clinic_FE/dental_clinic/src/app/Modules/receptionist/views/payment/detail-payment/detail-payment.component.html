@@ -223,7 +223,7 @@
               >
                 <!-- Nút thanh toán -->
                 <button
-                  *ngIf="bill.status?.toLowerCase() != 'paid'"
+                *ngIf="bill.status?.toLowerCase() != 'paid' && bill.status?.toLowerCase() != 'cancelled'"
                   cButton
                   color="success"
                   size="lg"
@@ -247,6 +247,13 @@
                 >
                   <i class="fa-solid fa-check-circle me-2"></i>
                   Hóa đơn đã được thanh toán.
+                </div>
+                <div
+                  *ngIf="bill.status?.toLowerCase() == 'cancelled'"
+                  class="alert alert-danger mb-0"
+                >
+                  <i class="fa-solid fa-times-circle me-2"></i>
+                  Hóa đơn đã bị hủy.
                 </div>
               </c-col>
             </c-row>

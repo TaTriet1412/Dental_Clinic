@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
-import { CardModule, ColComponent, TableModule } from '@coreui/angular';
+import { ButtonDirective, CardModule, ColComponent, TableModule } from '@coreui/angular';
 import { RowComponent } from '@coreui/angular-pro';
 import { AppointmentResponse } from '../../../../../../share/dto/response/appoiment-response';
 import { AppointmentService } from '../../../../../../core/services/appointment.service';
@@ -11,7 +11,8 @@ import { ActivatedRoute } from '@angular/router';
 import { AppointmentSupportService } from '../../../../../../core/services/support/appointment-support.service';
 import { UserService } from '../../../../../../core/services/user.service';
 import { PatientService } from '../../../../../../core/services/patient.service';
-
+import { jsPDF } from 'jspdf'; // Correct import for jsPDF class
+import html2canvas from 'html2canvas';
 @Component({
   selector: 'app-detail-appointment',
   imports: [
@@ -19,7 +20,8 @@ import { PatientService } from '../../../../../../core/services/patient.service'
     CardModule,
     RowComponent,
     ColComponent,
-    TableModule
+    TableModule,
+    ButtonDirective,
   ],
   standalone: true,
   templateUrl: './detail-appointment.component.html',
@@ -68,4 +70,57 @@ export class DetailAppointmentComponent  implements OnInit {
     }
   }
 
+  printPDF(): void {
+    if (!this.appointment) {
+       this.snackbar.notifyError('Chưa tải đủ thông tin lịch hẹn để in.');
+       return;
+    }
+
+    this.spinner.show(); // Show spinner
+
+    // Use the correct ID from your HTML structure
+    const data = document.getElementById('DetailsContainer');
+
+    if (!data) {
+      console.error("Element with ID 'DetailsContainer' not found!");
+      this.snackbar.notifyError('Không tìm thấy nội dung để in.');
+      this.spinner.hide(); // Hide spinner on error
+      return;
+    }
+
+    const options = {
+      scale: 2,
+      useCORS: true
+    };
+
+    html2canvas(data, options).then(canvas => {
+      const imgWidth = 208; // A4 width in mm (leaving some margin)
+      const pageHeight = 295; // A4 height in mm
+      const imgHeight = canvas.height * imgWidth / canvas.width;
+      let heightLeft = imgHeight;
+
+      const contentDataURL = canvas.toDataURL('image/png');
+      const pdf = new jsPDF('p', 'mm', 'a4'); // A4 size page of PDF (portrait)
+      let position = 0;
+
+      pdf.addImage(contentDataURL, 'PNG', 0, position, imgWidth, imgHeight);
+      heightLeft -= pageHeight;
+
+      while (heightLeft >= 0) {
+        position = heightLeft - imgHeight;
+        pdf.addPage();
+        pdf.addImage(contentDataURL, 'PNG', 0, position, imgWidth, imgHeight);
+        heightLeft -= pageHeight;
+      }
+
+      pdf.save(`lich_hen_${this.appointment.id}.pdf`); // Use bill ID in filename
+      this.spinner.hide(); // Hide spinner after saving
+      this.snackbar.notifySuccess('Đã tạo file PDF thành công.');
+
+    }).catch(error => {
+        console.error("Error generating PDF: ", error);
+        this.spinner.hide(); // Hide spinner on error
+        this.snackbar.notifyError('Lỗi khi tạo file PDF.');
+    });
+  }
 }

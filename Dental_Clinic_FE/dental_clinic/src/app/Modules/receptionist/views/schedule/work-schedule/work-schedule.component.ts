@@ -8,7 +8,7 @@ import { EventDialogComponent, EventDialogResult } from './event-dialog/event-di
 import { INITIAL_EVENTS } from './event-utils';
 
 import { CommonModule } from '@angular/common';
-import { CardModule } from '@coreui/angular';
+import { ButtonDirective, CardModule } from '@coreui/angular';
 import { Calendar } from '@fullcalendar/core';
 import viLocale from '@fullcalendar/core/locales/vi';
 import dayGridPlugin from '@fullcalendar/daygrid';
@@ -20,7 +20,9 @@ import { SnackBarService } from '../../../../../core/services/snack-bar.service'
 import { UserService } from '../../../../../core/services/user.service';
 import { WorkSchdeduleService } from '../../../../../core/services/work-schedule.service';
 import { EventRequest } from '../../../../../share/dto/request/event-request';
-
+import { jsPDF } from 'jspdf'; // Correct import for jsPDF class
+import html2canvas from 'html2canvas';
+import { NgxSpinnerService } from 'ngx-spinner';
 
 
 export interface LocalEventDialogResult {
@@ -36,6 +38,7 @@ export interface LocalEventDialogResult {
     FullCalendarModule,
     CommonModule,
     CardModule,
+    ButtonDirective
   ],
   templateUrl: './work-schedule.component.html',
   styleUrl: './work-schedule.component.scss'
@@ -83,6 +86,7 @@ export class WorkScheduleComponent implements OnInit, AfterViewInit, OnDestroy {
     private userService: UserService,
     private workScheduleService: WorkSchdeduleService,
     private authService: AuthService,
+    private spinner: NgxSpinnerService,
   ) {// Ensure no invalid license key message is displayed
     this.userID = this.authService.getUserId() || -1; // Lấy mã nhân sự từ authService
 
@@ -223,5 +227,58 @@ export class WorkScheduleComponent implements OnInit, AfterViewInit, OnDestroy {
     const month = (date.getMonth() + 1).toString().padStart(2, '0');
     const day = date.getDate().toString().padStart(2, '0');
     return `${year}-${month}-${day}`;
+  }
+
+  printPDF(): void {
+    if (!this.calendarComponent) {
+       this.snackBar.notifyError('Chưa tải đủ thông tin lịch làm việc để in.');
+       return;
+    }
+
+    // Use the correct ID from your HTML structure
+    const data = document.getElementById('DetailsContainer');
+    this.spinner.show(); // Show spinner
+
+    if (!data) {
+      console.error("Element with ID 'DetailsContainer' not found!");
+      this.snackBar.notifyError('Không tìm thấy nội dung để in.');
+      this.spinner.hide(); // Hide spinner after saving
+      return;
+    }
+
+    const options = {
+      scale: 2,
+      useCORS: true
+    };
+
+    html2canvas(data, options).then(canvas => {
+      const imgWidth = 208; // A4 width in mm (leaving some margin)
+      const pageHeight = 295; // A4 height in mm
+      const imgHeight = canvas.height * imgWidth / canvas.width;
+      let heightLeft = imgHeight;
+
+      const contentDataURL = canvas.toDataURL('image/png');
+      const pdf = new jsPDF('p', 'mm', 'a4'); // A4 size page of PDF (portrait)
+      let position = 0;
+
+      pdf.addImage(contentDataURL, 'PNG', 0, position, imgWidth, imgHeight);
+      heightLeft -= pageHeight;
+
+      while (heightLeft >= 0) {
+        position = heightLeft - imgHeight;
+        pdf.addPage();
+        pdf.addImage(contentDataURL, 'PNG', 0, position, imgWidth, imgHeight);
+        heightLeft -= pageHeight;
+      }
+
+      pdf.save(`lich_lam_viec_${this.userID}.pdf`); // Use bill ID in filename
+      this.spinner.hide(); // Hide spinner after saving
+      this.snackBar.notifySuccess('Đã tạo file PDF thành công.');
+
+    }).catch(error => {
+        console.error("Error generating PDF: ", error);
+        this.spinner.hide(); // Hide spinner on error
+        this.snackBar.notifyError('Lỗi khi tạo file PDF.');
+    });
   }
 }

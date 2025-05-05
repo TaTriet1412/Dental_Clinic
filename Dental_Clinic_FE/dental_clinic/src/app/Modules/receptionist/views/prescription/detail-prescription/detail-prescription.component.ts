@@ -11,6 +11,9 @@ import { PatientService } from '../../../../../core/services/patient.service';
 import { MaterialService } from '../../../../../core/services/material.service';
 import { PatientResponse } from '../../../../../share/dto/response/patient-response';
 import { UserResponse } from '../../../../../share/dto/response/user-response';
+import { jsPDF } from 'jspdf'; // Correct import for jsPDF class
+import html2canvas from 'html2canvas';
+import { ButtonDirective } from '@coreui/angular-pro';
 
 interface PrescriptionMedicineDetail {
   med_id: number;
@@ -29,7 +32,8 @@ interface PrescriptionMedicineDetail {
     ColComponent,
     TableModule,
     DecimalPipe, // Add DecimalPipe
-    CurrencyPipe // Add CurrencyPipe
+    CurrencyPipe, // Add CurrencyPipe
+    ButtonDirective
   ],
   standalone: true,
   templateUrl: './detail-prescription.component.html',
@@ -120,9 +124,57 @@ export class DetailPrescriptionComponent implements OnInit {
       };
     });
   }
+  printPDF(): void {
+    if (!this.prescription) {
+       this.snackbar.notifyError('Chưa tải đủ thông tin toa thuốc để in.');
+       return;
+    }
 
-  // --- Optional: Helper to get details directly in template (less preferred now) ---
-  // getMedicineDetails(med_id: number): MedicineResponse | undefined {
-  //   return this.medicineList.find(m => m.id === med_id);
-  // }
+    this.spinner.show(); // Show spinner
+
+    // Use the correct ID from your HTML structure
+    const data = document.getElementById('prescriptionDetailsContainer');
+
+    if (!data) {
+      console.error("Element with ID 'prescriptionDetailsContainer' not found!");
+      this.snackbar.notifyError('Không tìm thấy nội dung để in.');
+      this.spinner.hide(); // Hide spinner on error
+      return;
+    }
+
+    const options = {
+      scale: 2,
+      useCORS: true
+    };
+
+    html2canvas(data, options).then(canvas => {
+      const imgWidth = 208; // A4 width in mm (leaving some margin)
+      const pageHeight = 295; // A4 height in mm
+      const imgHeight = canvas.height * imgWidth / canvas.width;
+      let heightLeft = imgHeight;
+
+      const contentDataURL = canvas.toDataURL('image/png');
+      const pdf = new jsPDF('p', 'mm', 'a4'); // A4 size page of PDF (portrait)
+      let position = 0;
+
+      pdf.addImage(contentDataURL, 'PNG', 0, position, imgWidth, imgHeight);
+      heightLeft -= pageHeight;
+
+      while (heightLeft >= 0) {
+        position = heightLeft - imgHeight;
+        pdf.addPage();
+        pdf.addImage(contentDataURL, 'PNG', 0, position, imgWidth, imgHeight);
+        heightLeft -= pageHeight;
+      }
+
+      pdf.save(`toa_thuoc_${this.prescription.id}.pdf`); // Use bill ID in filename
+      this.spinner.hide(); // Hide spinner after saving
+      this.snackbar.notifySuccess('Đã tạo file PDF thành công.');
+
+    }).catch(error => {
+        console.error("Error generating PDF: ", error);
+        this.spinner.hide(); // Hide spinner on error
+        this.snackbar.notifyError('Lỗi khi tạo file PDF.');
+    });
+  }
 }
