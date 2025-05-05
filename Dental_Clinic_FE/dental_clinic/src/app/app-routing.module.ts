@@ -5,6 +5,7 @@ import { NotFoundComponent } from './Modules/error/not-found/not-found.component
 import { AuthAdminGuard } from './core/guards/auth_admin.guard';
 import { AuthRedirectGuard } from './core/guards/auth_redirect.guard';
 import { ServerError500Component } from './Modules/error/server-error-500/server-error-500.component';
+import { AuthDentistGuard } from './core/guards/auth_dentist.guard';
 
 const default_url_role = ROUTES.USER.path;
 
@@ -19,11 +20,11 @@ const routes: Routes = [
     loadChildren: () => import('./Modules/admin/admin.module').then(m => m.AdminModule),
     canActivate: [AuthAdminGuard]
   },
-  // {
-  //   path: ROUTES.STAFF.path,
-  //   loadChildren: () => import('./Modules/staff/staff.module').then(m => m.StaffModule),
-  //   canActivate: [AuthStaffGuard]
-  // },
+  {
+    path: ROUTES.DENTIST.path,
+    loadChildren: () => import('./Modules/dentist/dentist.module').then(m => m.DentistModule),
+    canActivate: [AuthDentistGuard]
+  },
   // {
   //   path: ROUTES.CHEF.path,
   //   loadChildren: () => import('./Modules/chef/chef.module').then(m => m.ChefModule),

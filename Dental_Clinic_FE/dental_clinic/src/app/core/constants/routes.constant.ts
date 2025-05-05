@@ -364,63 +364,429 @@ export const ROUTES = {
         }
     },
     RECEPTIONIST: {
-        path: 'staff',
-        fullPath: '/staff',
+        path: 'receptionist',
+        fullPath: '/receptionist',
         children: {
-            TABLE: {
-                path: 'tables',
-                fullPath: '/staff/tables',
+            SCHEDULE: {
+                path: 'schedule',
+                fullPath: '/receptionist/schedule',
                 children: {
-                    LIST: {
-                        path: 'list',
-                        fullPath: '/staff/tables/list'
+                    WORK: {
+                        path: 'work',
+                        fullPath: '/receptionist/schedule/work',
                     },
-                    ORDER: {
-                        path: ':id/table-order',
-                        fullPath: (id: string) =>
-                            `/staff/tables/${id}/table-order`,
-                    },
-                    BILL: {
-                        path: ':id/table-bill',
-                        fullPath: (id: string) =>
-                            `/staff/tables/${id}/table-bill`
+                    APPOINTMENT: {
+                        path: 'appointment',
+                        fullPath: '/receptionist/schedule/appointment',
+                        children: {
+                            LIST: {
+                                path: 'list',
+                                fullPath: '/receptionist/schedule/appointment/list'
+                            },
+                            CREATE: {
+                                path: 'create',
+                                fullPath: '/receptionist/schedule/appointment/create'
+                            },
+                            DETAIL: {
+                                path: ':id',
+                                fullPath: (id: string) => `/receptionist/schedule/appointment/${id}`
+                            },
+                            EDIT: {
+                                path: ':id/edit',
+                                fullPath: (id: string) => `/receptionist/schedule/appointment/${id}/edit`
+                            }
+                        }
                     }
                 }
             },
-            MENU: {
-                path: 'menu',
-                fullPath: '/staff/menu',
+            PRESCRIPTION: {
+                path: 'prescription',
+                fullPath: '/receptionist/prescription',
                 children: {
                     LIST: {
                         path: 'list',
-                        fullPath: 'staff/menu/list'
+                        fullPath: '/receptionist/prescription/list'
+                    },
+                    DETAIL: {
+                        path: ':id',
+                        fullPath: (id: string) => `/receptionist/prescription/${id}`
+                    },
+                }
+            },
+            PATIENT: {
+                path: 'patient',
+                fullPath: '/receptionist/patient',
+                children: {
+                    LIST: {
+                        path: 'list',
+                        fullPath: '/receptionist/patient/list'
+                    },
+                    CREATE: {
+                        path: 'create',
+                        fullPath: '/receptionist/patient/create'
+                    },
+                    DETAIL: {
+                        path: ':id',
+                        fullPath: (id: string) => `/receptionist/patient/${id}`
+                    },
+                    EDIT: {
+                        path: ':id/edit',
+                        fullPath: (id: string) => `/receptionist/patient/${id}/edit`
+                    }
+                }
+            },
+            EMPLOYEE: {
+                path: 'employee',
+                fullPath: '/receptionist/employee',
+                children: {
+                    DENTIST: {
+                        path: 'dentist',
+                        fullPath: '/receptionist/employee/dentist',
+                        children: {
+                            LIST: {
+                                path: 'list',
+                                fullPath: '/receptionist/employee/dentist/list'
+                            },
+                            CREATE: {
+                                path: 'create',
+                                fullPath: '/receptionist/employee/dentist/create'
+                            },
+                            DETAIL: {
+                                path: ':id',
+                                fullPath: (id: string) => `/receptionist/employee/dentist/${id}`
+                            },
+                            EDIT: {
+                                path: ':id/edit',
+                                fullPath: (id: string) => `/receptionist/employee/dentist/${id}/edit`
+                            }
+                        }
+                    },
+                    ASSISTANT: {
+                        path: 'assistant',
+                        fullPath: '/receptionist/employee/assistant',
+                        children: {
+                            LIST: {
+                                path: 'list',
+                                fullPath: '/receptionist/employee/assistant/list'
+                            },
+                            CREATE: {
+                                path: 'create',
+                                fullPath: '/receptionist/employee/assistant/create'
+                            },
+                            DETAIL: {
+                                path: ':id',
+                                fullPath: (id: string) => `/receptionist/employee/assistant/${id}`
+                            },
+                            EDIT: {
+                                path: ':id/edit',
+                                fullPath: (id: string) => `/receptionist/employee/assistant/${id}/edit`
+                            }
+                        }
+                    },
+                }
+            },
+            PAYMENT: {
+                path: 'bill',
+                fullPath: '/receptionist/bill',
+                children: {
+                    LIST: {
+                        path: 'list',
+                        fullPath: '/receptionist/bill/list'
+                    },
+                    CREATE: {
+                        path: 'create',
+                        fullPath: '/receptionist/bill/create'
+                    },
+                    DETAIL: {
+                        path: ':id',
+                        fullPath: (id: string) => `/receptionist/bill/${id}`
+                    },
+                    EDIT: {
+                        path: ':id/edit',
+                        fullPath: (id: string) => `/receptionist/bill/${id}/edit`
+                    }
+                }
+            },
+            FACULTY: {
+                path: 'faculty',
+                fullPath: '/receptionist/faculty',
+                children: {
+                    LIST: {
+                        path: 'list',
+                        fullPath: '/receptionist/faculty/list'
+                    },
+                    CREATE: {
+                        path: 'create',
+                        fullPath: '/receptionist/faculty/create'
+                    },
+                    DETAIL: {
+                        path: ':id',
+                        fullPath: (id: string) => `/receptionist/faculty/${id}`
+                    },
+                    EDIT: {
+                        path: ':id/edit',
+                        fullPath: (id: string) => `/receptionist/faculty/${id}/edit`
+                    }
+                }
+            },
+            MATERIAL: {
+                path: 'material',
+                fullPath: '/receptionist/material',
+                children: {
+                    CONSUMABLE: {
+                        path: 'consumable',
+                        fullPath: '/receptionist/material/consumable',
+                        children: {
+                            LIST: {
+                                path: 'list',
+                                fullPath: '/receptionist/material/consumable/list'
+                            },
+                            DETAIL: {
+                                path: ':id',
+                                fullPath: (id: string) => `/receptionist/material/consumable/${id}`
+                            },
+                        }
+                    },
+                    FIXED: {
+                        path: 'fixed',
+                        fullPath: '/receptionist/material/fixed',
+                        children: {
+                            LIST: {
+                                path: 'list',
+                                fullPath: '/receptionist/material/fixed/list'
+                            },
+                            DETAIL: {
+                                path: ':id',
+                                fullPath: (id: string) => `/receptionist/material/fixed/${id}`
+                            },
+                        }
+                    },
+                    INGREDIENT: {
+                        path: 'ingredient',
+                        fullPath: '/receptionist/material/ingredient',
+                        children: {
+                            LIST: {
+                                path: 'list',
+                                fullPath: '/receptionist/material/ingredient/list'
+                            },
+                            DETAIL: {
+                                path: ':id',
+                                fullPath: (id: string) => `/receptionist/material/ingredient/${id}`
+                            },
+                        }
+                    },
+                    CATEGORY: {
+                        path: 'category',
+                        fullPath: '/receptionist/material/category',
+                        children: {
+                            LIST: {
+                                path: 'list',
+                                fullPath: '/receptionist/material/category/list'
+                            },
+                            DETAIL: {
+                                path: ':id',
+                                fullPath: (id: string) => `/receptionist/material/category/${id}`
+                            },
+                        }
+                    }
+                }
+            },
+            SERVICE: {
+                path: 'service',
+                fullPath: '/receptionist/service',
+                children: {
+                    DENTAL: {
+                        path: 'dental',
+                        fullPath: '/receptionist/service/dental',
+                        children: {
+                            LIST: {
+                                path: 'list',
+                                fullPath: '/receptionist/service/dental/list'
+                            },
+                            DETAIL: {
+                                path: ':id',
+                                fullPath: (id: string) => `/receptionist/service/dental/${id}`
+                            },
+                        }
+                    },
+                    CATEGORY: {
+                        path: 'category',
+                        fullPath: '/receptionist/service/category',
+                        children: {
+                            LIST: {
+                                path: 'list',
+                                fullPath: '/receptionist/service/category/list'
+                            },
+                            DETAIL: {
+                                path: ':id',
+                                fullPath: (id: string) => `/receptionist/service/category/${id}`
+                            },
+                        }
                     }
                 }
             },
         }
     },
     DENTIST: {
-        path: 'chef',
-        fullPath: '/chef',
+        path: 'dentist',
+        fullPath: '/dentist',
         children: {
-            DISH: {
-                path: 'dishes',
-                fullPath: '/chef/dishes'
+            SCHEDULE: {
+                path: 'schedule',
+                fullPath: '/dentist/schedule',
+                children: {
+                    WORK: {
+                        path: 'work',
+                        fullPath: '/dentist/schedule/work',
+                    },
+                    APPOINTMENT: {
+                        path: 'appointment',
+                        fullPath: '/dentist/schedule/appointment',
+                        children: {
+                            LIST: {
+                                path: 'list',
+                                fullPath: '/dentist/schedule/appointment/list'
+                            },
+                            DETAIL: {
+                                path: ':id',
+                                fullPath: (id: string) => `/dentist/schedule/appointment/${id}`
+                            },
+                        }
+                    }
+                }
             },
-            ORDER: {
-                path: 'orders',
-                fullPath: '/chef/orders',
+            PRESCRIPTION: {
+                path: 'prescription',
+                fullPath: '/dentist/prescription',
                 children: {
                     LIST: {
                         path: 'list',
-                        fullPath: 'chef/orders/list'
+                        fullPath: '/dentist/prescription/list'
+                    },
+                    CREATE: {
+                        path: 'create',
+                        fullPath: '/dentist/prescription/create'
                     },
                     DETAIL: {
                         path: ':id',
-                        fullPath: (id: string) => `chef/orders/${id}`
+                        fullPath: (id: string) => `/dentist/prescription/${id}`
+                    },
+                    EDIT: {
+                        path: ':id/edit',
+                        fullPath: (id: string) => `/dentist/prescription/${id}/edit`
                     }
                 }
-            }
+            },
+            PATIENT: {
+                path: 'patient',
+                fullPath: '/dentist/patient',
+                children: {
+                    LIST: {
+                        path: 'list',
+                        fullPath: '/dentist/patient/list'
+                    },
+                    DETAIL: {
+                        path: ':id',
+                        fullPath: (id: string) => `/dentist/patient/${id}`
+                    },
+                }
+            },
+            MATERIAL: {
+                path: 'material',
+                fullPath: '/dentist/material',
+                children: {
+                    CONSUMABLE: {
+                        path: 'consumable',
+                        fullPath: '/dentist/material/consumable',
+                        children: {
+                            LIST: {
+                                path: 'list',
+                                fullPath: '/dentist/material/consumable/list'
+                            },
+                            DETAIL: {
+                                path: ':id',
+                                fullPath: (id: string) => `/dentist/material/consumable/${id}`
+                            },
+                        }
+                    },
+                    FIXED: {
+                        path: 'fixed',
+                        fullPath: '/dentist/material/fixed',
+                        children: {
+                            LIST: {
+                                path: 'list',
+                                fullPath: '/dentist/material/fixed/list'
+                            },
+                            DETAIL: {
+                                path: ':id',
+                                fullPath: (id: string) => `/dentist/material/fixed/${id}`
+                            },
+                        }
+                    },
+                    INGREDIENT: {
+                        path: 'ingredient',
+                        fullPath: '/dentist/material/ingredient',
+                        children: {
+                            LIST: {
+                                path: 'list',
+                                fullPath: '/dentist/material/ingredient/list'
+                            },
+                            DETAIL: {
+                                path: ':id',
+                                fullPath: (id: string) => `/dentist/material/ingredient/${id}`
+                            },
+                        }
+                    },
+                    CATEGORY: {
+                        path: 'category',
+                        fullPath: '/dentist/material/category',
+                        children: {
+                            LIST: {
+                                path: 'list',
+                                fullPath: '/dentist/material/category/list'
+                            },
+                            DETAIL: {
+                                path: ':id',
+                                fullPath: (id: string) => `/dentist/material/category/${id}`
+                            },
+                        }
+                    }
+                }
+            },
+            SERVICE: {
+                path: 'service',
+                fullPath: '/dentist/service',
+                children: {
+                    DENTAL: {
+                        path: 'dental',
+                        fullPath: '/dentist/service/dental',
+                        children: {
+                            LIST: {
+                                path: 'list',
+                                fullPath: '/dentist/service/dental/list'
+                            },
+                            DETAIL: {
+                                path: ':id',
+                                fullPath: (id: string) => `/dentist/service/dental/${id}`
+                            },
+                        }
+                    },
+                    CATEGORY: {
+                        path: 'category',
+                        fullPath: '/dentist/service/category',
+                        children: {
+                            LIST: {
+                                path: 'list',
+                                fullPath: '/dentist/service/category/list'
+                            },
+                            DETAIL: {
+                                path: ':id',
+                                fullPath: (id: string) => `/dentist/service/category/${id}`
+                            },
+                        }
+                    }
+                }
+            },
         }
-    }
+    },
 }

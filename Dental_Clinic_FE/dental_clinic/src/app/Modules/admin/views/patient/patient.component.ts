@@ -62,7 +62,7 @@ export class PatientComponent implements OnInit, OnDestroy {
   // --- Table Columns ---
   readonly columns: (IColumn | string)[] = [
     { key: 'id', label: 'ID' },
-    { key: 'name', label: 'Tên khoa' },
+    { key: 'name', label: 'Tên bệnh nhân' },
     { key: 'address', label: 'Địa chỉ' },
     { key: 'email', label: 'Email' },
     { key: 'phone', label: 'SĐT' },

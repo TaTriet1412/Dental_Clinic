@@ -52,7 +52,7 @@ export interface LocalEventDialogResult {
   styleUrl: './work-schedule.component.scss'
 })
 export class WorkScheduleComponent implements OnInit, AfterViewInit, OnDestroy {
-  @ViewChild('fullcalendar') calendarComponent!: FullCalendarComponent;
+  @ViewChild('calendar') calendarComponent!: FullCalendarComponent;
 
   roleList = [
     { id: 2, name: 'RECEPTIONIST', displayName: 'Lễ tân' },
@@ -85,7 +85,14 @@ export class WorkScheduleComponent implements OnInit, AfterViewInit, OnDestroy {
     datesSet: this.handleDatesSet.bind(this),
     select: this.handleDateSelect.bind(this),
     eventClick: this.handleEventClick.bind(this),
-    eventsSet: this.handleEvents.bind(this)
+    eventsSet: this.handleEvents.bind(this),
+    eventTimeFormat: { // Định dạng này sẽ hiển thị HH:mm - HH:mm (ví dụ: 08:00 - 17:00)
+      hour: '2-digit',
+      minute: '2-digit',
+      meridiem: false, // Sử dụng định dạng 24 giờ
+      hour12: false    // Đảm bảo là 24 giờ
+    },
+    displayEventEnd: true // Đảm bảo rằng thời gian kết thúc được hiển thị (thường là mặc định)
   };
 
   currentEvents: EventApi[] = [];
@@ -291,45 +298,85 @@ export class WorkScheduleComponent implements OnInit, AfterViewInit, OnDestroy {
     this.selectedRole = selectedRole; // Cập nhật kiểu nhân sự
     this.enteredCode = ''; // Reset mã nhân sự
     this.selectedEmployee = ''; // Reset tên nhân sự
+    this.calendarVisible = false; // Ẩn lịch làm việc khi thay đổi nhân sự
   }
 
   onEmployeeSubmit(form: any): void {
     this.validated = true;
 
     if (form.valid && this.enteredCode && this.selectedEmployee && this.selectedRole) {
-      this.calendarVisible = true; // Hiển thị lịch làm việc nếu hợp lệ
+      if (!this.calendarVisible) {
+        this.calendarVisible = true;
+      }
 
-      // Gọi API để lấy lịch làm việc của nhân sự mới
-      const startTime = this.removeUTCOffset(new Date().toISOString()); // Ngày bắt đầu (hiện tại)
-      const endTime = this.removeUTCOffset(new Date(new Date().setMonth(new Date().getMonth() + 1)).toISOString()); // Ngày kết thúc (1 tháng sau)
+      // 2. Sử dụng setTimeout để đảm bảo calendarComponent đã sẵn sàng
+      setTimeout(() => {
+        // *** Kiểm tra lại calendarComponent bên trong setTimeout ***
+        if (this.calendarComponent) {
+          const calendarApi = this.calendarComponent.getApi(); // Bây giờ calendarApi chắc chắn có
+          const currentView = calendarApi.view;
 
-      const eventReq: EventRequest = {
-        startTime: startTime,
-        endTime: endTime,
-        userId: Number.parseInt(this.enteredCode)
-      };
+          const gridStartDate = currentView.activeStart; // Thứ 2 đầu lưới
+          const gridEndDateExclusive = currentView.activeEnd; // Sau Chủ Nhật cuối lưới
+          const gridEndDateInclusive = new Date(gridEndDateExclusive.getTime() - 1); // Chủ Nhật cuối lưới
 
-      this.workScheduleService.getEventsByRangeTime(eventReq).subscribe({
-        next: (response: any) => {
-          // Cập nhật sự kiện trong calendarOptions
-          this.calendarOptions.events = response.result.map((event: any) => ({
-            id: event.id,
-            start: event.startTime,
-            end: event.endTime,
-          }));
+          // Gọi handleDatesSet để tải dữ liệu cho view hiện tại
+          // Truyền đối tượng dateInfo giả lập nếu cần, hoặc để handleDatesSet tự lấy view
 
-          this.snackBar.notifySuccess('Tìm kiếm thành công!');
-        },
-        error: (error) => {
-          this.snackBar.notifyError('Lỗi khi tải lịch làm việc!');
-          console.error('Error fetching events:', error);
+
+          // Gọi API để lấy lịch làm việc của nhân sự mới
+          const startTime = this.formatDateForAPI(gridStartDate); // Định dạng YYYY-MM-DD
+          const endTime = this.formatDateForAPI(gridEndDateInclusive);  // Ngày kết thúc (1 tháng sau)
+
+          this.snackBar.notifySuccess('Đang tải lịch làm việc...');
+
+          const eventReq: EventRequest = {
+            startTime: startTime + "T00:00:00", // Thêm giờ nếu cần
+            endTime: endTime + "T23:59:59", // Thêm giờ nếu cần
+            userId: Number.parseInt(this.enteredCode)
+          };
+
+          this.workScheduleService.getEventsByRangeTime(eventReq).subscribe({
+            next: (response: any) => {
+              // Cập nhật sự kiện trong calendarOptions
+              calendarApi.removeAllEvents(); // Xóa sự kiện cũ
+              const newEvents = response.result.map((event: any) => ({
+                id: event.id,
+                start: event.startTime,
+                end: event.endTime,
+                // Thêm các thuộc tính khác nếu cần (title, color, etc.)
+              }));
+              calendarApi.addEventSource(newEvents);
+
+              this.snackBar.notifySuccess('Tìm kiếm thành công!');
+            },
+            error: (error) => {
+              this.snackBar.notifyError(error.error.message);
+            }
+          });
+        } else {
+          // Trường hợp cực kỳ hiếm: calendar vẫn chưa sẵn sàng sau setTimeout(0)
+          console.error('Lỗi: Calendar component không sẵn sàng sau khi đợi!');
+          this.snackBar.notifyError('Lỗi hiển thị lịch, vui lòng thử lại.');
+          this.calendarVisible = false; // Ẩn lại nếu lỗi
         }
-      });
+      }, 0);
+
+
+
     } else {
       this.calendarVisible = false; // Ẩn lịch làm việc nếu không hợp lệ
       this.snackBar.notifyError('Vui lòng chọn đầy đủ thông tin!');
     }
   }
+
+  formatDateForAPI(date: Date): string {
+    const year = date.getFullYear();
+    const month = (date.getMonth() + 1).toString().padStart(2, '0');
+    const day = date.getDate().toString().padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  }
+
 
   onEmployeeChange(event: Event): void {
     const selectedName = (event.target as HTMLSelectElement).value;
@@ -341,6 +388,7 @@ export class WorkScheduleComponent implements OnInit, AfterViewInit, OnDestroy {
     } else {
       this.enteredCode = ''; // Reset mã nhân sự nếu không khớp
     }
+    this.calendarVisible = false; // Ẩn lịch làm việc khi thay đổi nhân sự
   }
 
   onCodeInput(event: Event): void {
@@ -353,5 +401,6 @@ export class WorkScheduleComponent implements OnInit, AfterViewInit, OnDestroy {
     } else {
       this.selectedEmployee = ''; // Reset tên nhân sự nếu không khớp
     }
+    this.calendarVisible = false; // Ẩn lịch làm việc khi thay đổi nhân sự
   }
 }

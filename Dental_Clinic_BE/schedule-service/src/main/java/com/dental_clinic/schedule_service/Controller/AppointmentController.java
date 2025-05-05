@@ -111,6 +111,16 @@ public class AppointmentController {
                 .build();
     }
 
+    @GetMapping("/dentist/{denId}")
+    public ApiResponse<Object> getAppointmentsByDenId(@PathVariable Long denId) {
+        List<Appointment> appointments = appointmentService.getAppointmentsByDenId(denId);
+        return ApiResponse.builder()
+                .result(appointments)
+                .apiCode(200)
+                .message("Lấy lịch hẹn thành công")
+                .build();
+    }
+
     @GetMapping
     public ApiResponse<Object> getAppointments() {
         List<Appointment> appointments = appointmentService.getAllAppointments();

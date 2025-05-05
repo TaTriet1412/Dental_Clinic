@@ -64,7 +64,7 @@
 
 <mat-dialog-actions align="end">
   <button mat-stroked-button (click)="onCancel()">Hủy bỏ</button>
-  <button mat-raised-button color="warn" *ngIf="mode === 'edit' && originalEventData?.id" (click)="onDelete()">
+  <button mat-raised-button [disabled]="eventForm.invalid" color="warn" *ngIf="mode === 'edit' && originalEventData?.id" (click)="onDelete()">
     <mat-icon>delete</mat-icon> Xóa
   </button>
   <!-- Nút Lưu chỉ bật khi form hợp lệ -->

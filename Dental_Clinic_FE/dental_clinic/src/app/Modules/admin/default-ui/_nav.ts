@@ -14,6 +14,27 @@ function prefixUrl(url: string): string {
 export const navItems: INavData[] = [
   {
     title: true,
+    name: 'Quản lý lịch trình'
+  },
+  {
+    name: 'Kế hoạch thời gian',
+    url: ROUTES.ADMIN.children.SCHEDULE.fullPath,
+    iconComponent: { name: 'cib-clockify' },
+    children: [
+      {
+        name: 'Lịch làm việc',
+        url: ROUTES.ADMIN.children.SCHEDULE.children.WORK.fullPath,
+        icon: 'nav-icon-bullet'
+      },
+      {
+        name: 'Lịch hẹn',
+        url: ROUTES.ADMIN.children.SCHEDULE.children.APPOINTMENT.fullPath,
+        icon: 'nav-icon-bullet'
+      }
+    ]
+  },
+  {
+    title: true,
     name: 'Quản lý nhân sự'
   },
   {
@@ -126,25 +147,5 @@ export const navItems: INavData[] = [
     url: ROUTES.ADMIN.children.PATIENT.children.LIST.fullPath,
     iconComponent: { name: 'cil-address-book' },
   },
-  {
-    title: true,
-    name: 'Quản lý lịch trình'
-  },
-  {
-    name: 'Kế hoạch thời gian',
-    url: ROUTES.ADMIN.children.SCHEDULE.fullPath,
-    iconComponent: { name: 'cib-clockify' },
-    children: [
-      {
-        name: 'Lịch làm việc',
-        url: ROUTES.ADMIN.children.SCHEDULE.children.WORK.fullPath,
-        icon: 'nav-icon-bullet'
-      },
-      {
-        name: 'Lịch hẹn',
-        url: ROUTES.ADMIN.children.SCHEDULE.children.APPOINTMENT.fullPath,
-        icon: 'nav-icon-bullet'
-      }
-    ]
-  }
+  
 ]

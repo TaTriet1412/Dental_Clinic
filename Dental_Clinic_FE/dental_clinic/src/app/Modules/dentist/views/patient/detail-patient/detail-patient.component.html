@@ -1,0 +1,68 @@
+<div class="p-20">
+    <h1>Chi tiết hồ sơ bệnh nhân</h1>
+  
+    <c-row ngPreserveWhitespaces>
+      <c-col xs="12">
+        <c-card class="mb-4">
+          <c-card-header
+            class="d-flex justify-content-between align-items-center"
+          >
+            <strong>Chi tiết hồ sơ bệnh nhân</strong>
+          </c-card-header>
+          <c-card-body>
+              <c-row>
+                  <c-col md="4">
+                      <img
+                            cImg
+                            rounded
+                            class="mb-2"
+                            [src]="changeImageServer(imgUrl)"
+                            width="400"
+                            alt="Ảnh đại diện"
+                          />
+                      </c-col>
+                    <c-col md="8">
+                      <table class="table table-bordered" [striped]="true" cTable>
+                        <tbody>
+                          <tr>
+                            <th style="width: 30%">ID:</th>
+                            <td>{{ patient.id }}</td>
+                          </tr>
+                          <tr>
+                            <th>Tên:</th>
+                            <td>{{ patient.name }}</td>
+                          </tr>
+                          <tr>
+                            <th>Email:</th>
+                            <td>{{ patient.email }}</td>
+                          </tr>
+                          <tr>
+                            <th>Địa chỉ:</th>
+                            <td>{{ patient.address }}</td>
+                          </tr>
+                          <tr>
+                            <th>Số điện thoại:</th>
+                            <td>{{ patient.phone }}</td>
+                          </tr>
+                          <tr>
+                            <th>Ngày sinh:</th>
+                            <td>{{ patient.birthday | date: 'dd/MM/yyyy' }}</td>
+                          </tr>
+                          <tr>
+                            <th>Ngày tạo:</th>
+                            <td>{{ patient.created_at | date: 'dd/MM/yyyy HH:mm:ss' }}</td>
+                          </tr>
+                          <tr>
+                            <th>Giới tính:</th>
+                            <td>{{ patient.gender ? 'Nam' : 'Nữ' }}</td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </c-col>
+              </c-row>
+          </c-card-body>
+        </c-card>
+      </c-col>
+    </c-row>
+  </div>
+  

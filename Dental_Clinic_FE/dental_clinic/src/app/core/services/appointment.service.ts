@@ -27,6 +27,10 @@ export class AppointmentService {
         return this.http.get<any>(`${this.apiUrl}/${appointmentId}`);
     }
 
+    getAppointmentsByDentistId(dentistId: number): Observable<any> {
+        return this.http.get<any>(`${this.apiUrl}/dentist/${dentistId}`);
+    }
+
     updateStatusAppointment(appointmentId: string, status: string, note: string): Observable<any> {
         const body: UpdateStatusRequest = {
             appointment_id: appointmentId,

@@ -1,0 +1,33 @@
+.full-width {
+    width: 100%;
+  }
+  
+  .checkbox-margin {
+      display: block; // Để chiếm cả dòng và có margin dưới
+      margin-bottom: 15px;
+  }
+  
+  .event-form {
+      mat-form-field {
+          margin-bottom: 10px; // Khoảng cách giữa các trường
+      }
+  }
+  
+  mat-dialog-content {
+      padding-top: 20px;
+      padding-bottom: 10px;
+      max-height: 70vh;   // Giới hạn chiều cao tối đa
+      overflow-y: auto;   // Thêm thanh cuộn nếu nội dung dài
+  }
+  
+  mat-dialog-actions {
+      padding: 16px 24px;
+      border-top: 1px solid rgba(0,0,0,0.12);
+      margin-top: 10px;
+  }
+  
+  // Căn icon trong button
+  button mat-icon {
+      vertical-align: middle;
+      margin-right: 5px;
+  }

@@ -1,0 +1,259 @@
+<div class="p-20">
+    <h1>Chỉnh sửa toa thuốc</h1>
+  
+    <c-row ngPreserveWhitespaces>
+      <c-col xs="12">
+        <c-card class="mb-40">
+          <c-card-header
+            class="d-flex justify-content-between align-items-center"
+          >
+            <strong>Chỉnh sửa toa thuốc</strong>
+          </c-card-header>
+          <c-card-body>
+            <form
+              #tooltipForm="ngForm"
+              (ngSubmit)="onSubmit(tooltipForm)"
+              [validated]="validated"
+              cForm
+              class="needs-validation"
+              novalidate
+            >
+              <!-- Row 1: Mã bệnh nhân và Tên bệnh nhân -->
+              <c-row class="g-4 mb-40">
+                <c-col [md]="6" class="position-relative">
+                  <label cLabel for="validationTooltipPatId">Mã bệnh nhân</label>
+                  <input
+                    cFormControl
+                    id="validationTooltipPatId"
+                    name="patId"
+                    type="text"
+                    required
+                    [(ngModel)]="patId"
+                    #patIdModel="ngModel"
+                    (input)="onPatIdInput($event)"
+                    [class.is-invalid]="validated && patIdModel.invalid"
+                    placeholder="Nhập mã bệnh nhân"
+                  />
+                  <c-form-feedback
+                    *ngIf="validated && patIdModel.invalid"
+                    [valid]="false"
+                    tooltip
+                  >
+                    Vui lòng nhập mã bệnh nhân.
+                  </c-form-feedback>
+                </c-col>
+  
+                <c-col [md]="6" class="position-relative">
+                  <label cLabel for="validationTooltipPatient"
+                    >Tên bệnh nhân</label
+                  >
+                  <select
+                    cSelect
+                    cFormControl
+                    id="validationTooltipPatient"
+                    name="patient"
+                    required
+                    [(ngModel)]="selectedPatient"
+                    #patientModel="ngModel"
+                    (change)="onPatientChange($event)"
+                    [class.is-invalid]="validated && patientModel.invalid"
+                  >
+                    <option value="" disabled selected>Chọn bệnh nhân</option>
+                    <option
+                      *ngFor="let patient of patientList"
+                      [value]="patient.name"
+                    >
+                      {{ patient.name }}
+                    </option>
+                  </select>
+                  <c-form-feedback
+                    *ngIf="validated && patientModel.invalid"
+                    [valid]="false"
+                    tooltip
+                  >
+                    Vui lòng chọn bệnh nhân.
+                  </c-form-feedback>
+                </c-col>
+              </c-row>
+  
+              <!-- Row 2: Mã bác sĩ và Tên bác sĩ -->
+              <c-row class="g-4 mb-40">
+                <c-col [md]="6" class="position-relative">
+                  <label cLabel for="validationTooltipDenId">Mã bác sĩ</label>
+                  <input
+                    cFormControl
+                    id="validationTooltipDenId"
+                    name="denId"
+                    type="text"
+                    required
+                    [(ngModel)]="denId"
+                    #denIdModel="ngModel"
+                    (input)="onDenIdInput($event)"
+                    [class.is-invalid]="validated && denIdModel.invalid"
+                    placeholder="Nhập mã bác sĩ"
+                  />
+                  <c-form-feedback
+                    *ngIf="validated && denIdModel.invalid"
+                    [valid]="false"
+                    tooltip
+                  >
+                    Vui lòng nhập mã bác sĩ.
+                  </c-form-feedback>
+                </c-col>
+  
+                <c-col [md]="6" class="position-relative">
+                  <label cLabel for="validationTooltipDentist">Tên bác sĩ</label>
+                  <select
+                    cSelect
+                    cFormControl
+                    id="validationTooltipDentist"
+                    name="dentist"
+                    required
+                    [(ngModel)]="selectedDentist"
+                    #dentistModel="ngModel"
+                    (change)="onDentistChange($event)"
+                    [class.is-invalid]="validated && dentistModel.invalid"
+                  >
+                    <option value="" disabled selected>Chọn bác sĩ</option>
+                    <option
+                      *ngFor="let dentist of dentistList"
+                      [value]="dentist.name"
+                    >
+                      {{ dentist.name }}
+                    </option>
+                  </select>
+                  <c-form-feedback
+                    *ngIf="validated && dentistModel.invalid"
+                    [valid]="false"
+                    tooltip
+                  >
+                    Vui lòng chọn bác sĩ.
+                  </c-form-feedback>
+                </c-col>
+              </c-row>
+  
+              <!-- Row 3: Ghi chú -->
+              <c-row class="g-4 mb-40">
+                <c-col [md]="12" class="position-relative">
+                  <label cLabel for="note">Ghi chú</label>
+                  <textarea
+                    cFormControl
+                    id="note"
+                    name="note"
+                    [(ngModel)]="note"
+                    #noteModel="ngModel"
+                    placeholder="Nhập ghi chú (không bắt buộc)"
+                    rows="3"
+                  ></textarea>
+                  <!-- Ghi chú thường không bắt buộc, xóa required và feedback nếu không cần -->
+                </c-col>
+              </c-row>
+  
+              <!-- Section: Chọn thuốc -->
+              <c-row class="g-4 mb-20">
+                <c-col>
+                  <h5>Danh sách thuốc</h5> <!-- Đổi thành h5 -->
+                </c-col>
+                <c-col class="text-end">
+                   <button type="button" cButton color="info" size="sm" (click)="addMedicineRow()" [disabled]="getAvailableMedicinesForAdding().length === 0 || disabledBtnSubmit">
+                     <i class="fa-solid fa-plus me-1"></i> Thêm thuốc
+                   </button>
+                </c-col>
+              </c-row>
+  
+              <!-- Dynamic Medicine Rows -->
+              <div *ngIf="selectedMedicines.length > 0" class="mb-20">
+                <c-row *ngFor="let med of selectedMedicines; let i = index" class="g-3 mb-3 align-items-end medicine-row">
+                  <!-- Medicine Selection Dropdown -->
+                  <c-col [md]="6" class="position-relative">
+                    <label cLabel [for]="'medicineSelect' + i">Thuốc</label>
+                    <select
+                      cSelect
+                      cFormControl
+                      [id]="'medicineSelect' + i"
+                      [name]="'medicineId' + i"
+                      required 
+                      (ngModelChange)="cdf.markForCheck()"
+                      [(ngModel)]="med.id"
+                      #medicineIdModel="ngModel"
+                      [class.is-invalid]="validated && med.id === null"
+                    >
+                      <!-- --- Sử dụng [ngValue]="null" cho placeholder --- -->
+                      <option [ngValue]="null" disabled>-- Chọn thuốc --</option>
+  
+                      <!-- Option for the currently selected medicine in THIS row (if valid) -->
+                      <!-- --- Kiểm tra med.id !== null --- -->
+                      <!-- --- Sử dụng [ngValue] cho id là number --- -->
+                      <option *ngIf="med.id !== null" [ngValue]="med.id">{{ getMedicineName(med.id) }}</option>
+  
+                      <!-- Options for other available medicines -->
+                      <!-- --- Sử dụng [ngValue] cho id là number --- -->
+                      <option *ngFor="let availableMed of getAvailableMedicines(i)" [ngValue]="availableMed.id">
+                        {{ availableMed.name }}
+                      </option>
+                    </select>
+                     <c-form-feedback
+                      *ngIf="validated && med.id === null"
+                      [valid]="false"
+                      tooltip>
+                      Vui lòng chọn thuốc.
+                    </c-form-feedback>
+                  </c-col>
+  
+                  <!-- Quantity Input -->
+                  <c-col [md]="4" class="position-relative">
+                    <label cLabel [for]="'quantity' + i">Số lượng</label>
+                    <input
+                      cFormControl
+                      [id]="'quantity' + i"
+                      [name]="'quantity' + i"
+                      type="number"
+                      min="1"
+                      required
+                      [(ngModel)]="med.quantity"
+                      #quantityModel="ngModel"
+                      [class.is-invalid]="validated && quantityModel.invalid"
+                      placeholder="Số lượng"
+                    />
+                     <c-form-feedback
+                      *ngIf="validated && quantityModel.invalid"
+                      [valid]="false"
+                      tooltip>
+                      Số lượng phải ít nhất là 1.
+                    </c-form-feedback>
+                  </c-col>
+  
+                  <!-- Delete Button -->
+                  <c-col [md]="2" class="text-center">
+                     <button type="button" [disabled]="disabledBtnSubmit" cButton color="danger" variant="outline" size="sm" (click)="removeMedicineRow(i)" title="Xóa thuốc này">
+                       <i class="fa-solid fa-trash"></i>
+                     </button>
+                  </c-col>
+                </c-row>
+              </div>
+               <div *ngIf="validated && selectedMedicines.length === 0" class="alert alert-danger mt-2">
+                  Vui lòng thêm ít nhất một loại thuốc vào toa.
+              </div>
+  
+  
+              <!-- Submit Button -->
+              <c-row class="g-4 mt-40">
+                <c-col class="text-end">
+                  <button
+                    cButton
+                    color="primary"
+                    type="submit"
+                    [disabled]="disabledBtnSubmit"
+                  >
+                    <i class="fas fa-save me-2"></i>
+                    Cập nhật toa thuốc
+                  </button>
+                </c-col>
+              </c-row>
+            </form>
+          </c-card-body>
+        </c-card>
+      </c-col>
+    </c-row>
+  </div>
+  

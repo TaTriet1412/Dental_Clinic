@@ -423,5 +423,12 @@ public class AppointmentService {
         return appointmentRepository.findById(id).orElseThrow(() ->
                 new AppException(ErrorCode.NOT_FOUND,"Không tìm thấy lịch hẹn có id = '" + id + "'"));
     }
+
+    public List<Appointment> getAppointmentsByDenId(Long denId) {
+        return appointmentRepository.findAll().stream()
+                .filter(appointment -> appointment.getDenId().equals(denId))
+                .sorted(Comparator.comparing(Appointment::getCreatedAt).reversed())
+                .toList();
+    }
 }
 

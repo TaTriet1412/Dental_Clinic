@@ -1,0 +1,126 @@
+<div class="p-20">
+  <!-- Check if prescription data is loaded -->
+  <ng-container *ngIf="prescription; else loadingOrError">
+    <h1>Chi tiết toa thuốc #{{ prescription.id }}</h1>
+
+    <c-row ngPreserveWhitespaces>
+      <c-col xs="12">
+        <c-card class="mb-4">
+          <c-card-header class="d-flex justify-content-between align-items-center">
+            <strong>Thông tin chung</strong>
+          </c-card-header>
+          <c-card-body>
+            <c-row>
+              <c-col md="12">
+                <table class="table table-bordered" [striped]="true" cTable>
+                  <tbody>
+                    <tr>
+                      <th style="width: 30%">ID Toa thuốc:</th>
+                      <td>{{ prescription.id }}</td>
+                    </tr>
+                    <tr>
+                      <th>Mã bệnh nhân:</th>
+                      <td>{{ patient?.id || 'N/A' }}</td>
+                    </tr>
+                    <tr>
+                      <th>Tên bệnh nhân:</th>
+                      <td>{{ patient?.name || 'N/A' }}</td>
+                    </tr>
+                    <tr>
+                      <th>Mã nha sĩ:</th>
+                      <td>{{ dentist?.id || 'N/A' }}</td>
+                    </tr>
+                    <tr>
+                      <th>Tên nha sĩ:</th>
+                      <td>{{ dentist?.name || 'N/A' }}</td>
+                    </tr>
+                    <tr>
+                      <th>Ghi chú:</th>
+                      <td>{{ prescription.note || '(Không có)' }}</td>
+                    </tr>
+                    <tr>
+                      <th>Mã hóa đơn:</th>
+                      <!-- Sửa lại cách kiểm tra và hiển thị bill_id -->
+                      <td>{{ prescription.bill_id ? prescription.bill_id : 'Chưa có hóa đơn' }}</td>
+                    </tr>
+                    <tr>
+                      <th>Tổng giá trị toa:</th>
+                      <!-- Sử dụng currency pipe -->
+                      <td class="text-success fw-bold">{{ prescription.total_price | currency:'VND':'symbol':'1.0-0':'vi' }}</td>
+                    </tr>
+                    <tr>
+                      <th>Ngày tạo:</th>
+                      <td>
+                        {{ prescription.created_at | date : "dd/MM/yyyy HH:mm:ss" }}
+                      </td>
+                    </tr>
+                    <tr>
+                      <th>Trạng thái:</th>
+                      <td>
+                        <span [class.text-danger]="prescription.is_deleted" [class.text-success]="!prescription.is_deleted">
+                          {{ !prescription.is_deleted ? "Hoạt động" : "Đã xóa" }}
+                        </span>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </c-col>
+            </c-row>
+          </c-card-body>
+        </c-card>
+      </c-col>
+
+      <!-- Medicine List Card -->
+      <c-col xs="12">
+        <c-card class="mb-4">
+          <c-card-header class="d-flex justify-content-between align-items-center">
+            <strong>Danh sách thuốc trong toa</strong>
+          </c-card-header>
+          <c-card-body>
+            <c-row>
+              <c-col md="12">
+                <!-- Check if there are medicines -->
+                <ng-container *ngIf="detailedMedicines.length > 0; else noMedicines">
+                  <table class="table table-bordered table-hover" [striped]="true" cTable>
+                    <!-- Add Table Header -->
+                    <thead>
+                      <tr>
+                        <th>ID Thuốc</th>
+                        <th>Tên Thuốc</th>
+                        <th class="text-end">Số lượng</th>
+                        <th class="text-end">Đơn giá</th>
+                        <th class="text-end">Thành tiền</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <!-- Loop through detailedMedicines -->
+                      <tr *ngFor="let med of detailedMedicines">
+                        <td>{{ med.med_id }}</td>
+                        <td>{{ med.name }}</td>
+                        <td class="text-end">{{ med.quantity_medicine | number:'1.0-0':'vi' }}</td>
+                        <!-- Use currency pipe for price -->
+                        <td class="text-end">{{ med.price | currency:'VND':'symbol':'1.0-0':'vi' }}</td>
+                        <!-- Use currency pipe for total price -->
+                        <td class="text-end fw-bold">{{ med.total_price | currency:'VND':'symbol':'1.0-0':'vi' }}</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </ng-container>
+                <!-- Template shown if no medicines -->
+                <ng-template #noMedicines>
+                  <div class="alert alert-info">Toa thuốc này không có thuốc nào.</div>
+                </ng-template>
+              </c-col>
+            </c-row>
+          </c-card-body>
+        </c-card>
+      </c-col>
+    </c-row>
+  </ng-container>
+
+  <!-- Template shown while loading or if error occurred -->
+  <ng-template #loadingOrError>
+    <!-- You can add a specific loading indicator or error message here -->
+    <div *ngIf="!prescription" class="alert alert-warning">Đang tải dữ liệu hoặc có lỗi xảy ra...</div>
+  </ng-template>
+</div>

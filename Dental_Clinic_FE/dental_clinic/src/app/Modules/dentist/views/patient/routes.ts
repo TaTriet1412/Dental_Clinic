@@ -1,0 +1,37 @@
+import { Routes } from '@angular/router';
+import { ROUTES } from '../../../../core/constants/routes.constant';
+
+const defaultUrl = ROUTES.DENTIST.children.PATIENT.children.LIST.path;
+
+
+export const routes: Routes = [
+    {
+        path: '',
+        data: {
+            title: 'Patients',
+        },
+        children: [
+            {
+                path: '',
+                redirectTo: defaultUrl,
+                pathMatch: 'full'
+            },
+            {
+                path: ROUTES.DENTIST.children.PATIENT.children.LIST.path,
+                loadComponent: () =>
+                    import('./patient.component')
+                        .then(m => m.PatientComponent),
+                data: {
+                    title: 'List',
+                },
+            },
+            {
+                path: ROUTES.DENTIST.children.PATIENT.children.DETAIL.path,
+                data: {
+                    title: 'Detail',
+                },
+                loadComponent: () => import('./detail-patient/detail-patient.component').then(m => m.DetailPatientComponent),
+            },
+        ],
+    }
+];
