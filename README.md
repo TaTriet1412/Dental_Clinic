@@ -117,28 +117,51 @@ Dental_Clinic_BE/<br>
 
 ## Cấu trúc thư mục của dự án Angular (Frontend)
 
-peaceful_land/<br>
-│<br>
-├── public/<br>
-│   └── assets/                  # Chứa các tài nguyên tĩnh như hình ảnh, CSS, fonts.<br>
-├── src/                         # Thư mục mã nguồn của ứng dụng.<br>
-│   ├── app/                     # Các component đại diện cho giao diện người dùng (UI).<br>
-│   │   ├── core/                # Chứa các dịch vụ, lớp, giao diện chung cho toàn bộ ứng dụng.<br>
-│   │   │   ├── guards/          # Chứa các guard để bảo vệ các route, kiểm soát quyền truy cập.<br>
-│   │   │   ├── interceptors/    # Chứa các interceptor để chặn và xử lý các request/response.<br>
-│   │   │   ├── pipes/           # Các pipes có tác dụng định dạng dữ liệu hiển thị.<br>
-│   │   │   └── services/        # Chứa các dịch vụ cung cấp các chức năng nghiệp vụ.<br>
-│   │   ├── dto/                 # Chứa các lớp đối tượng truyền dữ liệu giữa các thành phần.<br>
-│   │   ├── Modules/             # Chứa vai trò người dùng, nhằm kiểm soát quyền truy cập<br>
-│   │   │   ├── admin/           # Vai trò quản trị viên<br>
-│   │   │   ├── chef/            # Vai trò đầu bếp<br>
-│   │   │   └── staff/           # Vai trò nhân viên phục vụ<br>
-│   │   ├── app.module.ts        # File module chính của ứng dụng, nơi khai báo các component, service, module con, etc.<br>
-│   │   ├── share/               # Chứa các thành phần được chia sẻ giữa nhiều module<br>
-│   │   └── app.component.ts     # Component gốc của ứng dụng<br>
-│   └── index.html               # File HTML gốc của ứng dụng, nơi Angular sẽ render ra giao diện.<br>
-│── angular.json                 # Cấu hình dự án Angular<br>
-└── proxy.conf.json              # Cấu hình CORS để gọi được api từ khác đường localhost<br>
+Dental_Clinic_FE/dental_clinic/  # Thư mục gốc của dự án Angular<br>
+├── src/<br>
+│   ├── app/<br>
+│   │   ├── core/                # Services, Guards, Interceptors, Constants cốt lõi.<br>
+│   │   │   ├── constants/       # (ví dụ: routes.constant.ts)<br>
+│   │   │   ├── guards/          # Guards cho routing.<br>
+│   │   │   ├── interceptors/    # HTTP Interceptors.<br>
+│   │   │   └── services/        # Services dùng chung (AuthService, SnackBarService, etc.).<br>
+│   │   ├── Modules/             # Các feature modules theo vai trò người dùng.<br>
+│   │   │   ├── admin/           # Module cho vai trò Quản trị viên.<br>
+│   │   │   │   ├── default-ui/  # Layout chung cho Admin (header, sidebar, footer).<br>
+│   │   │   │   └── views/       # Các components là view/page của Admin.<br>
+│   │   │   ├── dentist/         # Module cho vai trò Nha sĩ.<br>
+│   │   │   │   ├── default-ui/  # Layout chung cho Dentist.<br>
+│   │   │   │   └── views/       # Các views/pages của Dentist.<br>
+│   │   │   ├── receptionist/    # Module cho vai trò Lễ tân.<br>
+│   │   │   │   ├── default-ui/  # Layout chung cho Receptionist.<br>
+│   │   │   │   └── views/       # Các views/pages của Receptionist.<br>
+│   │   │   └── user/            # Module cho người dùng/khách (ví dụ: login, register, trang chủ công khai).<br>
+│   │   │       └── views/       # Các views/pages của User.<br>
+│   │   ├── share/               # Components, DTOs, Pipes, Directives dùng chung giữa các modules.<br>
+│   │   │   ├── components/      # Các UI components tái sử dụng (ví dụ: custom modal, loader).<br>
+│   │   │   └── dto/             # Data Transfer Objects.<br>
+│   │   │       ├── request/     # DTOs cho request payloads.<br>
+│   │   │       └── response/    # DTOs cho response data.<br>
+│   │   ├── app-routing.module.ts # Module quản lý routing chính của ứng dụng.<br>
+│   │   ├── app.component.html   # Template HTML cho component gốc (app-root).<br>
+│   │   ├── app.component.scss   # Styles SCSS/CSS cho component gốc.<br>
+│   │   ├── app.component.ts     # Logic TypeScript cho component gốc.<br>
+│   │   └── app.module.ts        # Module gốc của ứng dụng Angular.<br>
+│   ├── assets/                  # Chứa các tài nguyên tĩnh như hình ảnh, fonts, etc.<br>
+│   ├── environments/            # Chứa các file cấu hình cho các môi trường khác nhau (development, production).<br>
+│   │   ├── environment.ts<br>
+│   │   └── environment.prod.ts<br>
+│   ├── index.html               # File HTML gốc của ứng dụng, nơi Angular render.<br>
+│   ├── main.ts                  # Điểm khởi đầu (bootstrap) của ứng dụng Angular.<br>
+│   └── styles.scss              # File SCSS/CSS global cho toàn bộ ứng dụng.<br>
+├── .editorconfig                # Cấu hình coding style cho editor.<br>
+├── .gitignore                   # Chỉ định các file/folder được Git bỏ qua.<br>
+├── angular.json                 # Cấu hình workspace và project của Angular CLI.<br>
+├── package.json                 # Liệt kê dependencies và scripts của dự án (npm/yarn).<br>
+├── proxy.conf.json              # Cấu hình proxy cho Angular development server (để giải quyết CORS khi gọi API).<br>
+├── tsconfig.app.json            # Cấu hình TypeScript riêng cho phần ứng dụng.<br>
+├── tsconfig.json                # Cấu hình TypeScript gốc cho toàn bộ project.<br>
+└── tsconfig.spec.json           # Cấu hình TypeScript cho các file test.<br>
 
 ## Các Bước Cần Thiết Để Chạy Ứng Dụng Trên Máy Tính Cục Bộ
 
