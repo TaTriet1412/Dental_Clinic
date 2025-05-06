@@ -4,22 +4,22 @@
 
 ## Tổng Quan
 
-Dự án này được xây dựng sử dụng các công nghệ **Docker**, **MySQL**, **Angular**, và **Spring Boot**. Mục tiêu của dự án là minh họa các nguyên tắc phát triển phần mềm hiện đại, mẫu thiết kế và các thực tiễn tốt nhất trong việc xây dựng ứng dụng có thể mở rộng, dễ bảo trì và hiệu quả.
+Dự án này được xây dựng sử dụng các công nghệ **Docker**, **MySQL**, **Angular**, và **Spring Boot** (trong kiến trúc microservices). Mục tiêu của dự án là minh họa các nguyên tắc phát triển phần mềm hiện đại, mẫu thiết kế và các thực tiễn tốt nhất trong việc xây dựng ứng dụng có thể mở rộng, dễ bảo trì và hiệu quả cho một phòng khám nha khoa.
 
 ## Nguyên Tắc Phát Triển Phần Mềm
 
 ### 1. **Tách Biệt Các Mối Quan Tâm (Separation of Concerns - SoC)**
 - Kiến trúc dự án được thiết kế để đảm bảo các mối quan tâm khác nhau của ứng dụng (ví dụ: giao diện người dùng, logic nghiệp vụ, lưu trữ dữ liệu) được tách biệt thành các lớp riêng biệt.
 - **Angular** chịu trách nhiệm về phần giao diện người dùng (UI) và xử lý tương tác với người dùng thông qua các **API**.
-- **Spring Boot** quản lý logic nghiệp vụ phía server và cung cấp các **RESTful API** để giao tiếp với **Angular**.
+- **Spring Boot** quản lý logic nghiệp vụ phía server thông qua nhiều microservices, mỗi service cung cấp các **RESTful API** để giao tiếp với **Angular** hoặc các service khác.
 - **MySQL** được sử dụng để lưu trữ dữ liệu, và **Docker** đảm bảo môi trường phát triển và sản xuất đồng nhất.
 
 ### 2. **DRY (Don't Repeat Yourself - Đừng Lặp Lại Mình)**
 - Dự án tuân theo nguyên tắc DRY bằng cách đảm bảo mã nguồn tái sử dụng và tránh sự lặp lại không cần thiết.
-- Các lớp dịch vụ trong **Spring Boot** được thiết kế để tái sử dụng nhiều lần, và các component trong **Angular** giúp tái sử dụng mã giao diện người dùng.
+- Các lớp dịch vụ trong mỗi microservice **Spring Boot** được thiết kế để tái sử dụng, và các component trong **Angular** giúp tái sử dụng mã giao diện người dùng.
 
-### 3. **DDD (Design Driven Domain - Thiết kế miền điều khiển)**
-- Thay vì bắt đầu từ công nghệ, DDD ưu tiên hiểu sâu về domain (miền vấn đề) của ứng dụng, sau đó sử dụng ngôn ngữ mô hình hóa để chuyển đổi hiểu biết đó thành một mô hình phần mềm.
+### 3. **DDD (Domain Driven Design - Thiết kế Hướng Miền)**
+- Thay vì bắt đầu từ công nghệ, DDD ưu tiên hiểu sâu về domain (miền vấn đề) của ứng dụng phòng khám nha khoa, sau đó sử dụng ngôn ngữ mô hình hóa để chuyển đổi hiểu biết đó thành một mô hình phần mềm.
 - Điều này giúp đảm bảo rằng phần mềm được phát triển đáp ứng chính xác nhu cầu của người dùng và dễ dàng bảo trì, mở rộng trong tương lai.
 
 ### 4. **YAGNI (You Aren't Gonna Need It - Bạn Không Cần Nó)**
@@ -28,95 +28,107 @@ Dự án này được xây dựng sử dụng các công nghệ **Docker**, **M
 
 ## Mẫu Thiết Kế (Design Patterns) Áp Dụng
 
-### 1. **RESTful API Architecture**
-- Dự án sử dụng kiến trúc **RESTful API** để xử lý các yêu cầu giữa **Angular** (frontend) và **Spring Boot** (backend). Các endpoint API trong **Spring Boot** nhận và trả dữ liệu (thường là JSON) khi nhận các yêu cầu từ ứng dụng Angular.
-- Các phương thức HTTP như **GET**, **POST**, **PUT**, **DELETE** được sử dụng để thao tác với các tài nguyên.
+### 1. **Microservices Architecture & RESTful API**
+- Dự án sử dụng kiến trúc **Microservices** cho backend, với mỗi service là một ứng dụng Spring Boot độc lập.
+- Giao tiếp giữa **Angular** (frontend) và các microservices (backend), cũng như giữa các microservices với nhau (nếu cần), được thực hiện thông qua **RESTful API**. Các endpoint API trong **Spring Boot** nhận và trả dữ liệu (thường là JSON).
+- Các phương thức HTTP như **GET**, **POST**, **PUT**, **DELETE**, **PATCH** được sử dụng để thao tác với các tài nguyên.
 
 ### 2. **Service Layer Pattern**
-- Dự án sử dụng mẫu thiết kế **Service Layer** để tổ chức mã nguồn một cách rõ ràng và dễ bảo trì. Lớp **Service** trong **Spring Boot** xử lý các nghiệp vụ và logic ứng dụng, tương tác với **Repository** để truy xuất hoặc lưu trữ dữ liệu trong **MySQL**.
-- Các controller trong **Spring Boot** nhận yêu cầu từ **Angular**, gọi đến các service để thực hiện các nghiệp vụ, và trả kết quả dưới dạng phản hồi JSON.
+- Mỗi microservice **Spring Boot** sử dụng mẫu thiết kế **Service Layer** để tổ chức mã nguồn một cách rõ ràng và dễ bảo trì. Lớp **Service** xử lý các nghiệp vụ và logic ứng dụng, tương tác với **Repository** để truy xuất hoặc lưu trữ dữ liệu trong **MySQL**.
+- Các controller trong **Spring Boot** nhận yêu cầu, gọi đến các service để thực hiện các nghiệp vụ, và trả kết quả dưới dạng phản hồi JSON.
 
 ### 3. **Repository Pattern**
-- Mẫu thiết kế **Repository** được sử dụng trong **Spring Boot** để tương tác với cơ sở dữ liệu, giúp tách biệt logic truy cập dữ liệu khỏi các lớp dịch vụ. Repository này giúp dễ dàng thực hiện các thao tác CRUD với **MySQL**.
+- Mẫu thiết kế **Repository** được sử dụng trong các microservices **Spring Boot** (thường thông qua Spring Data JPA) để tương tác với cơ sở dữ liệu, giúp tách biệt logic truy cập dữ liệu khỏi các lớp dịch vụ.
 
 ## Thực Tiễn Phát Triển Phần Mềm
 
 ### 1. **DevOps và Continuous Integration**
 - Dự án này áp dụng các thực tiễn DevOps để đảm bảo việc triển khai liên tục và tự động. **Docker** được sử dụng để đóng gói ứng dụng và đảm bảo môi trường phát triển đồng nhất.
-- Các công cụ tích hợp liên tục (CI) như Jenkins hoặc GitLab CI được sử dụng để tự động kiểm tra, xây dựng và triển khai ứng dụng.
+- Các công cụ tích hợp liên tục (CI) có thể được sử dụng để tự động kiểm tra, xây dựng và triển khai ứng dụng.
 
 ### 2. **Testing**
-- **JUnit** và **Mockito** được sử dụng trong **Spring Boot** để thực hiện kiểm thử đơn vị, giúp đảm bảo các chức năng phía server hoạt động chính xác.
-- **Karma** và **Jasmine** được sử dụng trong **Angular** để thực hiện kiểm thử đơn vị cho các component và service, đảm bảo tính ổn định của giao diện người dùng.
+- **JUnit** và **Mockito** (hoặc các framework tương tự) được sử dụng trong **Spring Boot** để thực hiện kiểm thử đơn vị, giúp đảm bảo các chức năng phía server hoạt động chính xác.
+- **Karma** và **Jasmine** (hoặc các framework tương tự) được sử dụng trong **Angular** để thực hiện kiểm thử đơn vị cho các component và service, đảm bảo tính ổn định của giao diện người dùng.
 
 ### 3. **Containerization và Môi Trường Phát Triển Đồng Nhất**
-- Sử dụng **Docker** để tạo môi trường phát triển và sản xuất đồng nhất, giúp đảm bảo ứng dụng hoạt động giống nhau trên mọi hệ thống. Docker Compose được sử dụng để dễ dàng quản lý các container cho các dịch vụ như **Spring Boot** và **MySQL**.
+- Sử dụng **Docker** để tạo môi trường phát triển và sản xuất đồng nhất, giúp đảm bảo ứng dụng hoạt động giống nhau trên mọi hệ thống. Docker Compose có thể được sử dụng để dễ dàng quản lý các container cho các microservices **Spring Boot** và **MySQL**.
 
 ### 4. **Quản Lý Phiên Bản**
-- **Git** được sử dụng để quản lý mã nguồn, đảm bảo quy trình phát triển tuân thủ các thực tiễn quản lý mã nguồn chuẩn, từ việc tạo nhánh cho tính năng mới đến việc hợp nhất và triển khai.
+- **Git** được sử dụng để quản lý mã nguồn, đảm bảo quy trình phát triển tuân thủ các thực tiễn quản lý mã nguồn chuẩn.
 
 ## Công Nghệ Sử Dụng
 
 - **Docker**: Dùng để container hóa ứng dụng và tạo môi trường phát triển đồng nhất.
 - **MySQL**: Cơ sở dữ liệu quan hệ dùng để lưu trữ dữ liệu của ứng dụng.
-- **Angular**: Framework JavaScript cho việc phát triển giao diện người dùng và tương tác với **Spring Boot API**.
-- **Spring Boot**: Framework Java cho việc phát triển các ứng dụng back-end mạnh mẽ, cung cấp **RESTful API** để Angular gọi và xử lý dữ liệu.
-- **Redis**: CSDL mã nguồn mở, hoạt động trên bộ nhớ (in-memory database) và được sử dụng rộng rãi để lưu trữ dữ liệu với hiệu suất cao.
+- **Angular**: Framework JavaScript cho việc phát triển giao diện người dùng và tương tác với các **Spring Boot API**.
+- **Spring Boot**: Framework Java cho việc phát triển các microservices back-end mạnh mẽ, cung cấp **RESTful API**.
+- **Redis**: CSDL mã nguồn mở, hoạt động trên bộ nhớ (in-memory database), có thể được sử dụng cho caching, session management, hoặc các tác vụ yêu cầu hiệu suất cao. (Đề cập trong README gốc, giả định vẫn sử dụng).
 
-## Cấu trúc thư mục của dự án Spring Boot (Backend)
-BackEnd/<br>
-│<br>
-├── src/<br>
-│   ├── main/<br>
-│   │   ├── java/<br>
-│   │   │   └── com.example.peaceful_land/<br>
-│   │   │       ├── config/            # Chứa các lớp cấu hình<br>
-│   │   │       ├── controller/        # Chứa các lớp điều khiển, nhận và xử lý yêu cầu HTTP từ client<br>
-│   │   │       ├── DTO/               # Chứa các lớp đối tượng dùng để truyền dữ liệu giữa các tầng trong ứng dụng<br>
-│   │   │       ├── entity/            # Chứa các lớp đại diện cho đối tượng trong CSDL, ánh xạ lên CSDL.<br>
-│   │   │       ├── errorhandler/      # Chứa các lớp xử lí lỗi nhằm trả về phản hồi phù hợp lên client.<br>
-│   │   │       ├── exception/         # Chứa các lớp ngoại lệ tự định nghĩa trong dự án.<br>
-│   │   │       ├── query/             # Chứa các lớp dùng để xây dựng các câu truy vấn pức tạp trong JPA.<br>
-│   │   │       ├── repository/        # Chứa các lớp repository thực hiện các thao tác CRUD lên cơ sở dữ liệu.<br>
-│   │   │       ├── security/          # Chứa các lớp liên quan đến bảo mật: Xử lý các vấn đề về xác thực, ủy quyền, tec.<br>
-│   │   │       ├── service/           # Chứa các lớp dịch vụ xử lý logic nghiệp vụ<br>
-│   │   │       ├── utils/             # Các lớp chứa các biến, hàm hỗ trợ chung được sử dụng trong nhiều phần của ứng dụng.<br>
-│   │   │       └── application.java   # Lớp chính khởi tạo ứng dụng Spring Boot<br>
-│   │   └── resources/<br>
-│   │       ├── application.properties # Tập tin cấu hình cho ứng dụng (cấu hình kết nối cơ sở dữ liệu, cấu hình server, etc.)<br>
-│   │       └── static/                # Chứa các tệp tài nguyên tĩnh (nếu có)<br>
-│   └── test/                          # Chứa các bài kiểm thử cho ứng dụng<br>
-│<br>
-├── pom.xml                            # Quản lý các thư viện và cấu hình xây dựng ứng dụng Spring Boot<br>
-│<br>
-└── uploads/                           # Chứa các tập tin ảnh được tải lên trên hệ thống
+## Cấu trúc thư mục của dự án Spring Boot (Backend - Microservices)
+Dental_Clinic_BE/
+├── auth-service/
+│   ├── src/main/java/com/dental_clinic/auth_service/...
+│   ├── src/main/resources/application.properties (hoặc .yml)
+│   └── pom.xml
+├── dental-service/
+│   ├── src/main/java/com/dental_clinic/dental_service/...
+│   ├── src/main/resources/application.properties (hoặc .yml)
+│   └── pom.xml
+├── dentist-service/
+│   ├── src/main/java/com/dental_clinic/dentist_service/...
+│   ├── src/main/resources/application.properties (hoặc .yml)
+│   └── pom.xml
+├── material-service/
+│   ├── src/main/java/com/dental_clinic/material_service/...
+│   ├── src/main/resources/application.properties (hoặc .yml)
+│   └── pom.xml
+├── patient-service/
+│   ├── src/main/java/com/dental_clinic/patient_service/...
+│   ├── src/main/resources/application.properties (hoặc .yml)
+│   └── pom.xml
+├── payment-service/
+│   ├── src/main/java/com/dental_clinic/payment_service/...
+│   ├── src/main/resources/application.properties (hoặc .yml)
+│   └── pom.xml
+├── prescription-service/
+│   ├── src/main/java/com/dental_clinic/prescription_service/...
+│   ├── src/main/resources/application.properties (hoặc .yml)
+│   └── pom.xml
+├── schedule-service/
+│   ├── src/main/java/com/dental_clinic/schedule_service/...
+│   ├── src/main/resources/application.properties (hoặc .yml)
+│   └── pom.xml
+├── Database/
+│   └── MySql/
+│       └── dentist.sql  # Script khởi tạo CSDL cho các service liên quan
+└── uploads/             # (Có thể được quản lý bởi từng service hoặc một service chuyên biệt)
 
-
+*Mỗi microservice (ví dụ: `auth-service`) sẽ có cấu trúc nội bộ tương tự như một dự án Spring Boot tiêu chuẩn:*
 
 ## Cấu trúc thư mục của dự án Angular (Frontend)
 
-peaceful_land/<br>
-│<br>
-├── public/<br>
-│   └── assets/                  # Chứa các tài nguyên tĩnh như hình ảnh, CSS, fonts.<br>
-├── src/                         # Thư mục mã nguồn của ứng dụng.<br>
-│   ├── app/                     # Các component đại diện cho giao diện người dùng (UI).<br>
-│   │   ├── core/                # Chứa các dịch vụ, lớp, giao diện chung cho toàn bộ ứng dụng.<br>
-│   │   │   ├── guards/          # Chứa các guard để bảo vệ các route, kiểm soát quyền truy cập.<br>
-│   │   │   ├── interceptors/    # Chứa các interceptor để chặn và xử lý các request/response.<br>
-│   │   │   ├── pipes/           # Các pipes có tác dụng định dạng dữ liệu hiển thị.<br>
-│   │   │   └── services/        # Chứa các dịch vụ cung cấp các chức năng nghiệp vụ.<br>
-│   │   ├── dto/                 # Chứa các lớp đối tượng truyền dữ liệu giữa các thành phần.<br>
-│   │   ├── Modules/             # Chứa vai trò người dùng, nhằm kiểm soát quyền truy cập<br>
-│   │   │   ├── admin/           # Vai trò quản trị viên<br>
-│   │   │   ├── chef/            # Vai trò đầu bếp<br>
-│   │   │   └── staff/           # Vai trò nhân viên phục vụ<br>
-│   │   ├── app.module.ts        # File module chính của ứng dụng, nơi khai báo các component, service, module con, etc.<br>
-│   │   ├── share/               # Chứa các thành phần được chia sẻ giữa nhiều module<br>
-│   │   └── app.component.ts     # Component gốc của ứng dụng<br>
-│   └── index.html               # File HTML gốc của ứng dụng, nơi Angular sẽ render ra giao diện.<br>
-│── angular.json                 # Cấu hình dự án Angular<br>
-└── proxy.conf.json              # Cấu hình CORS để gọi được api từ khác đường localhost<br>
+peaceful_land/
+│
+├── public/
+│   └── assets/                  # Chứa các tài nguyên tĩnh như hình ảnh, CSS, fonts.
+├── src/                         # Thư mục mã nguồn của ứng dụng.
+│   ├── app/                     # Các component đại diện cho giao diện người dùng (UI).
+│   │   ├── core/                # Chứa các dịch vụ, lớp, giao diện chung cho toàn bộ ứng dụng.
+│   │   │   ├── guards/          # Chứa các guard để bảo vệ các route, kiểm soát quyền truy cập.
+│   │   │   ├── interceptors/    # Chứa các interceptor để chặn và xử lý các request/response.
+│   │   │   ├── pipes/           # Các pipes có tác dụng định dạng dữ liệu hiển thị.
+│   │   │   └── services/        # Chứa các dịch vụ cung cấp các chức năng nghiệp vụ.
+│   │   ├── dto/                 # Chứa các lớp đối tượng truyền dữ liệu giữa các thành phần.
+│   │   ├── Modules/             # Chứa vai trò người dùng, nhằm kiểm soát quyền truy cập
+│   │   │   ├── admin/           # Vai trò quản trị viên
+│   │   │   ├── chef/            # Vai trò đầu bếp
+│   │   │   └── staff/           # Vai trò nhân viên phục vụ
+│   │   ├── app.module.ts        # File module chính của ứng dụng, nơi khai báo các component, service, module con, etc.
+│   │   ├── share/               # Chứa các thành phần được chia sẻ giữa nhiều module
+│   │   └── app.component.ts     # Component gốc của ứng dụng
+│   └── index.html               # File HTML gốc của ứng dụng, nơi Angular sẽ render ra giao diện.
+│── angular.json                 # Cấu hình dự án Angular
+└── proxy.conf.json              # Cấu hình CORS để gọi được api từ khác đường localhost
 
 ## Các Bước Cần Thiết Để Chạy Ứng Dụng Trên Máy Tính Cục Bộ
 
