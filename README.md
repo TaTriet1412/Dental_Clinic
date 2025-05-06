@@ -59,76 +59,86 @@ Dự án này được xây dựng sử dụng các công nghệ **Docker**, **M
 ## Công Nghệ Sử Dụng
 
 - **Docker**: Dùng để container hóa ứng dụng và tạo môi trường phát triển đồng nhất.
-- **MySQL**: Cơ sở dữ liệu quan hệ dùng để lưu trữ dữ liệu của ứng dụng.
+- **MySQL**: Cơ sở dữ liệu quan hệ dùng để lưu trữ dữ liệu của ứng dụng (ví dụ: material-service, dentist-service, payment-service, auth-service).
+- **MongoDB**: Cơ sở dữ liệu NoSQL dạng document, được sử dụng cho các service cần lưu trữ dữ liệu linh hoạt và có cấu trúc thay đổi (ví dụ: schedule-service, patient-service, prescription-service, dental-service).
 - **Angular**: Framework JavaScript cho việc phát triển giao diện người dùng và tương tác với các **Spring Boot API**.
 - **Spring Boot**: Framework Java cho việc phát triển các microservices back-end mạnh mẽ, cung cấp **RESTful API**.
 - **Redis**: CSDL mã nguồn mở, hoạt động trên bộ nhớ (in-memory database), có thể được sử dụng cho caching, session management, hoặc các tác vụ yêu cầu hiệu suất cao. (Đề cập trong README gốc, giả định vẫn sử dụng).
 
 ## Cấu trúc thư mục của dự án Spring Boot (Backend - Microservices)
-Dental_Clinic_BE/
-├── auth-service/
-│   ├── src/main/java/com/dental_clinic/auth_service/...
-│   ├── src/main/resources/application.properties (hoặc .yml)
-│   └── pom.xml
-├── dental-service/
-│   ├── src/main/java/com/dental_clinic/dental_service/...
-│   ├── src/main/resources/application.properties (hoặc .yml)
-│   └── pom.xml
-├── dentist-service/
-│   ├── src/main/java/com/dental_clinic/dentist_service/...
-│   ├── src/main/resources/application.properties (hoặc .yml)
-│   └── pom.xml
-├── material-service/
-│   ├── src/main/java/com/dental_clinic/material_service/...
-│   ├── src/main/resources/application.properties (hoặc .yml)
-│   └── pom.xml
-├── patient-service/
-│   ├── src/main/java/com/dental_clinic/patient_service/...
-│   ├── src/main/resources/application.properties (hoặc .yml)
-│   └── pom.xml
-├── payment-service/
-│   ├── src/main/java/com/dental_clinic/payment_service/...
-│   ├── src/main/resources/application.properties (hoặc .yml)
-│   └── pom.xml
-├── prescription-service/
-│   ├── src/main/java/com/dental_clinic/prescription_service/...
-│   ├── src/main/resources/application.properties (hoặc .yml)
-│   └── pom.xml
-├── schedule-service/
-│   ├── src/main/java/com/dental_clinic/schedule_service/...
-│   ├── src/main/resources/application.properties (hoặc .yml)
-│   └── pom.xml
-├── Database/
-│   └── MySql/
-│       └── dentist.sql  # Script khởi tạo CSDL cho các service liên quan
-└── uploads/             # (Có thể được quản lý bởi từng service hoặc một service chuyên biệt)
+Dental_Clinic_BE/<br>
+├── auth-service/ (MySQL)<br>
+│   ├── src/main/java/com/dental_clinic/auth_service/...<br>
+│   ├── src/main/resources/application.properties (hoặc .yml)<br>
+│   └── pom.xml<br>
+├── dental-service/ (MongoDB)<br>
+│   ├── src/main/java/com/dental_clinic/dental_service/...<br>
+│   ├── src/main/resources/application.properties (hoặc .yml)<br>
+│   └── pom.xml<br>
+├── dentist-service/ (MySQL)<br>
+│   ├── src/main/java/com/dental_clinic/dentist_service/...<br>
+│   ├── src/main/resources/application.properties (hoặc .yml)<br>
+│   └── pom.xml<br>
+├── material-service/ (MySQL)<br>
+│   ├── src/main/java/com/dental_clinic/material_service/...<br>
+│   ├── src/main/resources/application.properties (hoặc .yml)<br>
+│   └── pom.xml<br>
+├── patient-service/ (MongoDB)<br>
+│   ├── src/main/java/com/dental_clinic/patient_service/...<br>
+│   ├── src/main/resources/application.properties (hoặc .yml)<br>
+│   └── pom.xml<br>
+├── payment-service/ (MySQL)<br>
+│   ├── src/main/java/com/dental_clinic/payment_service/...<br>
+│   ├── src/main/resources/application.properties (hoặc .yml)<br>
+│   └── pom.xml<br>
+├── prescription-service/ (MongoDB)<br>
+│   ├── src/main/java/com/dental_clinic/prescription_service/...<br>
+│   ├── src/main/resources/application.properties (hoặc .yml)<br>
+│   └── pom.xml<br>
+├── schedule-service/ (MongoDB)<br>
+│   ├── src/main/java/com/dental_clinic/schedule_service/...<br>
+│   ├── src/main/resources/application.properties (hoặc .yml)<br>
+│   └── pom.xml<br>
+├── Database/<br>
+│   ├── MySql/<br>
+│   │   └── dentist.sql  # Script khởi tạo CSDL cho các service liên quan MySQL<br>
+│   └── MongoDB/<br>
+│       ├── schedule/<br>
+│       │   └── json_create_data.js # Script tạo dữ liệu cho schedule-service<br>
+│       ├── patient/<br>
+│       │   └── json_create_patient.js # Script tạo dữ liệu cho patient-service<br>
+│       ├── prescription/<br>
+│       │   └── logic_create_prescription.js # Script tạo dữ liệu cho prescription-service<br>
+│       └── dental/<br>
+│           └── json_create_dental.js # Script tạo dữ liệu cho dental-service (giả định)<br>
+└── uploads/             # (Có thể được quản lý bởi từng service hoặc một service chuyên biệt)<br>
 
 *Mỗi microservice (ví dụ: `auth-service`) sẽ có cấu trúc nội bộ tương tự như một dự án Spring Boot tiêu chuẩn:*
 
 ## Cấu trúc thư mục của dự án Angular (Frontend)
 
-peaceful_land/
-│
-├── public/
-│   └── assets/                  # Chứa các tài nguyên tĩnh như hình ảnh, CSS, fonts.
-├── src/                         # Thư mục mã nguồn của ứng dụng.
-│   ├── app/                     # Các component đại diện cho giao diện người dùng (UI).
-│   │   ├── core/                # Chứa các dịch vụ, lớp, giao diện chung cho toàn bộ ứng dụng.
-│   │   │   ├── guards/          # Chứa các guard để bảo vệ các route, kiểm soát quyền truy cập.
-│   │   │   ├── interceptors/    # Chứa các interceptor để chặn và xử lý các request/response.
-│   │   │   ├── pipes/           # Các pipes có tác dụng định dạng dữ liệu hiển thị.
-│   │   │   └── services/        # Chứa các dịch vụ cung cấp các chức năng nghiệp vụ.
-│   │   ├── dto/                 # Chứa các lớp đối tượng truyền dữ liệu giữa các thành phần.
-│   │   ├── Modules/             # Chứa vai trò người dùng, nhằm kiểm soát quyền truy cập
-│   │   │   ├── admin/           # Vai trò quản trị viên
-│   │   │   ├── chef/            # Vai trò đầu bếp
-│   │   │   └── staff/           # Vai trò nhân viên phục vụ
-│   │   ├── app.module.ts        # File module chính của ứng dụng, nơi khai báo các component, service, module con, etc.
-│   │   ├── share/               # Chứa các thành phần được chia sẻ giữa nhiều module
-│   │   └── app.component.ts     # Component gốc của ứng dụng
-│   └── index.html               # File HTML gốc của ứng dụng, nơi Angular sẽ render ra giao diện.
-│── angular.json                 # Cấu hình dự án Angular
-└── proxy.conf.json              # Cấu hình CORS để gọi được api từ khác đường localhost
+peaceful_land/<br>
+│<br>
+├── public/<br>
+│   └── assets/                  # Chứa các tài nguyên tĩnh như hình ảnh, CSS, fonts.<br>
+├── src/                         # Thư mục mã nguồn của ứng dụng.<br>
+│   ├── app/                     # Các component đại diện cho giao diện người dùng (UI).<br>
+│   │   ├── core/                # Chứa các dịch vụ, lớp, giao diện chung cho toàn bộ ứng dụng.<br>
+│   │   │   ├── guards/          # Chứa các guard để bảo vệ các route, kiểm soát quyền truy cập.<br>
+│   │   │   ├── interceptors/    # Chứa các interceptor để chặn và xử lý các request/response.<br>
+│   │   │   ├── pipes/           # Các pipes có tác dụng định dạng dữ liệu hiển thị.<br>
+│   │   │   └── services/        # Chứa các dịch vụ cung cấp các chức năng nghiệp vụ.<br>
+│   │   ├── dto/                 # Chứa các lớp đối tượng truyền dữ liệu giữa các thành phần.<br>
+│   │   ├── Modules/             # Chứa vai trò người dùng, nhằm kiểm soát quyền truy cập<br>
+│   │   │   ├── admin/           # Vai trò quản trị viên<br>
+│   │   │   ├── chef/            # Vai trò đầu bếp<br>
+│   │   │   └── staff/           # Vai trò nhân viên phục vụ<br>
+│   │   ├── app.module.ts        # File module chính của ứng dụng, nơi khai báo các component, service, module con, etc.<br>
+│   │   ├── share/               # Chứa các thành phần được chia sẻ giữa nhiều module<br>
+│   │   └── app.component.ts     # Component gốc của ứng dụng<br>
+│   └── index.html               # File HTML gốc của ứng dụng, nơi Angular sẽ render ra giao diện.<br>
+│── angular.json                 # Cấu hình dự án Angular<br>
+└── proxy.conf.json              # Cấu hình CORS để gọi được api từ khác đường localhost<br>
 
 ## Các Bước Cần Thiết Để Chạy Ứng Dụng Trên Máy Tính Cục Bộ
 
@@ -164,22 +174,35 @@ peaceful_land/
 
 ### 2. **Thiết lập CSDL**
 
-1. MySQL (CSDL chính của ứng dụng)
-- Mở terminal hoặc command prompt và chạy lệnh sau để kéo hình ảnh MySQL từ Docker Hub: `docker pull mysql:latest`
-- Chạy lệnh sau để khởi chạy một container MySQL mới: `docker run --name my-mysql -p 3306:3306 -e MYSQL_ROOT_PASSWORD=your_strong_password -d mysql:latest`
-    - Giải thích:
-    - `--name my-mysql`: Đặt tên cho container là `my-mysql`
-    - `-p 3306:3306`: Cấu hình container và CSDL hoạt động trên cổng 3306. Cổng đằng trước dấu hai chấm là cổng trên host, cổng đằng sau dấu hai chấm là cổng sử dụng trên container.
-    - `-e MYSQL_ROOT_PASSWORD=your_strong_password`: Thiết lập mật khẩu cho cơ sở dữ liệu MySQL. Hãy thay thế `your_strong_password` bằng một mật khẩu mạnh.
-    - `-d`: Chạy container ở chế độ ngầm (detached).
-    - Cấu hình container cho Redis bên dưới cùng gần tương tự.
-- Kiểm tra xem container MySQL đã chạy thành công, sử dụng lệnh: `docker ps`
-- Database: nằm trong file Script.sql ở thư mục Seafood_Restaurant(BE)
+1.  **MySQL**
+    *   Mở terminal và chạy lệnh để kéo image MySQL: `docker pull mysql:latest` (hoặc phiên bản cụ thể).
+    *   Chạy container MySQL: `docker run --name dental-mysql -p 3306:3306 -e MYSQL_ROOT_PASSWORD=your_strong_password -d mysql:latest`
+        *   Thay `your_strong_password` bằng mật khẩu của bạn.
+    *   Kiểm tra container: `docker ps`.
+    *   Tạo database: Kết nối vào MySQL instance (ví dụ, sử dụng MySQL Workbench hoặc DBeaver) và chạy script SQL từ `Dental_Clinic_BE/Database/MySql/dentist.sql` (hoặc các file .sql tương ứng cho từng service như `material.sql`, `dentist.sql`, `payment.sql`, `auth.sql`) để tạo schema và các bảng cần thiết.
 
-2. Redis (CSDL phân tán phục vụ cho chức năng ghi lại mã OTP)
-- Mở terminal hoặc command prompt và chạy lệnh sau để kéo hình ảnh Redis từ Docker Hub: `docker pull redis:latest`
-- Chạy lệnh sau để khởi chạy một container Redis mới: `docker run -d --name myredis12 -p 6379:6379 redis:latest`
-- Kiểm tra xem container MySQL đã chạy thành công, sử dụng lệnh: `docker ps`
+2.  **MongoDB**
+    *   Mở terminal và chạy lệnh để kéo image MongoDB: `docker pull mongo:latest`.
+    *   Chạy container MongoDB: `docker run --name dental-mongo -p 27017:27017 -d mongo:latest`
+    *   Kiểm tra container: `docker ps`.
+    *   Tạo databases và collections:
+        *   Kết nối vào MongoDB instance (ví dụ, sử dụng MongoDB Compass hoặc `mongosh`).
+        *   Đối với mỗi service sử dụng MongoDB (schedule, patient, prescription, dental), tạo database tương ứng (ví dụ: `schedule_db`, `patient_db`, `prescription_db`, `dental_db`).
+        *   Trong mỗi database, chạy các script `.js` tương ứng từ thư mục `Dental_Clinic_BE/Database/MongoDB/` để tạo collections và chèn dữ liệu mẫu (ví dụ: `json_create_data.js` cho `schedule_db`).
+        *   Lưu ý: Cấu hình `spring.data.mongodb.uri` và `spring.data.mongodb.database` trong file `application.properties` hoặc `application.yml` của mỗi service MongoDB để trỏ đến đúng instance và database. Ví dụ, cho `dental-service`:
+            ```yaml
+            spring:
+              data:
+                mongodb:
+                  uri: mongodb://localhost:27017 # Hoặc URI của MongoDB Atlas nếu dùng cloud
+                  database: dental_db # Tên database cho dental-service
+            ```
+            Tương tự cho các service khác sử dụng MongoDB, thay `database` bằng tên database tương ứng.
+
+3.  **Redis** (Nếu sử dụng cho caching, OTP, etc.)
+    *   Mở terminal hoặc command prompt và chạy lệnh sau để kéo hình ảnh Redis từ Docker Hub: `docker pull redis:latest`
+    *   Chạy lệnh sau để khởi chạy một container Redis mới: `docker run -d --name myredis12 -p 6379:6379 redis:latest`
+    *   Kiểm tra xem container Redis đã chạy thành công, sử dụng lệnh: `docker ps`
 
 ### 3. **Chạy Phần Backend (Spring Boot)**
 
@@ -189,12 +212,12 @@ peaceful_land/
 4. Dưa vào file application.yaml để cấu hình mysql tương thích (chạy database trong workbench với tên spring_commerce, file được cung cấp trong folder Model của com.triet.spring_commerce) *Lưu ý username và password là "root"
 5. Bấm nút "Start" sau khi cấu hình thành công
 
-### 2. **Chạy Phần Frontend (Angular)**
+### 4. **Chạy Phần Frontend (Angular)**
 1. Mở terminal, cd đến thư mục root của Frontend `com.peaceful_land` > `FrontEnd` > `peaceful-land`
 2. Cài đặt tất cả các phụ thuộc cần thiết cho dự án Angular bằng cách chạy lệnh sau (npm install)
 3. Chạy ứng dụng (npm start)
 
-### 3. **Kiểm tra kết nối Backend và Frontend **
+### 5. **Kiểm tra kết nối Backend và Frontend **
 1. Truy cập http://localhost:4200 trong trình duyệt. Đây là giao diện người dùng của ứng dụng Angular.
 2. Ứng dụng Angular sẽ gửi các yêu cầu HTTP đến http://localhost:8080 (backend) để lấy hoặc gửi dữ liệu.
 3. Kiểm tra xem các chức năng trong ứng dụng có hoạt động như mong đợi hay không, ví dụ: đăng nhập, hiển thị danh sách sản phẩm,...
