@@ -216,15 +216,15 @@ export class FacultyComponent implements OnInit, OnDestroy {
   }
 
   goToCreateFaculty() {
-    this.router.navigate([ROUTES.RECEPTIONIST.children.FACULTY.children.CREATE.fullPath]);
+    this.router.navigate([ROUTES.ADMIN.children.FACULTY.children.CREATE.fullPath]);
   }
 
   goToDetailFaculty(id: string) {
-    this.router.navigate([ROUTES.RECEPTIONIST.children.FACULTY.children.DETAIL.fullPath(id)]);
+    this.router.navigate([ROUTES.ADMIN.children.FACULTY.children.DETAIL.fullPath(id)]);
   }
 
   goToEditFaculty(id: string) {
-    this.router.navigate([ROUTES.RECEPTIONIST.children.FACULTY.children.EDIT.fullPath(id)]);
+    this.router.navigate([ROUTES.ADMIN.children.FACULTY.children.EDIT.fullPath(id)]);
   }
 
   toggleAbleFaculty(id: number) {

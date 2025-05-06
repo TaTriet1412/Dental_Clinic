@@ -56,37 +56,50 @@ export class EditFixedMaterialComponent implements OnInit {
   ) {
   }
 
-  ngOnInit(): void {
-
-    this.materialService.getAllCategory().subscribe(
-      {
-        next: (response) => {
-          this.categoryList = (response.result || []).filter((cat: any) => cat.able === true);
-          this.cdr.markForCheck();
-        },
-        error: (error) => {
-          this.snackbar.notifyError(error.error.message);
-        }
-      }
-    );
-
+  async ngOnInit(): Promise<void> {
     this.fixedMaterialId = Number(this.url.snapshot.paramMap.get('id'));
-    this.materialService.getFixedMaterialById(this.fixedMaterialId).subscribe({
-      next: (response: any) => {
-        this.name = response.result.name;
-        this.unit = response.result.unit;
-        this.func = response.result.func;
-        this.mfg_date = new Date(response.result.mfg_date);
-        this.quantity = response.result.quantity;
-        this.selectedCategory = response.result.categoryId.toString();
-        if (response.result.img) {
-          this.selectedImage = this.changeToServerImgUrl(response.result.img) || this.changeToServerImgUrl('template/blank_material.png');
+    this.spinner.show(); // Hiện spinner khi bắt đầu xử lý
+
+    try {
+      // Chạy song song hai lời gọi API
+      const [fixedMaterialResponse, categoryResponse]: [any, any] = await Promise.all([
+        this.materialService.getFixedMaterialById(this.fixedMaterialId).toPromise(),
+        this.materialService.getAllCategory().toPromise()
+      ]);
+
+      // Xử lý kết quả từ getFixedMaterialById
+      if (fixedMaterialResponse && fixedMaterialResponse.result) {
+        const materialResult = fixedMaterialResponse.result;
+        this.name = materialResult.name;
+        this.unit = materialResult.unit;
+        this.func = materialResult.func;
+        this.mfg_date = new Date(materialResult.mfg_date);
+        this.quantity = materialResult.quantity;
+        this.selectedCategory = materialResult.categoryId.toString();
+        if (materialResult.img) {
+          this.selectedImage = this.changeToServerImgUrl(materialResult.img) || this.changeToServerImgUrl('template/blank_material.png');
         }
-      },
-      error: (error) => {
-        this.snackbar.notifyError(error.error.message);
+      } else {
+        // Xử lý trường hợp không có kết quả hoặc kết quả không hợp lệ
+        this.snackbar.notifyError('Không thể tải thông tin vật liệu cố định.');
       }
-    })
+
+      // Xử lý kết quả từ getAllCategory
+      if (categoryResponse && categoryResponse.result) {
+        this.categoryList = (categoryResponse.result || []).filter((cat: any) => cat.able === true || cat.id == this.selectedCategory);
+      } else {
+        this.categoryList = []; // Đặt về mảng rỗng nếu không có kết quả
+        this.snackbar.notifyError('Không thể tải danh sách danh mục.');
+      }
+
+      this.cdr.markForCheck();
+
+    } catch (error: any) {
+      // Xử lý lỗi chung cho cả hai lời gọi API
+      this.snackbar.notifyError(error?.error?.message || error?.message || 'Đã xảy ra lỗi khi tải dữ liệu');
+    } finally {
+      this.spinner.hide(); // Ẩn spinner khi hoàn thành xử lý hoặc có lỗi
+    }
   }
 
   changeToServerImgUrl(img: string): string {

@@ -69,72 +69,58 @@ export class EditConsumableMaterialComponent implements OnInit {
   ) {
   }
 
-  ngOnInit(): void {
+  async ngOnInit(): Promise<void> {
     this.consumableMaterialId = Number(this.url.snapshot.paramMap.get('id'));
-
-    this.materialService.getMedicineById(this.consumableMaterialId).subscribe(
-      {
-        next: (res: any) => {
-          this.is_medicine = true;
-          this.name = res.result.name;
-          this.unit = res.result.unit;
-          this.func = res.result.func;
-          this.mfg_date = new Date(res.result.mfg_date);
-          this.quantity = res.result.quantity;
-          this.selectedCategory = res.result.categoryId.toString();
-          this.selectedIngredients = res.result.ingreIdList;
-          this.cost = res.result.cost;
-          this.price = res.result.price;
-          this.cared_actor = res.result.cared_actor;
-          this.instruction = res.result.instruction;
-          this.selectedImage = this.changeImgToServerImg(res.result.img) || this.changeImgToServerImg(this.selectedImage); // Đường dẫn ảnh từ server
-          console.log(res.result.ingreIdList)
-        },
-        error: (err) => {
-          this.is_medicine = false;
-          this.materialService.getConsumableMaterialById(this.consumableMaterialId).subscribe({
-            next: (res: any) => {
-              this.name = res.result.name;
-              this.unit = res.result.unit;
-              this.func = res.result.func;
-              this.mfg_date = new Date(res.result.mfg_date);
-              this.quantity = res.result.quantity;
-              this.selectedCategory = res.result.categoryId.toString();
-              this.selectedIngredients = res.result.ingreIdList;
-              this.selectedImage = this.changeImgToServerImg(res.result.img) || this.changeImgToServerImg(this.selectedImage);
-            },
-            error: (err) => {
-              this.snackbar.notifyError(err.error.message); // Hiển thị thông báo lỗi
-            }
-          })
-        }
-      }
-    )
-
-
     this.spinner.show(); // Hiện spinner khi bắt đầu xử lý
-    this.materialService.getAllCategory().subscribe(
-      {
-        next: (response) => {
-          this.categoryList = (response.result || []).filter((cat: any) => cat.able === true);
-          this.cdr.markForCheck();
-        },
-        error: (error) => {
-          this.snackbar.notifyError(error.error.message);
-        }
-      }
-    );
 
-    this.ingredientService.getAllIngredient().subscribe({
-      next: (response) => {
-        this.ingredientList = (response.result || []).filter((ingre: any) => ingre.able === true);
-        this.cdr.markForCheck();
-      },
-      error: (error) => {
-        this.snackbar.notifyError(error.error.message);
+    try {
+      const medicineRes: any = await this.materialService.getMedicineById(this.consumableMaterialId).toPromise();
+      this.is_medicine = true;
+      this.name = medicineRes.result.name;
+      this.unit = medicineRes.result.unit;
+      this.func = medicineRes.result.func;
+      this.mfg_date = new Date(medicineRes.result.mfg_date);
+      this.quantity = medicineRes.result.quantity;
+      this.selectedCategory = medicineRes.result.categoryId.toString();
+      this.selectedIngredients = medicineRes.result.ingreIdList;
+      this.cost = medicineRes.result.cost;
+      this.price = medicineRes.result.price;
+      this.cared_actor = medicineRes.result.cared_actor;
+      this.instruction = medicineRes.result.instruction;
+      this.selectedImage = this.changeImgToServerImg(medicineRes.result.img) || this.changeImgToServerImg(this.selectedImage); // Đường dẫn ảnh từ server
+      console.log(medicineRes.result.ingreIdList);
+    } catch (medicineErr: any) {
+      this.is_medicine = false;
+      try {
+        const consumableRes: any = await this.materialService.getConsumableMaterialById(this.consumableMaterialId).toPromise();
+        this.name = consumableRes.result.name;
+        this.unit = consumableRes.result.unit;
+        this.func = consumableRes.result.func;
+        this.mfg_date = new Date(consumableRes.result.mfg_date);
+        this.quantity = consumableRes.result.quantity;
+        this.selectedCategory = consumableRes.result.categoryId.toString();
+        this.selectedIngredients = consumableRes.result.ingreIdList;
+        this.selectedImage = this.changeImgToServerImg(consumableRes.result.img) || this.changeImgToServerImg(this.selectedImage);
+      } catch (consumableErr: any) {
+        this.snackbar.notifyError(consumableErr.error?.message || 'Lỗi khi lấy thông tin vật tư tiêu hao'); // Hiển thị thông báo lỗi
       }
-    })
-    this.spinner.hide(); // Ẩn spinner khi hoàn thành xử lý
+    }
+
+    try {
+      const [categoryResponse, ingredientResponse] = await Promise.all([
+        this.materialService.getAllCategory().toPromise(),
+        this.ingredientService.getAllIngredient().toPromise()
+      ]);
+
+      this.categoryList = (categoryResponse.result || []).filter((cat: any) => cat.able === true || cat.id == this.selectedCategory);
+      this.ingredientList = (ingredientResponse.result || []).filter((ingre: any) => ingre.able === true || this.selectedIngredients.includes(ingre.id));
+      this.cdr.markForCheck();
+
+    } catch (error: any) {
+      this.snackbar.notifyError(error.error?.message || 'Lỗi khi tải danh mục hoặc thành phần');
+    } finally {
+      this.spinner.hide(); // Ẩn spinner khi hoàn thành xử lý hoặc có lỗi
+    }
   }
 
   onFileSelected(event: any): void {
