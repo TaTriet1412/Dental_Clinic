@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
-import { CardModule, ColComponent, RowComponent, TableModule } from '@coreui/angular';
+import { CardModule, ColComponent, RowComponent, TableModule, ButtonDirective } from '@coreui/angular';
 import { SnackBarService } from '../../../../../../core/services/snack-bar.service';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { ActivatedRoute } from '@angular/router';
@@ -8,6 +8,7 @@ import { firstValueFrom } from 'rxjs';
 import { ImgDirective } from '@coreui/angular-pro';
 import { MaterialService } from '../../../../../../core/services/material.service';
 import { FixedMaterialRes } from '../../../../../../share/dto/response/fixed-material-response';
+import { MaterialLogResponse } from '../../../../../../share/dto/response/material-log-response';
 
 @Component({
   selector: 'app-detail-fixed-material',
@@ -17,7 +18,8 @@ import { FixedMaterialRes } from '../../../../../../share/dto/response/fixed-mat
     RowComponent,
     ColComponent,
     TableModule,
-    ImgDirective
+    ImgDirective,
+    ButtonDirective
   ],
   standalone: true,
   templateUrl: './detail-fixed-material.component.html',
@@ -29,6 +31,9 @@ export class DetailFixedMaterialComponent implements OnInit {
   categoryId: string = '';
   categoryName: string = '';
   imgUrl: string = 'template/blank_service.png';
+
+  logs: MaterialLogResponse[] = [];
+  showAllLogs: boolean = false;
 
   constructor(
     private materialService: MaterialService,
@@ -52,8 +57,12 @@ export class DetailFixedMaterialComponent implements OnInit {
       this.categoryId = fetchedCategory.result.id;
       this.categoryName = fetchedCategory.result.name;
 
+      const logResponse = await firstValueFrom(this.materialService.getAllLogsByMaterialId(this.fixedMaterialId));
+      this.logs = logResponse.result || [];
+
     } catch (error: any) {
       this.snackbar.notifyError(error.error.message);
+      this.logs = [];
     } finally {
       this.spinner.hide();
     }
@@ -61,5 +70,9 @@ export class DetailFixedMaterialComponent implements OnInit {
 
   changeImageServer(url: string): string {
     return `http://localhost:8060/material/images?path=${url}`;
+  }
+
+  toggleShowAllLogs(): void {
+    this.showAllLogs = !this.showAllLogs;
   }
 }

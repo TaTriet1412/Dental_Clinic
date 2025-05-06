@@ -12,7 +12,8 @@ public record UpdateAppointmentReq(
         String id,
 
         Optional<Long> denId ,
-        Optional<String> patId ,
+        @NotNull ( message = "Mã bệnh nhân không được để trống" )
+        String patId ,
         Optional<Long> assiId ,
         Optional<LocalDateTime> timeStart ,
         Optional<LocalDateTime> timeEnd ,

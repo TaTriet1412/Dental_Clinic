@@ -33,7 +33,7 @@ public class EmailService {
 
         String htmlContent = String.format(
                 """
-                <p>Xin chào %s [%s],</p>
+                <p>Xin chào %s [%s]</p>
                 <p>Chúng tôi xin thông báo với bạn rằng lịch khám của bạn đã được xác nhận.</p>
                 <p>Sau đây là thông tin chi tiết về lịch khám của bạn:</p>
                 <table style="border-collapse: collapse; margin: 25px 0; font-size: 0.9em; font-family: sans-serif; min-width: 400px; box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);">
@@ -44,18 +44,6 @@ public class EmailService {
                         </tr>
                     </thead>
                     <tbody>
-                        <tr style="border-bottom: 1px solid #dddddd;">
-                            <th style="padding: 12px 15px;">Tên bệnh nhân</th>
-                            <td style="padding: 12px 15px;">%s</td>
-                        </tr>
-                        <tr style="border-bottom: 1px solid #dddddd;">
-                            <th style="padding: 12px 15px;">Tên nha sĩ</th>
-                            <td style="padding: 12px 15px;">%s</td>
-                        </tr>
-                        <tr style="border-bottom: 1px solid #dddddd;">
-                            <th style="padding: 12px 15px;">Tên phụ tá</th>
-                            <td style="padding: 12px 15px;">%s</td>
-                        </tr>
                         <tr style="border-bottom: 1px solid #dddddd;">
                             <th style="padding: 12px 15px;">Thời gian bắt đầu</th>
                             <td style="padding: 12px 15px;">%s</td>
@@ -79,7 +67,7 @@ public class EmailService {
                     </tbody>
                 </table>
                 """,
-                req.patientName(), req.patientId(), req.appointmentId(), req.patientName(), req.dentistName(), req.assistantName(),
+                req.patientName(), req.patientId(), req.appointmentId(),
                 formatDateTime(req.timeStart()), formatDateTime(req.timeEnd()), req.symptoms(), req.note(),
                 AppointmentStatus.translateStatus(String.valueOf(req.status()))
         );
@@ -100,7 +88,7 @@ public class EmailService {
         String rowColor = AppointmentStatus.valueOf(String.valueOf(req.status())) == AppointmentStatus.finished ? "#28a745" : "#ff4d4d";
         String htmlContent = String.format(
                 """
-                <p>Xin chào %s [%s],</p>
+                <p>Xin chào %s [%s]</p>
                 <p>Chúng tôi xin thông báo rằng lịch khám của bạn đã chuyển sang trạng thái <b>%s</b>.</p>
                 <p>Sau đây là thông tin chi tiết về lịch khám của bạn:</p>
                 <table style="border-collapse: collapse; margin: 25px 0; font-size: 0.9em; font-family: sans-serif; min-width: 400px; box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);">
@@ -111,18 +99,6 @@ public class EmailService {
                         </tr>
                     </thead>
                     <tbody>
-                        <tr style="border-bottom: 1px solid #dddddd;">
-                            <th style="padding: 12px 15px;">Tên bệnh nhân</th>
-                            <td style="padding: 12px 15px;">%s</td>
-                        </tr>
-                        <tr style="border-bottom: 1px solid #dddddd;">
-                            <th style="padding: 12px 15px;">Tên nha sĩ</th>
-                            <td style="padding: 12px 15px;">%s</td>
-                        </tr>
-                        <tr style="border-bottom: 1px solid #dddddd;">
-                            <th style="padding: 12px 15px;">Tên phụ tá</th>
-                            <td style="padding: 12px 15px;">%s</td>
-                        </tr>
                         <tr style="border-bottom: 1px solid #dddddd;">
                             <th style="padding: 12px 15px;">Thời gian bắt đầu</th>
                             <td style="padding: 12px 15px;">%s</td>
@@ -142,9 +118,8 @@ public class EmailService {
                     </tbody>
                 </table>
                 """,
-                req.patientName(), req.patientId(),
-                AppointmentStatus.translateStatus(String.valueOf(req.status())), rowColor,
-                req.appointmentId(), req.patientName(), req.dentistName(), req.assistantName(),
+                req.patientName(), req.patientId(), AppointmentStatus.translateStatus(String.valueOf(req.status())), rowColor,
+                req.appointmentId(),
                 formatDateTime(req.timeStart()), formatDateTime(req.timeEnd()), req.symptoms(), req.note()
         );
 

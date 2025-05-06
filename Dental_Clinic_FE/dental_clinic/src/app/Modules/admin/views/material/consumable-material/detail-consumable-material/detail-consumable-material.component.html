@@ -105,4 +105,42 @@
       </c-card>
     </c-col>
   </c-row>
+
+  <!-- Bảng Logs mới -->
+  <c-row ngPreserveWhitespaces *ngIf="logs && logs.length > 0">
+    <c-col xs="12">
+      <c-card class="mb-4">
+        <c-card-header class="d-flex justify-content-between align-items-center">
+          <strong>Lịch sử thay đổi</strong>
+          <button cButton color="info" size="sm" (click)="toggleShowAllLogs()">
+            {{ showAllLogs ? 'Ẩn bớt' : 'Hiện tất cả (' + logs.length + ')' }}
+          </button>
+        </c-card-header>
+        <c-card-body>
+          <table class="table table-striped table-hover" cTable>
+            <thead>
+              <tr>
+                <th scope="col" style="width: 10%;">ID</th>
+                <th scope="col">Nội dung</th>
+                <th scope="col" style="width: 25%;">Thời gian</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let log of (showAllLogs ? logs : (logs | slice:0:5)); let i = index">
+                <td>{{ log.id }}</td>
+                <td>{{ log.message }}</td>
+                <td>{{ log.createdAt | date:'dd/MM/yyyy HH:mm:ss' }}</td>
+              </tr>
+              <tr *ngIf="!logs || logs.length === 0">
+                <td colspan="3" class="text-center">Không có lịch sử thay đổi.</td>
+              </tr>
+            </tbody>
+          </table>
+        </c-card-body>
+      </c-card>
+    </c-col>
+  </c-row>
+  <div *ngIf="!logs || logs.length === 0" class="alert alert-info mt-3">
+    Không có lịch sử thay đổi nào cho vật liệu này.
+  </div>
 </div>

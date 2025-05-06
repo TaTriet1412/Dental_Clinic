@@ -7,6 +7,7 @@ import com.dental_clinic.schedule_service.DTO.Request.UpdateAppointStatusReq;
 import com.dental_clinic.schedule_service.DTO.Request.UpdateAppointmentReq;
 import com.dental_clinic.schedule_service.Entity.Appointment;
 import com.dental_clinic.schedule_service.Service.AppointmentService;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import jakarta.mail.MessagingException;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -133,7 +134,7 @@ public class AppointmentController {
 
     @ResponseStatus( HttpStatus.CREATED)
     @PostMapping("/create")
-    public ApiResponse<Object> createAppointment(@Valid @RequestBody CreateAppointmentReq req) throws MessagingException {
+    public ApiResponse<Object> createAppointment(@Valid @RequestBody CreateAppointmentReq req) throws MessagingException, JsonProcessingException {
         return ApiResponse.builder()
                 .result(appointmentService.createAppointment(req))
                 .apiCode(200)
@@ -142,7 +143,7 @@ public class AppointmentController {
     }
 
     @PutMapping("/update")
-    public ApiResponse<Object> updateAppointment(@Valid @RequestBody UpdateAppointmentReq req) {
+    public ApiResponse<Object> updateAppointment(@Valid @RequestBody UpdateAppointmentReq req) throws JsonProcessingException {
         return ApiResponse.builder()
                 .result(appointmentService.updateAppointment(req))
                 .apiCode(200)

@@ -30,6 +30,10 @@ export class MaterialService {
         return this.http.get<any>(`${this.apiFixedUrl}/${id}`);
     }
 
+    getAllLogsByMaterialId(id: number): Observable<any> {
+        return this.http.get<any>(`${this.apiUrl}${id}/logs`);
+    }
+
     createFixedMaterial(fixedMaterialCreateReq: FixedMaterialCreateReq): Observable<any> {
         return this.http.post<any>(`${this.apiFixedUrl}`, fixedMaterialCreateReq);
     }

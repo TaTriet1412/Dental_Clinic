@@ -1,7 +1,10 @@
 package com.dental_clinic.schedule_service.Service;
 
+import com.dental_clinic.common_lib.dto.response.ApiResponse;
 import com.dental_clinic.common_lib.exception.AppException;
 import com.dental_clinic.common_lib.exception.ErrorCode;
+import com.dental_clinic.schedule_service.Client.PatientClient;
+import com.dental_clinic.schedule_service.DTO.Client.PatientRes;
 import com.dental_clinic.schedule_service.DTO.Request.CreateAppointmentReq;
 import com.dental_clinic.schedule_service.DTO.Request.EmailAppointmentPatientReq;
 import com.dental_clinic.schedule_service.DTO.Request.UpdateAppointStatusReq;
@@ -11,10 +14,13 @@ import com.dental_clinic.schedule_service.Entity.Appointment;
 import com.dental_clinic.schedule_service.Entity.AppointmentStatus;
 import com.dental_clinic.schedule_service.Repository.AppointmentRepository;
 import com.dental_clinic.schedule_service.Utils.StringUtils;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.mail.MessagingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
+import org.springframework.web.reactive.function.client.WebClientResponseException;
 
 import java.lang.reflect.Field;
 import java.time.LocalDateTime;
@@ -29,13 +35,19 @@ public class AppointmentService {
     AppointmentRepository appointmentRepository;
     WorkScheduleService workScheduleService;
     EmailService emailService;
+    PatientClient patientClient;
+    ObjectMapper objectMapper;
 
     @Autowired
     @Lazy
     public AppointmentService(
+            PatientClient patientClient,
             AppointmentRepository appointmentRepository,
             WorkScheduleService workScheduleService,
-            EmailService emailService) {
+            EmailService emailService,
+            ObjectMapper objectMapper) {
+        this.objectMapper = objectMapper;
+        this.patientClient = patientClient;
         this.emailService = emailService;
         this.workScheduleService = workScheduleService;
         this.appointmentRepository = appointmentRepository;
@@ -242,31 +254,47 @@ public class AppointmentService {
 
 
 
-    public Appointment createAppointment(CreateAppointmentReq req) throws MessagingException {
-        if(req.timeStart().isEqual(req.timeEnd()) || req.timeStart().isAfter(req.timeEnd()))
-            throw new AppException(ErrorCode.INVALID_REQUEST, "Thời gian bắt đầu phải trước thời gian kết thúc");
+    public Appointment createAppointment(CreateAppointmentReq req) throws MessagingException, JsonProcessingException {
+        try {
+            ApiResponse<Object> patientApiResponse = patientClient.getPatientById(req.patId());
+            Object result =  patientApiResponse.getResult();
+            PatientRes patientRes = objectMapper.convertValue(result, PatientRes.class);
 
-        checkValidAppointmentForSchedule(req.assiId(), req.denId(), req.timeStart(), req.timeEnd());
-        checkValidAppointmentWithExistedData(req.denId(), req.assiId() , req.patId() , req.timeStart(), req.timeEnd());
+            checkValidAppointmentForSchedule(req.assiId(), req.denId(), req.timeStart(), req.timeEnd());
+            checkValidAppointmentWithExistedData(req.denId(), req.assiId() , req.patId() , req.timeStart(), req.timeEnd());
 
-        Appointment appointment = Appointment.builder()
-                .patId(req.patId())
-                .denId(req.denId())
-                .assiId(req.assiId())
-                .timeStart(req.timeStart())
-                .timeEnd(req.timeEnd())
-                .symptom(req.symptom())
-                .note(req.note())
-                .createdAt(LocalDateTime.now())
-                .status(AppointmentStatus.confirmed)
-                .build();
+            Appointment appointment = Appointment.builder()
+                    .patId(req.patId())
+                    .denId(req.denId())
+                    .assiId(req.assiId())
+                    .timeStart(req.timeStart())
+                    .timeEnd(req.timeEnd())
+                    .symptom(req.symptom())
+                    .note(req.note())
+                    .createdAt(LocalDateTime.now())
+                    .status(AppointmentStatus.confirmed)
+                    .build();
 
-        Appointment savedAppointment = appointmentRepository.save(appointment);
+            Appointment savedAppointment = appointmentRepository.save(appointment);
 
-        EmailAppointmentPatientReq emailAppointmentPatientReq = getEmailAppointmentPatientReq(savedAppointment);
-        emailService.sendAppointmentConfirmForPatient(emailAppointmentPatientReq);
-        
-        return savedAppointment;
+            EmailAppointmentPatientReq emailAppointmentPatientReq =
+                    getEmailAppointmentPatientReq(savedAppointment,patientRes.getEmail() , patientRes.getName());
+            emailService.sendAppointmentConfirmForPatient(emailAppointmentPatientReq);
+
+            return savedAppointment;
+        } catch (AppException e) {
+            throw (e);
+        } catch (WebClientResponseException ex) {
+            String errorBody = ex.getResponseBodyAsString(); // <-- lấy lỗi gốc
+            int statusCode = ex.getRawStatusCode(); // ví dụ 400, 404, 500
+
+            // Nếu body trả về dạng JSON, bạn parse như này:
+            ApiResponse<?> errorResponse = objectMapper.readValue(errorBody, ApiResponse.class);
+
+            throw new AppException(ErrorCode.INVALID_REQUEST,
+                    errorResponse.getMessage());
+        }
+
     }
 
     private void checkValidAppointmentWithExistedData(
@@ -310,34 +338,41 @@ public class AppointmentService {
             throw new AppException(ErrorCode.INVALID_REQUEST, "Thời gian không nằm trong lịch làm việc của nha sĩ");
     }
 
-    public Appointment updateAppointment(UpdateAppointmentReq req){
+    public Appointment updateAppointment(UpdateAppointmentReq req) throws JsonProcessingException {
         Appointment appointment = getAppointmentById(req.id());
 
         if (isEndStatus(appointment.getStatus().toString()))
             throw new AppException(ErrorCode.INVALID_REQUEST, "Không thể chỉnh sửa lịch hẹn vì nó ở trạng thái cuối");
 
-        req.denId().ifPresent(denId -> appointment.setDenId(denId));
-        req.assiId().ifPresent(assiId -> appointment.setAssiId(assiId));
-        req.patId().ifPresent(patId -> appointment.setPatId(patId));
+        req.denId().ifPresent(appointment::setDenId);
+        req.assiId().ifPresent(appointment::setAssiId);
+
+        boolean isPatChanged = req.patId() != null && !Objects.equals(appointment.getPatId(), req.patId());
+
+        if (isPatChanged && appointment.getStatus() != AppointmentStatus.confirmed)
+            throw new AppException(ErrorCode.INVALID_REQUEST, "Không thể thay đổi bệnh nhân khi lịch hẹn không phải trạng thái xác nhận");
+
+        LocalDateTime now = LocalDateTime.now();
+
         req.timeStart().ifPresent(timeStart -> {
-            if (timeStart.isBefore(LocalDateTime.now()))
+            if (timeStart.isBefore(now))
                 throw new AppException(ErrorCode.INVALID_REQUEST, "Thời gian bắt đầu phải là thời gian hiện tại hoặc trong tương lai");
             appointment.setTimeStart(timeStart);
         });
         req.timeEnd().ifPresent(timeEnd -> {
-            if (timeEnd.isBefore(LocalDateTime.now()))
+            if (timeEnd.isBefore(now))
                 throw new AppException(ErrorCode.INVALID_REQUEST, "Thời gian kết thúc phải là thời gian hiện tại hoặc trong tương lai");
             appointment.setTimeEnd(timeEnd);
         });
+
         req.symptom().ifPresent(symptom -> {
             if (symptom.isBlank())
                 throw new AppException(ErrorCode.INVALID_REQUEST, "Triệu chứng không được để trống");
 
             appointment.setSymptom(symptom);
         });
-        req.note().ifPresent(note -> {
-            appointment.setNote(note);
-        });
+
+        req.note().ifPresent(appointment::setNote);
 
         if (appointment.getTimeStart().isEqual(appointment.getTimeEnd()) || appointment.getTimeStart().isAfter(appointment.getTimeEnd()))
             throw new AppException(ErrorCode.INVALID_REQUEST, "Thời gian bắt đầu phải trước thời gian kết thúc");
@@ -345,42 +380,103 @@ public class AppointmentService {
         checkValidAppointmentForSchedule(appointment.getAssiId(), appointment.getDenId(), appointment.getTimeStart(), appointment.getTimeEnd());
         checkValidAppointmentWithExistedDataNotID(appointment.getId(),appointment.getDenId(),appointment.getAssiId(),appointment.getPatId(),appointment.getTimeStart(),appointment.getTimeEnd());
 
-        return appointmentRepository.save(appointment);
+        if (isPatChanged) {
+            if (!isAppointmentTimeValidForPat(req.patId(), appointment.getTimeStart(), appointment.getTimeEnd()))
+                throw new AppException(ErrorCode.INVALID_REQUEST, "Thời gian bị trùng lặp với lịch hẹn khác của bệnh nhân");
+            appointment.setPatId(req.patId());
+        }
+        Appointment savedAppointment = appointmentRepository.save(appointment);
+
+        if (isPatChanged) {
+            try {
+                ApiResponse<Object> patientApiResponse = patientClient.getPatientById(req.patId());
+                Object result =  patientApiResponse.getResult();
+                PatientRes patientRes = objectMapper.convertValue(result, PatientRes.class);
+                EmailAppointmentPatientReq emailAppointmentPatientReq =
+                        getEmailAppointmentPatientReq(savedAppointment,patientRes.getEmail() , patientRes.getName());
+                emailService.sendAppointmentConfirmForPatient(emailAppointmentPatientReq);
+            } catch (AppException e) {
+                throw (e);
+            } catch (WebClientResponseException ex) {
+                String errorBody = ex.getResponseBodyAsString(); // <-- lấy lỗi gốc
+                int statusCode = ex.getRawStatusCode(); // ví dụ 400, 404, 500
+
+                // Nếu body trả về dạng JSON, bạn parse như này:
+                ApiResponse<?> errorResponse = objectMapper.readValue(errorBody, ApiResponse.class);
+
+                throw new AppException(ErrorCode.INVALID_REQUEST,
+                        errorResponse.getMessage());
+            } catch (MessagingException e) {
+                throw new AppException(ErrorCode.INTERNAL_SERVER_ERROR, "Mail có lỗi trong quá trình gửi");
+            }
+        }
+        return savedAppointment;
     }
 
     public void changeStatusAppointment(UpdateAppointStatusReq req){
-        Appointment appointment = getAppointmentById(req.appointment_id());
-
-        if(req.status().equals(appointment.getStatus().toString()))
-            throw new AppException(ErrorCode.INVALID_REQUEST, "Trạng thái không được giống trạng thái hiện tại");
         try {
-            checkValidStatusBeforeChange(req , appointment);
-            appointment.setStatus(AppointmentStatus.valueOf(req.status()));
+            Appointment appointment = getAppointmentById(req.appointment_id());
+
+            ApiResponse<Object> patientApiResponse = patientClient.getPatientById(appointment.getPatId());
+            Object result = patientApiResponse.getResult();
+            PatientRes patientRes = objectMapper.convertValue(result , PatientRes.class);
+
+            if(req.status().equals(appointment.getStatus().toString()))
+                throw new AppException(ErrorCode.INVALID_REQUEST, "Trạng thái không được giống trạng thái hiện tại");
+            try {
+                checkValidStatusBeforeChange(req , appointment);
+                appointment.setStatus(AppointmentStatus.valueOf(req.status()));
 
 
-            if (AppointmentStatus.valueOf(req.status())==AppointmentStatus.finished
-                || AppointmentStatus.valueOf(req.status())==AppointmentStatus.cancelled
-                || AppointmentStatus.valueOf(req.status())==AppointmentStatus.not_show
-            ) {
-                EmailAppointmentPatientReq emailAppointmentPatientReq = getEmailAppointmentPatientReq(appointment);
-                emailService.sendAppointmentWithNewStatusForPatient(emailAppointmentPatientReq);
+                if (AppointmentStatus.valueOf(req.status())==AppointmentStatus.finished
+                        || AppointmentStatus.valueOf(req.status())==AppointmentStatus.cancelled
+                        || AppointmentStatus.valueOf(req.status())==AppointmentStatus.not_show
+                ) {
+                    EmailAppointmentPatientReq emailAppointmentPatientReq =
+                            getEmailAppointmentPatientReq(appointment,patientRes.getEmail() , patientRes.getName());
+                    emailService.sendAppointmentWithNewStatusForPatient(emailAppointmentPatientReq);
+                }
+
+            } catch (IllegalArgumentException e) {
+                throw new AppException(ErrorCode.INVALID_REQUEST, "Trạng thái không hợp lệ: " + req.status());
+            } catch (MessagingException e) {
+                throw new AppException(ErrorCode.INTERNAL_SERVER_ERROR, "Mail có lỗi trong quá trình gửi");
+            }
+            appointmentRepository.save(appointment);
+        }
+        catch (AppException e) {
+            throw e;
+        }
+        catch (WebClientResponseException ex) {
+            String errorBody = ex.getResponseBodyAsString(); // <-- lấy lỗi gốc
+            int statusCode = ex.getRawStatusCode(); // ví dụ 400, 404, 500
+
+            // Nếu body trả về dạng JSON, bạn parse như này:
+            ApiResponse<?> errorResponse = null;
+            try {
+                errorResponse = objectMapper.readValue(errorBody, ApiResponse.class);
+            } catch (JsonProcessingException ex1) {
+                throw new AppException(ErrorCode.INTERNAL_SERVER_ERROR, "Lỗi không xác định");
             }
 
-        } catch (IllegalArgumentException e) {
-            throw new AppException(ErrorCode.INVALID_REQUEST, "Trạng thái không hợp lệ: " + req.status());
-        } catch (MessagingException e) {
-            throw new AppException(ErrorCode.INTERNAL_SERVER_ERROR, "Mail có lỗi trong quá trình gửi");
+            throw new AppException(ErrorCode.INVALID_REQUEST,
+                    errorResponse.getMessage());
         }
-        appointmentRepository.save(appointment);
+
+
     }
 
-    public static EmailAppointmentPatientReq getEmailAppointmentPatientReq(Appointment appointment) {
+    public static EmailAppointmentPatientReq getEmailAppointmentPatientReq(
+            Appointment appointment,
+            String emailPatient,
+            String patientName
+        ) {
         return EmailAppointmentPatientReq.builder()
-                .email("tatriet_tony@1zulieu.com")
+                .email(emailPatient)
                 .appointmentId(appointment.getId())
                 .dentistName("Tên nha sĩ")
                 .assistantName("Tên phụ tá")
-                .patientName("Tên bệnh nhân")
+                .patientName(patientName)
                 .patientId(appointment.getPatId())
                 .timeStart(appointment.getTimeStart())
                 .timeEnd(appointment.getTimeEnd())

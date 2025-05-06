@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy, ChangeDetectionStrategy, ChangeDetectorRef, inject, LOCALE_ID } from '@angular/core';
-import { BehaviorSubject, combineLatest, Observable, Subject, of } from 'rxjs'; // Import 'of'
-import { map, switchMap, tap, takeUntil, startWith, distinctUntilChanged, catchError } from 'rxjs/operators'; // Import catchError
+import { BehaviorSubject, combineLatest, Observable, Subject, of, ReplaySubject } from 'rxjs'; // Thêm ReplaySubject nếu muốn
+import { map, switchMap, tap, takeUntil, startWith, distinctUntilChanged, catchError, take } from 'rxjs/operators'; // Import catchError
 import { AppointmentService } from '../../../../../core/services/appointment.service';
 import { SnackBarService } from '../../../../../core/services/snack-bar.service';
 import { AlignDirective, BadgeModule, ButtonDirective, CardModule, ColComponent, FormSelectDirective, ModalModule, RowComponent, SpinnerModule } from '@coreui/angular';
@@ -78,11 +78,36 @@ export class AppointmentComponent implements OnInit, OnDestroy {
     { key: 'interact', label: 'Thao tác', sorter: false, filter: false },
   ];
 
+  // --- BehaviorSubject để giữ toàn bộ dữ liệu gốc từ service ---
+  private allAppointmentsData$ = new BehaviorSubject<AppointmentResponse[]>([]);
+
   constructor(
     private router: Router,
     private spinner: NgxSpinnerService,
   ) {
     this.spinner.show();
+
+    // --- Lấy dữ liệu gốc một lần và đưa vào allAppointmentsData$ ---
+    this.appointmentService.getAllAppointments().pipe(
+      map(response => Array.isArray(response?.result) ? response.result : []),
+      map(data => data.map((item: any) => ({
+        ...item,
+        _original_createdAt: new Date(item.createdAt),
+        _original_timeStart: new Date(item.timeStart),
+        _original_timeEnd: new Date(item.timeEnd)
+      }))),
+      catchError(err => {
+        console.error("Error fetching initial appointments:", err);
+        this.errorMessage$.next(err?.error?.message || 'Lỗi tải danh sách lịch hẹn');
+        return of([]);
+      }),
+      takeUntil(this.#destroy$) // Hủy khi component destroy
+    ).subscribe(data => {
+      this.allAppointmentsData$.next(data); // Đưa dữ liệu vào BehaviorSubject
+      this.loading$.next(false); // Dữ liệu gốc đã tải xong
+      this.spinner.hide(); // Ẩn spinner sau khi dữ liệu gốc đã tải
+    });
+
     // Combine state for API parameters
     this.apiParams$ = combineLatest([this.pagination$, this.sortFields$]).pipe(
       map(([pagination, sortFields]) => ({
@@ -99,67 +124,54 @@ export class AppointmentComponent implements OnInit, OnDestroy {
       map(([pagination, loading, sortFields, totalPages]) => ({
         activePage: pagination.page,
         itemsPerPage: pagination.size,
-        loadingData: loading,
+        loadingData: loading, // Sẽ là true ban đầu, false sau khi allAppointmentsData$ có giá trị
         sorterValue: sortFields,
         totalPages
       }))
     );
 
-    // Fetch data based on API parameters
+    // --- data$ giờ sẽ lấy từ allAppointmentsData$ và các params ---
     this.data$ = combineLatest([
         this.apiParams$,
-        // Fetch all data once
-        this.appointmentService.getAllAppointments().pipe(
-            map(response => Array.isArray(response?.result) ? response.result : []), // Get the raw data array
-            // --- Lưu trữ Date gốc ---
-            map(data => data.map((item:any) => ({
-                ...item,
-                _original_createdAt: new Date(item.createdAt),
-                _original_timeStart: new Date(item.timeStart),
-                _original_timeEnd: new Date(item.timeEnd)
-            }))),
-            catchError(err => { // Handle potential errors during initial fetch
-                console.error("Error fetching initial appointments:", err);
-                this.errorMessage$.next(err?.error?.message || 'Lỗi tải danh sách lịch hẹn');
-                this.loading$.next(false);
-                this.spinner.hide();
-                return of([]); // Return empty array on error
-            })
-        )
+        this.allAppointmentsData$ // Sử dụng BehaviorSubject chứa dữ liệu gốc
     ]).pipe(
-      tap(() => {
-        // Reset loading/error only when params change if needed, or keep it simple
-        this.loading$.next(true);
+      tap(([params, allData]) => { // Thêm allData vào tap để debug nếu cần
+        // Nếu allData rỗng (chưa tải xong), không cần làm gì hoặc hiển thị loading
+        if (allData.length === 0 && this.loading$.value) {
+            // Có thể đặt loading$.next(true) ở đây nếu muốn spinner cho mỗi lần params thay đổi
+        } else if (allData.length > 0 && this.loading$.value) {
+            // this.loading$.next(false); // Dữ liệu đã có, không còn loading cho việc xử lý client-side
+        }
         this.errorMessage$.next('');
-        // spinner.show() might be better placed before the combineLatest if it should show every time params change
       }),
-      map(([params, allData]) => { // allData now contains _original_... dates
+      map(([params, allData]) => {
+        if (allData.length === 0) { // Nếu chưa có dữ liệu gốc, trả về mảng rỗng
+            this.totalPages$.next(0);
+            this.loading$.next(false); // Đảm bảo loading là false nếu không có data
+            return [];
+        }
+        // this.loading$.next(true); // Bắt đầu xử lý client-side
 
-        let processedData = [...allData]; // Work with the full dataset
+        let processedData = [...allData];
 
         // --- Áp dụng sắp xếp trên dữ liệu gốc ---
+        // ... (logic sắp xếp giữ nguyên) ...
         if (params.sort) {
           const [key, direction] = params.sort.split(',');
-          // --- Sắp xếp dựa trên đối tượng Date gốc ---
-          const sortKeyOriginal = `_original_${key}`; // e.g., _original_createdAt
+          const sortKeyOriginal = `_original_${key}`;
 
-          // Check if the original date key exists before sorting
           if (processedData.length > 0 && processedData[0].hasOwnProperty(sortKeyOriginal)) {
               processedData.sort((a: any, b: any) => {
                   const dateA = a[sortKeyOriginal]?.getTime();
                   const dateB = b[sortKeyOriginal]?.getTime();
-
-                  // Handle potential invalid dates
                   if (isNaN(dateA) && isNaN(dateB)) return 0;
-                  if (isNaN(dateA)) return 1; // Put invalid dates at the end
+                  if (isNaN(dateA)) return 1;
                   if (isNaN(dateB)) return -1;
-
                   if (dateA < dateB) return direction === 'asc' ? -1 : 1;
                   if (dateA > dateB) return direction === 'asc' ? 1 : -1;
                   return 0;
               });
           } else if (processedData.length > 0 && processedData[0].hasOwnProperty(key)) {
-              // Fallback to sorting other non-date columns if original date key doesn't exist
               processedData.sort((a: any, b: any) => {
                   if (a[key] < b[key]) return direction === 'asc' ? -1 : 1;
                   if (a[key] > b[key]) return direction === 'asc' ? 1 : -1;
@@ -171,31 +183,26 @@ export class AppointmentComponent implements OnInit, OnDestroy {
         // --- Định dạng ngày tháng *sau khi* sắp xếp ---
         const formattedData = processedData.map((item: any) => ({
           ...item,
-          // Sử dụng DatePipe để định dạng
           createdAt: this.datePipe.transform(item._original_createdAt, 'dd/MM/yyyy, HH:mm:ss', 'vi-VN') || '',
           timeStart: this.datePipe.transform(item._original_timeStart, 'dd/MM/yyyy, HH:mm:ss', 'vi-VN') || '',
           timeEnd: this.datePipe.transform(item._original_timeEnd, 'dd/MM/yyyy, HH:mm:ss', 'vi-VN') || '',
         }));
 
-        // Áp dụng phân trang trên dữ liệu đã sắp xếp và định dạng
         const startIndex = (params.page - 1) * params.size;
         const endIndex = startIndex + params.size;
         const paginatedData = formattedData.slice(startIndex, endIndex);
 
-        // Cập nhật tổng số trang dựa trên toàn bộ dữ liệu đã xử lý
         const totalPages = Math.ceil(formattedData.length / params.size);
         this.totalPages$.next(totalPages);
 
-        this.loading$.next(false);
-        this.cdr.markForCheck(); // Mark for check after async operations
-
+        // this.loading$.next(false); // Kết thúc xử lý client-side
+        this.cdr.markForCheck();
         return paginatedData;
       }),
-      startWith([]), // Initial empty value before data loads
+      startWith([]),
       takeUntil(this.#destroy$)
     );
-    // Consider moving spinner.hide() inside the final tap/map of the data$ stream
-    this.spinner.hide(); // Might hide too early if initial fetch is slow
+    // Bỏ spinner.hide() ở đây vì nó được xử lý sau khi allAppointmentsData$ nhận dữ liệu
   }
 
   ngOnInit(): void {
@@ -277,6 +284,33 @@ export class AppointmentComponent implements OnInit, OnDestroy {
     this.appointmentService.updateStatusAppointment(this.selectedAppointmentId, this.selectedStatus, this.reason).subscribe({
       next: (response) => {
         this.snackbar.notifySuccess(response.message);
+
+        // --- Cập nhật dữ liệu trong allAppointmentsData$ ---
+        const currentAllData = this.allAppointmentsData$.value;
+        const indexInAllData = currentAllData.findIndex((item) => item.id === this.selectedAppointmentId);
+
+        if (indexInAllData !== -1) {
+          // Tạo một bản sao của item để cập nhật (đảm bảo tính bất biến nếu cần)
+          const updatedItem = {
+            ...currentAllData[indexInAllData],
+            status: this.selectedStatus
+            // Cập nhật thêm reason hoặc các trường khác nếu API trả về
+          };
+          // Tạo một mảng mới với item đã cập nhật
+          const newAllData = [
+            ...currentAllData.slice(0, indexInAllData),
+            updatedItem,
+            ...currentAllData.slice(indexInAllData + 1)
+          ];
+          this.allAppointmentsData$.next(newAllData); // Phát ra dữ liệu mới
+        } else {
+          // Nếu không tìm thấy, có thể cần fetch lại toàn bộ để đảm bảo đồng bộ
+          // Hoặc log lỗi
+          console.warn(`Appointment with ID ${this.selectedAppointmentId} not found in local data after update.`);
+          // Để đơn giản, bạn có thể re-fetch ở đây nếu muốn, nhưng lý tưởng là không cần
+          // this.refreshAllData(); // Một hàm helper để gọi lại service
+        }
+
         // --- Trigger data refresh ---
         // Easiest way with client-side data is to re-emit the source observable or manually update the local array
         // For simplicity, let's re-trigger the fetch (though inefficient for large datasets)
