@@ -231,13 +231,13 @@ Dental_Clinic_FE/dental_clinic/  # Thư mục gốc của dự án Angular
 ### 3. **Chạy Phần Backend (Spring Boot)**
 
 1. Mở **IntelliJ IDEA**.
-2. Chọn **Open** và điều hướng đến thư mục chứa mã nguồn của dự án Spring Boot (thư mục `com.peaceful_land` > `BackEnd`).
+2. Chọn **Open** và điều hướng đến thư mục chứa mã nguồn của dự án Spring Boot (thư mục `Dental_Clinic_BE`).
 3. IntelliJ sẽ tự động nhận diện dự án và tải các phụ thuộc
 4. Dưa vào file application.yaml để cấu hình mysql tương thích (chạy database trong workbench với tên spring_commerce, file được cung cấp trong folder Model của com.triet.spring_commerce) *Lưu ý username và password là "root"
 5. Bấm nút "Start" sau khi cấu hình thành công
 
 ### 4. **Chạy Phần Frontend (Angular)**
-1. Mở terminal, cd đến thư mục root của Frontend `com.peaceful_land` > `FrontEnd` > `peaceful-land`
+1. Mở terminal, cd đến thư mục root của Frontend `Dental_Clinic_FE` > `dental_clinic` 
 2. Cài đặt tất cả các phụ thuộc cần thiết cho dự án Angular bằng cách chạy lệnh sau (npm install)
 3. Chạy ứng dụng (npm start)
 
