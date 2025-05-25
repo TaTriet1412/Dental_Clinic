@@ -199,7 +199,7 @@ Dental_Clinic_FE/dental_clinic/  # Thư mục gốc của dự án Angular
 ### 2. **Thiết lập CSDL**
 
 1.  **MySQL**
-    *   Mở terminal và chạy lệnh để kéo image MySQL: ```bash `docker pull mysql:latest` (hoặc phiên bản cụ thể).
+    *   Mở terminal và chạy lệnh để kéo image MySQL: `docker pull mysql:latest` (hoặc phiên bản cụ thể).
     *   Chạy container MySQL: `docker run --name dental-mysql -p 3306:3306 -e MYSQL_ROOT_PASSWORD=your_strong_password -d mysql:latest`
         *   Thay `your_strong_password` bằng mật khẩu của bạn.
     *   Kiểm tra container: `docker ps`.
