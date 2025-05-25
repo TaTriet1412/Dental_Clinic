@@ -66,53 +66,54 @@ Dự án này được xây dựng sử dụng các công nghệ **Docker**, **M
 - **Redis**: CSDL mã nguồn mở, hoạt động trên bộ nhớ (in-memory database), có thể được sử dụng cho caching, session management, hoặc các tác vụ yêu cầu hiệu suất cao. (Đề cập trong README gốc, giả định vẫn sử dụng).
 
 ## Cấu trúc thư mục của dự án Spring Boot (Backend - Microservices)
-Dental_Clinic_BE/<br>
-├── auth-service/ (MySQL)<br>
-│   ├── src/main/java/com/dental_clinic/auth_service/...<br>
-│   ├── src/main/resources/application.properties (hoặc .yml)<br>
-│   └── pom.xml<br>
-├── dental-service/ (MongoDB)<br>
-│   ├── src/main/java/com/dental_clinic/dental_service/...<br>
-│   ├── src/main/resources/application.properties (hoặc .yml)<br>
-│   └── pom.xml<br>
-├── dentist-service/ (MySQL)<br>
-│   ├── src/main/java/com/dental_clinic/dentist_service/...<br>
-│   ├── src/main/resources/application.properties (hoặc .yml)<br>
-│   └── pom.xml<br>
-├── material-service/ (MySQL)<br>
-│   ├── src/main/java/com/dental_clinic/material_service/...<br>
-│   ├── src/main/resources/application.properties (hoặc .yml)<br>
-│   └── pom.xml<br>
-├── patient-service/ (MongoDB)<br>
-│   ├── src/main/java/com/dental_clinic/patient_service/...<br>
-│   ├── src/main/resources/application.properties (hoặc .yml)<br>
-│   └── pom.xml<br>
-├── payment-service/ (MySQL)<br>
-│   ├── src/main/java/com/dental_clinic/payment_service/...<br>
-│   ├── src/main/resources/application.properties (hoặc .yml)<br>
-│   └── pom.xml<br>
-├── prescription-service/ (MongoDB)<br>
-│   ├── src/main/java/com/dental_clinic/prescription_service/...<br>
-│   ├── src/main/resources/application.properties (hoặc .yml)<br>
-│   └── pom.xml<br>
-├── schedule-service/ (MongoDB)<br>
-│   ├── src/main/java/com/dental_clinic/schedule_service/...<br>
-│   ├── src/main/resources/application.properties (hoặc .yml)<br>
-│   └── pom.xml<br>
-├── Database/<br>
-│   ├── MySql/<br>
-│   │   └── dentist.sql  # Script khởi tạo CSDL cho các service liên quan MySQL<br>
-│   └── MongoDB/<br>
-│       ├── schedule/<br>
-│       │   └── json_create_data.js # Script tạo dữ liệu cho schedule-service<br>
-│       ├── patient/<br>
-│       │   └── json_create_patient.js # Script tạo dữ liệu cho patient-service<br>
-│       ├── prescription/<br>
-│       │   └── logic_create_prescription.js # Script tạo dữ liệu cho prescription-service<br>
-│       └── dental/<br>
-│           └── json_create_dental.js # Script tạo dữ liệu cho dental-service (giả định)<br>
-└── uploads/             # (Có thể được quản lý bởi từng service hoặc một service chuyên biệt)<br>
-
+```
+Dental_Clinic_BE/
+├── auth-service/ (MySQL)
+│   ├── src/main/java/com/dental_clinic/auth_service/...
+│   ├── src/main/resources/application.properties (hoặc .yml)
+│   └── pom.xml
+├── dental-service/ (MongoDB)
+│   ├── src/main/java/com/dental_clinic/dental_service/...
+│   ├── src/main/resources/application.properties (hoặc .yml)
+│   └── pom.xml
+├── dentist-service/ (MySQL)
+│   ├── src/main/java/com/dental_clinic/dentist_service/...
+│   ├── src/main/resources/application.properties (hoặc .yml)
+│   └── pom.xml
+├── material-service/ (MySQL)
+│   ├── src/main/java/com/dental_clinic/material_service/...
+│   ├── src/main/resources/application.properties (hoặc .yml)
+│   └── pom.xml
+├── patient-service/ (MongoDB)
+│   ├── src/main/java/com/dental_clinic/patient_service/...
+│   ├── src/main/resources/application.properties (hoặc .yml)
+│   └── pom.xml
+├── payment-service/ (MySQL)
+│   ├── src/main/java/com/dental_clinic/payment_service/...
+│   ├── src/main/resources/application.properties (hoặc .yml)
+│   └── pom.xml
+├── prescription-service/ (MongoDB)
+│   ├── src/main/java/com/dental_clinic/prescription_service/...
+│   ├── src/main/resources/application.properties (hoặc .yml)
+│   └── pom.xml
+├── schedule-service/ (MongoDB)
+│   ├── src/main/java/com/dental_clinic/schedule_service/...
+│   ├── src/main/resources/application.properties (hoặc .yml)
+│   └── pom.xml
+├── Database/
+│   ├── MySql/
+│   │   └── dentist.sql  # Script khởi tạo CSDL cho các service liên quan MySQL
+│   └── MongoDB/
+│       ├── schedule/
+│       │   └── json_create_data.js # Script tạo dữ liệu cho schedule-service
+│       ├── patient/
+│       │   └── json_create_patient.js # Script tạo dữ liệu cho patient-service
+│       ├── prescription/
+│       │   └── logic_create_prescription.js # Script tạo dữ liệu cho prescription-service
+│       └── dental/
+│           └── json_create_dental.js # Script tạo dữ liệu cho dental-service (giả định)
+└── uploads/             # (Có thể được quản lý bởi từng service hoặc một service chuyên biệt)
+```
 *Mỗi microservice (ví dụ: `auth-service`) sẽ có cấu trúc nội bộ tương tự như một dự án Spring Boot tiêu chuẩn:*
 
 ## Cấu trúc thư mục của dự án Angular (Frontend)
