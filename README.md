@@ -238,10 +238,10 @@ Dental_Clinic_FE/dental_clinic/  # Thư mục gốc của dự án Angular
 
 ### 4. **Chạy Phần Frontend (Angular)**
 1. Mở terminal, cd đến thư mục root của Frontend `Dental_Clinic_FE` > `dental_clinic` 
-2. Cài đặt tất cả các phụ thuộc cần thiết cho dự án Angular bằng cách chạy lệnh sau (npm install)
+2. Cài đặt tất cả các phụ thuộc cần thiết cho dự án Angular bằng cách chạy lệnh sau (npm install --legacy-peer-deps)
 3. Chạy ứng dụng (npm start)
 
 ### 5. **Kiểm tra kết nối Backend và Frontend **
 1. Truy cập http://localhost:4200 trong trình duyệt. Đây là giao diện người dùng của ứng dụng Angular.
-2. Ứng dụng Angular sẽ gửi các yêu cầu HTTP đến http://localhost:8080 (backend) để lấy hoặc gửi dữ liệu.
+2. Ứng dụng Angular sẽ gửi các yêu cầu HTTP đến http://localhost8060 (backend) để lấy hoặc gửi dữ liệu.
 3. Kiểm tra xem các chức năng trong ứng dụng có hoạt động như mong đợi hay không, ví dụ: đăng nhập, hiển thị danh sách sản phẩm,...
