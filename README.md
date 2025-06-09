@@ -212,7 +212,7 @@ docker run --rm -v "<đường_dẫn_đến_thư_mục_MySql_trên_máy_bạn>:/
 - Thay `<đường_dẫn_đến_thư_mục_MySql_trên_máy_bạn>` bằng đường dẫn thư mục chứa file `mysql-utf8.cnf` trên máy tính cá nhân của bạn.
 - Ví dụ: Nếu trên máy bạn là `D:\MyProject\Database\MySql` thì lệnh sẽ là:
   ```bash
-  docker run --rm -v "D:\MyProject\Database\MySql:/data" busybox sh -c "chmod 644 /data/mysql-utf8.cnf"
+  docker run --rm -v "D:\MyProject\Dental_Clinic\Dental_Clinic_BE\Database\MySql:/data" busybox sh -c "chmod 644 /data/mysql-utf8.cnf"
   ```
 - Đảm bảo file `mysql-utf8.cnf` đã tồn tại trong thư mục đó trước khi chạy lệnh.
 
