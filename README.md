@@ -227,6 +227,24 @@ Dental_Clinic_FE/dental_clinic/  # Thư mục gốc của dự án Angular
     *   Mở terminal hoặc command prompt và chạy lệnh sau để kéo hình ảnh Redis từ Docker Hub: `docker pull redis:latest`
     *   Chạy lệnh sau để khởi chạy một container Redis mới: `docker run -d --name myredis12 -p 6379:6379 redis:latest`
     *   Kiểm tra xem container Redis đã chạy thành công, sử dụng lệnh: `docker ps`
+  
+### 3. Cấu hình quyền cho file cấu hình MySQL (Windows)
+
+Để tránh lỗi về quyền khi sử dụng file cấu hình `mysql-utf8.cnf` với Docker, hãy chạy lệnh sau (lưu ý thay đổi đường dẫn cho phù hợp với máy của bạn):
+
+```bash
+docker run --rm -v "<đường_dẫn_đến_thư_mục_MySql_trên_máy_bạn>:/data" busybox sh -c "chmod 644 /data/mysql-utf8.cnf"
+```
+
+**Chú ý:**
+- Thay `<đường_dẫn_đến_thư_mục_MySql_trên_máy_bạn>` bằng đường dẫn thư mục chứa file `mysql-utf8.cnf` trên máy tính cá nhân của bạn.
+- Ví dụ: Nếu trên máy bạn là `D:\MyProject\Database\MySql` thì lệnh sẽ là:
+  ```bash
+  docker run --rm -v "D:\MyProject\Database\MySql:/data" busybox sh -c "chmod 644 /data/mysql-utf8.cnf"
+  ```
+- Đảm bảo file `mysql-utf8.cnf` đã tồn tại trong thư mục đó trước khi chạy lệnh.
+
+Sau khi thực hiện, bạn có thể chạy MySQL container mà không gặp vấn đề về quyền file cấu hình.
 
 ### 3. **Chạy Phần Backend (Spring Boot)**
 
