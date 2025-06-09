@@ -186,49 +186,21 @@ Dental_Clinic_FE/dental_clinic/  # Thư mục gốc của dự án Angular
 - **Node.js và npm**: Angular yêu cầu Node.js và npm. Truy cập
   [Node.js]
   (https://nodejs.org/) và tải phiên bản LTS.
-- **IntelliJ IDEA**: Dự án sử dụng IntelliJ IDEA để phát triển ứng dụng Spring Boot. Tải và cài đặt IntelliJ từ
-  [JetBrains]
-  (https://www.jetbrains.com/idea/).
 - **Git**: Cài đặt Git để quản lý mã nguồn. Tải Git từ
   [Git]
   (https://git-scm.com/).
-- **Docker**: Cài đặt Docker để chạy Server. Tải Docker từ
+- **Docker và Docker Compose**: Cài đặt Docker để chạy toàn bộ hệ thống Backend. Tải Docker từ
   [Docker]
   (https://www.docker.com/products/docker-desktop/).
 
-### 2. **Thiết lập CSDL**
+### 2. **Clone Repository**
 
-1.  **MySQL**
-    *   Mở terminal và chạy lệnh để kéo image MySQL: `docker pull mysql:latest` (hoặc phiên bản cụ thể).
-    *   Chạy container MySQL: `docker run --name dental-mysql -p 3306:3306 -e MYSQL_ROOT_PASSWORD=your_strong_password -d mysql:latest`
-        *   Thay `your_strong_password` bằng mật khẩu của bạn.
-    *   Kiểm tra container: `docker ps`.
-    *   Tạo database: Kết nối vào MySQL instance (ví dụ, sử dụng MySQL Workbench hoặc DBeaver) và chạy script SQL từ `Dental_Clinic_BE/Database/MySql/dentist.sql` (hoặc các file .sql tương ứng cho từng service như `material.sql`, `dentist.sql`, `payment.sql`, `auth.sql`) để tạo schema và các bảng cần thiết.
+```bash
+git clone https://github.com/TaTriet1412/Dental_Clinic
+cd Dental_Clinic
+```
 
-2.  **MongoDB**
-    *   Mở terminal và chạy lệnh để kéo image MongoDB: `docker pull mongo:latest`.
-    *   Chạy container MongoDB: `docker run --name dental-mongo -p 27017:27017 -d mongo:latest`
-    *   Kiểm tra container: `docker ps`.
-    *   Tạo databases và collections:
-        *   Kết nối vào MongoDB instance (ví dụ, sử dụng MongoDB Compass hoặc `mongosh`).
-        *   Đối với mỗi service sử dụng MongoDB (schedule, patient, prescription, dental), tạo database tương ứng (ví dụ: `schedule_db`, `patient_db`, `prescription_db`, `dental_db`).
-        *   Trong mỗi database, chạy các script `.js` tương ứng từ thư mục `Dental_Clinic_BE/Database/MongoDB/` để tạo collections và chèn dữ liệu mẫu (ví dụ: `json_create_data.js` cho `schedule_db`).
-        *   Lưu ý: Cấu hình `spring.data.mongodb.uri` và `spring.data.mongodb.database` trong file `application.properties` hoặc `application.yml` của mỗi service MongoDB để trỏ đến đúng instance và database. Ví dụ, cho `dental-service`:
-            ```yaml
-            spring:
-              data:
-                mongodb:
-                  uri: mongodb://localhost:27017 # Hoặc URI của MongoDB Atlas nếu dùng cloud
-                  database: dental_db # Tên database cho dental-service
-            ```
-            Tương tự cho các service khác sử dụng MongoDB, thay `database` bằng tên database tương ứng.
-
-3.  **Redis** (Nếu sử dụng cho caching, OTP, etc.)
-    *   Mở terminal hoặc command prompt và chạy lệnh sau để kéo hình ảnh Redis từ Docker Hub: `docker pull redis:latest`
-    *   Chạy lệnh sau để khởi chạy một container Redis mới: `docker run -d --name myredis12 -p 6379:6379 redis:latest`
-    *   Kiểm tra xem container Redis đã chạy thành công, sử dụng lệnh: `docker ps`
-  
-### 3. Cấu hình quyền cho file cấu hình MySQL (Windows)
+### 3. **Cấu hình quyền cho file cấu hình MySQL (Windows)**
 
 Để tránh lỗi về quyền khi sử dụng file cấu hình `mysql-utf8.cnf` với Docker, hãy chạy lệnh sau (lưu ý thay đổi đường dẫn cho phù hợp với máy của bạn):
 
@@ -244,22 +216,107 @@ docker run --rm -v "<đường_dẫn_đến_thư_mục_MySql_trên_máy_bạn>:/
   ```
 - Đảm bảo file `mysql-utf8.cnf` đã tồn tại trong thư mục đó trước khi chạy lệnh.
 
-Sau khi thực hiện, bạn có thể chạy MySQL container mà không gặp vấn đề về quyền file cấu hình.
+### 4. **Chạy Phần Backend (Microservices với Docker Compose)**
 
-### 3. **Chạy Phần Backend (Spring Boot)**
+1. Mở terminal và điều hướng đến thư mục chứa mã nguồn Backend:
+   ```bash
+   cd Dental_Clinic_BE
+   ```
 
-1. Mở **IntelliJ IDEA**.
-2. Chọn **Open** và điều hướng đến thư mục chứa mã nguồn của dự án Spring Boot (thư mục `Dental_Clinic_BE`).
-3. IntelliJ sẽ tự động nhận diện dự án và tải các phụ thuộc
-4. Dưa vào file application.yaml để cấu hình mysql tương thích (chạy database trong workbench với tên spring_commerce, file được cung cấp trong folder Model của com.triet.spring_commerce) *Lưu ý username và password là "root"
-5. Bấm nút "Start" sau khi cấu hình thành công
+2. Build tất cả các Docker images cho microservices:
+   ```bash
+   docker-compose build
+   ```
 
-### 4. **Chạy Phần Frontend (Angular)**
-1. Mở terminal, cd đến thư mục root của Frontend `Dental_Clinic_FE` > `dental_clinic` 
-2. Cài đặt tất cả các phụ thuộc cần thiết cho dự án Angular bằng cách chạy lệnh sau (npm install --legacy-peer-deps)
-3. Chạy ứng dụng (npm start)
+3. Khởi động toàn bộ hệ thống backend (tất cả microservices, databases, và infrastructure services):
+   ```bash
+   docker-compose up -d
+   ```
 
-### 5. **Kiểm tra kết nối Backend và Frontend **
-1. Truy cập http://localhost:4200 trong trình duyệt. Đây là giao diện người dùng của ứng dụng Angular.
-2. Ứng dụng Angular sẽ gửi các yêu cầu HTTP đến http://localhost8060 (backend) để lấy hoặc gửi dữ liệu.
-3. Kiểm tra xem các chức năng trong ứng dụng có hoạt động như mong đợi hay không, ví dụ: đăng nhập, hiển thị danh sách sản phẩm,...
+4. Kiểm tra trạng thái các containers:
+   ```bash
+   docker-compose ps
+   ```
+
+5. Xem logs của các services (nếu cần):
+   ```bash
+   # Xem logs của tất cả services
+   docker-compose logs -f
+   
+   # Xem logs của một service cụ thể
+   docker-compose logs -f auth-service
+   ```
+
+6. Dừng hệ thống khi không sử dụng:
+   ```bash
+   docker-compose down
+   ```
+
+**Các Services sẽ được khởi động:**
+- **Config Server**: http://localhost:8088
+- **Service Registry (Eureka)**: http://localhost:8761
+- **API Gateway**: http://localhost:8060
+- **Auth Service**: http://localhost:8081
+- **Dental Service**: http://localhost:8082
+- **Material Service**: http://localhost:8083
+- **Dentist Service**: http://localhost:8084
+- **Prescription Service**: http://localhost:8085
+- **Patient Service**: http://localhost:8086
+- **Schedule Service**: http://localhost:8087
+- **Payment Service**: http://localhost:8089
+- **Zipkin (Tracing)**: http://localhost:9411
+- **Redis**: localhost:6379
+- **MySQL Databases**: 
+  - Auth DB: localhost:3306
+  - Dentist DB: localhost:3307
+  - Material DB: localhost:3308
+  - Payment DB: localhost:3309
+
+### 5. **Chạy Phần Frontend (Angular)**
+
+1. Mở terminal mới và điều hướng đến thư mục Frontend:
+   ```bash
+   cd Dental_Clinic_FE/dental_clinic
+   ```
+
+2. Cài đặt tất cả các phụ thuộc cần thiết cho dự án Angular:
+   ```bash
+   npm install --legacy-peer-deps
+   ```
+
+3. Chạy ứng dụng Angular:
+   ```bash
+   npm start
+   ```
+
+### 6. **Kiểm tra kết nối Backend và Frontend**
+
+1. Truy cập http://localhost:4200 trong trình duyệt để xem giao diện người dùng Angular.
+2. Ứng dụng Angular sẽ gửi các yêu cầu HTTP đến http://localhost:8060 (API Gateway) để giao tiếp với các microservices backend.
+3. Kiểm tra Service Registry tại http://localhost:8761 để xem tất cả microservices đã đăng ký thành công.
+4. Kiểm tra distributed tracing tại http://localhost:9411 để theo dõi requests qua các services.
+
+### 7. **Troubleshooting**
+
+Nếu gặp vấn đề, hãy kiểm tra:
+
+1. **Logs của containers:**
+   ```bash
+   docker-compose logs [service-name]
+   ```
+
+2. **Trạng thái health của services:**
+   - Truy cập http://localhost:8761 để kiểm tra Service Registry
+   - Kiểm tra health endpoints: http://localhost:[port]/actuator/health
+
+3. **Restart services nếu cần:**
+   ```bash
+   docker-compose restart [service-name]
+   ```
+
+4. **Rebuild và restart toàn bộ hệ thống:**
+   ```bash
+   docker-compose down
+   docker-compose build --no-cache
+   docker-compose up -d
+   ```

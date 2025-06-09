@@ -1,3 +1,6 @@
+SET NAMES utf8mb4;
+SET CHARACTER SET utf8mb4;
+
 -- Bảng faculty (Khoa)
 CREATE TABLE faculty (
     id BIGINT PRIMARY KEY AUTO_INCREMENT, -- ID duy nhất của khoa
@@ -7,7 +10,7 @@ CREATE TABLE faculty (
     phone_number VARCHAR(15) UNIQUE,             -- Số điện thoại liên hệ
     able BIT DEFAULT b'1', -- Trạng thái của khoa
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP -- Thời gian tạo
-);
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Bảng dentist (Bác sĩ nha khoa)
 CREATE TABLE dentist (
@@ -16,7 +19,7 @@ CREATE TABLE dentist (
     experience_year INT NOT NULL,
     fac_id BIGINT NOT NULL,
     FOREIGN KEY (fac_id) REFERENCES faculty(id)
-);
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Dữ liệu mẫu cho bảng faculty
 INSERT INTO faculty (name, description, email, phone_number) VALUES

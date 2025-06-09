@@ -1,3 +1,6 @@
+SET NAMES utf8mb4;
+SET CHARACTER SET utf8mb4;
+
 CREATE TABLE bill (
     id BIGINT PRIMARY KEY AUTO_INCREMENT, -- ID duy nhất của khoa
     patient_id VARCHAR(100) NOT NULL,

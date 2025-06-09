@@ -99,12 +99,15 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: rootpassword
       MYSQL_DATABASE: auth_db
+      MYSQL_CHARSET: utf8mb4
+      MYSQL_COLLATION: utf8mb4_unicode_ci
     ports:
       - "3306:3306"
     volumes:
       - auth_mysql_data:/var/lib/mysql
       - ./Database/MySql/auth.sql:/docker-entrypoint-initdb.d/auth.sql
-    command: --default-authentication-plugin=mysql_native_password
+      - ./Database/MySql/mysql-utf8.cnf:/etc/mysql/conf.d/custom.cnf
+    command: --default-authentication-plugin=mysql_native_password --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci --init-connect='SET NAMES utf8mb4;'
     healthcheck:
       test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-prootpassword"]
       interval: 30s
@@ -130,12 +133,15 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: rootpassword
       MYSQL_DATABASE: material_db
+      MYSQL_CHARSET: utf8mb4
+      MYSQL_COLLATION: utf8mb4_unicode_ci
     ports:
       - "3308:3306"
     volumes:
       - material_mysql_data:/var/lib/mysql
       - ./Database/MySql/material.sql:/docker-entrypoint-initdb.d/material.sql
-    command: --default-authentication-plugin=mysql_native_password
+      - ./Database/MySql/mysql-utf8.cnf:/etc/mysql/conf.d/custom.cnf
+    command: --default-authentication-plugin=mysql_native_password --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci --init-connect='SET NAMES utf8mb4;'
     healthcheck:
       test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-prootpassword"]
       interval: 30s
@@ -161,12 +167,15 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: rootpassword
       MYSQL_DATABASE: dentist_db
+      MYSQL_CHARSET: utf8mb4
+      MYSQL_COLLATION: utf8mb4_unicode_ci
     ports:
       - "3307:3306"
     volumes:
       - dentist_mysql_data:/var/lib/mysql
       - ./Database/MySql/dentist.sql:/docker-entrypoint-initdb.d/dentist.sql
-    command: --default-authentication-plugin=mysql_native_password
+      - ./Database/MySql/mysql-utf8.cnf:/etc/mysql/conf.d/custom.cnf
+    command: --default-authentication-plugin=mysql_native_password --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci --init-connect='SET NAMES utf8mb4;'
     healthcheck:
       test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-prootpassword"]
       interval: 30s
@@ -192,12 +201,15 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: rootpassword
       MYSQL_DATABASE: payment_db
+      MYSQL_CHARSET: utf8mb4
+      MYSQL_COLLATION: utf8mb4_unicode_ci
     ports:
       - "3309:3306"
     volumes:
       - payment_mysql_data:/var/lib/mysql
       - ./Database/MySql/payment.sql:/docker-entrypoint-initdb.d/payment.sql
-    command: --default-authentication-plugin=mysql_native_password
+      - ./Database/MySql/mysql-utf8.cnf:/etc/mysql/conf.d/custom.cnf
+    command: --default-authentication-plugin=mysql_native_password --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci --init-connect='SET NAMES utf8mb4;'
     healthcheck:
       test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-prootpassword"]
       interval: 30s
