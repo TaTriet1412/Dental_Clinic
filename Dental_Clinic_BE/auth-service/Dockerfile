@@ -5,10 +5,19 @@ FROM openjdk:23-jdk-slim
 WORKDIR /app
 
 # Copy file jar từ target vào container
-COPY target/auth-service-0.0.1-SNAPSHOT.jar app.jar
+COPY target/*.jar app.jar
+
+# Tạo cấu trúc thư mục uploads trong container
+RUN mkdir -p /app/uploads/auth_services
+
+# Copy thư mục uploads từ host vào container (nếu tồn tại)
+COPY uploads/ /app/uploads/
+
+# Set system property để nhận biết đang chạy trong Docker
+ENV JAVA_OPTS="-Drunning.in.docker=true"
 
 # Mở port (tuỳ cổng bạn dùng)
-EXPOSE 80́81
+EXPOSE 8081
 
 # Lệnh chạy ứng dụng
 ENTRYPOINT ["java", "-jar", "app.jar"]

@@ -1,0 +1,30 @@
+spring:
+  config:
+    import: optional:configserver:http://config-server:8088
+  cloud:
+    config:
+      uri: http://config-server:8088
+  # Docker database (container)
+  datasource:
+    url: jdbc:mysql://material_mysql:3306/material_db
+    username: root
+    password: rootpassword
+  jpa:
+    repositories:
+      enabled: true
+  data:
+    redis:
+      host: redis
+      port: 6379
+      password: ""
+      timeout: 60000
+      repositories:
+        enabled: false
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://service-registry:8761/eureka/
+  instance:
+    prefer-ip-address: true
+    hostname: material-service

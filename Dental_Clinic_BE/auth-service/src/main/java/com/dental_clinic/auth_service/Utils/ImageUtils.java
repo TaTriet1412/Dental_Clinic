@@ -14,7 +14,6 @@ import java.util.Objects;
 import java.util.UUID;
 
 public class ImageUtils {
-
     public static String saveFileServer(MultipartFile file, int uploadType) throws IOException {
         String fileName = StringUtils.cleanPath(Objects.requireNonNull(file.getOriginalFilename()));
         // Kiểm tra tên file
@@ -34,10 +33,17 @@ public class ImageUtils {
         return uniqueFileName;
     }
 
+    public static void createUploadDirIfNotExists(int uploadType) throws IOException {
+        String uploadPath = VariableUtils.getStringFromUploadType(uploadType);
+        Path uploadDir = Paths.get(VariableUtils.UPLOAD_DIR_ROOT, uploadPath);
+        if (!Files.exists(uploadDir)) {
+            Files.createDirectories(uploadDir);
+        }
+    }
+
     public static void deleteFileServer(String fileName) throws IOException {
         if(fileName.isBlank()) return;
-        Path uploadDir = Paths.get("../auth-service/uploads");
-        Path filePath = Paths.get(uploadDir.toString(), fileName);
+        Path filePath = Paths.get(VariableUtils.UPLOAD_DIR_ROOT, fileName);
         Files.deleteIfExists(filePath);
     }
 
@@ -54,15 +60,6 @@ public class ImageUtils {
         String contentType = file.getContentType();
         if(contentType == null || !contentType.startsWith("image/")){
             throw new AppException(ErrorCode.INVALID_REQUEST,"Tập tin không phải là hình ảnh");
-        }
-    }
-
-    public static void createUploadDirIfNotExists(int uploadType) throws IOException {
-        Path uploadDir = Paths.get(VariableUtils.UPLOAD_DIR_ROOT, VariableUtils.getStringFromUploadType(uploadType));
-        if (!Files.exists(uploadDir)) {
-            if(!Files.exists(uploadDir)) {
-                Files.createDirectories(uploadDir);
-            }
         }
     }
 }

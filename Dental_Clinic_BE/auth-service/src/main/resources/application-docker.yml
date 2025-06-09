@@ -1,0 +1,25 @@
+spring:
+  config:
+    import: optional:configserver:http://config-server:8088
+  cloud:
+    config:
+      uri: http://config-server:8088
+  # Docker database (container)
+  datasource:
+    url: jdbc:mysql://auth_mysql:3306/auth_db
+    username: root
+    password: rootpassword
+  data:
+    redis:
+      host: redis  # ← Container name
+      port: 6379
+      password: ""
+      timeout: 60000
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://service-registry:8761/eureka/
+  instance:
+    prefer-ip-address: true
+    hostname: auth-service

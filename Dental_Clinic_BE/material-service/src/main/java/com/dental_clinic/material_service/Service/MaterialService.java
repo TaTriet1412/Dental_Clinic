@@ -27,8 +27,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import static com.dental_clinic.material_service.Utils.VariableUtils.DEFAULT_MATERIAL;
-import static com.dental_clinic.material_service.Utils.VariableUtils.TYPE_UPLOAD_MATERIAL_SERVICE;
+import static com.dental_clinic.material_service.Utils.VariableUtils.*;
 
 
 @Service
@@ -559,39 +558,42 @@ public class MaterialService {
     public void SYSTEM_scanAndDeleteUnusedImgs() {
         new Thread(() -> {
             List<String> listImgs = materialRepository.findAllImg().stream()
-                    .filter(img -> !(img.equals(DEFAULT_MATERIAL))).toList();
-            Path uploadDir = Path.of(VariableUtils.UPLOAD_DIR_MATERIAL_SERVICE);
+                    .filter(img -> img != null && !img.equals(DEFAULT_MATERIAL))
+                    .toList();
+            
+            Path uploadDir = Path.of(UPLOAD_DIR_MATERIAL_SERVICE);
+            
             try {
+                // Tạo thư mục nếu không tồn tại
+                if (!Files.exists(uploadDir)) {
+                    Files.createDirectories(uploadDir);
+                    System.out.println(VariableUtils.getServerScanPrefix() + "Created upload directory: " + uploadDir);
+                    return; // Không có file nào để scan
+                }
+                
                 // Lấy danh sách tất cả các tệp trong thư mục uploads/material_services
                 List<Path> allFiles = Files.walk(uploadDir)
-                        .filter(Files::isRegularFile) // Chỉ lấy các tệp, không lấy thư mục
+                        .filter(Files::isRegularFile)
                         .toList();
 
                 // Xóa tệp trên server nếu không nằm trong listImgs
                 for (Path file : allFiles) {
-                    String fileName = file.getFileName().toString();
-                    // Kiểm tra xem tệp có nằm trong listImgs không
-                    if (!listImgs.contains(VariableUtils.UPLOAD_DIR_MATERIAL_SERVICE_POSTFIX + fileName)) {
-                        Files.delete(file);
-                        System.out.println(VariableUtils.getServerScanPrefix() + "Delete unused material img " + file);
-                    }
-                }
-
-                // Đổi tệp trên database nếu không nằm trong server
-                for (String img : listImgs) {
-                    Path imgPath = Path.of(uploadDir.toString(), img.split("/")[1]);
-                    if (!Files.exists(imgPath)) {
-                        Optional<Material> material = materialRepository.findByImg(img);
-                        if (material.isPresent()){
-                            material.get().setImg(VariableUtils.DEFAULT_MATERIAL);
-                            materialRepository.save(material.get());
-                            System.out.println(VariableUtils.getServerScanPrefix() + "Change img of material " + material.get().getId() + " to default on database");
+                    String fileName = uploadDir.relativize(file).toString().replace("\\", "/");
+                    String fullPath = "material_services/" + fileName;
+                    
+                    if (!listImgs.contains(fullPath)) {
+                        try {
+                            Files.delete(file);
+                            System.out.println(VariableUtils.getServerScanPrefix() + "Deleted unused file: " + fileName);
+                        } catch (IOException e) {
+                            System.err.println(VariableUtils.getServerScanPrefix() + "Failed to delete file: " + fileName + " - " + e.getMessage());
                         }
                     }
                 }
-                System.out.println(">>>\n" + VariableUtils.getServerStatPrefix() + "Scan and delete unused material img completed\n<<<");
-
+                
+                System.out.println(VariableUtils.getServerScanPrefix() + "Scan completed successfully");
             } catch (IOException e) {
+                System.err.println(VariableUtils.getServerScanPrefix() + "Error scanning material service images: " + e.getMessage());
                 e.printStackTrace();
             }
         }).start();

@@ -1,14 +1,24 @@
+server:
+  port: ${SERVER_PORT:8087}
+
 spring:
-   application:
-     name: schedule-service
-   config:
-     import: "optional:configserver:http://localhost:8088"
-   data:
-     mongodb:
-       uri: mongodb+srv://${MONGO_USERNAME}:${MONGO_PASSWORD}@cluster.co4s7.mongodb.net/
-       authentication-database: admin
-       database: schedule
-   mail:
+  application:
+    name: schedule-service
+    profiles:
+    active: ${SPRING_PROFILES_ACTIVE:default}
+  config:
+    import: ${SPRING_CONFIG_IMPORT:optional:configserver:http://localhost:8088}
+  cloud:
+    config:
+      uri: ${SPRING_CLOUD_CONFIG_URI:http://localhost:8088}
+      enabled: ${SPRING_CLOUD_CONFIG_ENABLED:true}
+      fail-fast: ${SPRING_CLOUD_CONFIG_FAILFAST:false}
+  data:
+    mongodb:
+      uri: mongodb+srv://${MONGO_USERNAME}:${MONGO_PASSWORD}@cluster.co4s7.mongodb.net/
+      authentication-database: admin
+      database: schedule
+  mail:
      host: smtp.gmail.com
      port: 587
      username: tatriet16@gmail.com
@@ -19,3 +29,8 @@ spring:
            auth: true
            starttls:
              enable: true
+
+eureka:
+  client:
+    service-url:
+      defaultZone: ${EUREKA_CLIENT_SERVICEURL_DEFAULTZONE:http://localhost:8761/eureka/}

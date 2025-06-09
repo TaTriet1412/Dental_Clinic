@@ -26,6 +26,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import static com.dental_clinic.auth_service.Utils.VariableUtils.DEFAULT_USER;
+import static com.dental_clinic.auth_service.Utils.VariableUtils.UPLOAD_DIR_AUTH_SERVICE;
+
 @Service
 public class UserService {
     private final UserRepository userRepository;
@@ -153,7 +156,7 @@ public class UserService {
             // Lưu file vào server
             String fileName = ImageUtils.saveFileServer(file, VariableUtils.TYPE_UPLOAD_AUTH_SERVICE);
             // Xóa file cũ
-            if (!user.getImg().equals(VariableUtils.DEFAULT_USER)) {
+            if (!user.getImg().equals(DEFAULT_USER)) {
                 ImageUtils.deleteFileServer(user.getImg());
             }
             // Cập nhật đường dẫn file mới vào database
@@ -168,41 +171,42 @@ public class UserService {
     public void SYSTEM_scanAndDeleteUnusedImgs() {
         new Thread(() -> {
             List<String> listImgs = userRepository.findAllImg().stream()
-                    .filter(img -> !(img.equals(VariableUtils.DEFAULT_USER))).toList();
-            Path uploadDir = Path.of(VariableUtils.UPLOAD_DIR_AUTH_SERVICE);
+                    .filter(img -> img != null && !img.equals(DEFAULT_USER))
+                    .toList();
+            
+            Path uploadDir = Path.of(UPLOAD_DIR_AUTH_SERVICE);
+            
             try {
-                // Lấy danh sách tất cả các tệp trong thư mục uploads/material_services
+                // Tạo thư mục nếu không tồn tại
+                if (!Files.exists(uploadDir)) {
+                    Files.createDirectories(uploadDir);
+                    System.out.println(VariableUtils.getServerScanPrefix() + "Created upload directory: " + uploadDir);
+                    return; // Không có file nào để scan
+                }
+                
+                // Lấy danh sách tất cả các tệp trong thư mục uploads/auth_services
                 List<Path> allFiles = Files.walk(uploadDir)
-                        .filter(Files::isRegularFile) // Chỉ lấy các tệp, không lấy thư mục
+                        .filter(Files::isRegularFile)
                         .toList();
 
                 // Xóa tệp trên server nếu không nằm trong listImgs
                 for (Path file : allFiles) {
-                    String fileName = file.getFileName().toString();
-                    // Kiểm tra xem tệp có nằm trong listImgs không
-                    if (!listImgs.contains(VariableUtils.UPLOAD_DIR_AUTH_SERVICE_POSTFIX + fileName)) {
-                        Files.delete(file);
-                        System.out.println(VariableUtils.getServerScanPrefix() + "Delete unused material img " + file);
-                    }
-                }
-
-                // Đổi tệp trên database nếu không nằm trong server
-                for (String img : listImgs) {
-                    Path imgPath = Path.of(uploadDir.toString(), img.split("/")[1]);
-                    if (!Files.exists(imgPath)) {
-                        Optional<User> user = userRepository.findByImg(img);
-                        if (user.isPresent()){
-                            user.get().setImg(VariableUtils.DEFAULT_USER);
-                            userRepository.save(user.get());
-                            System.out.println(VariableUtils.getServerScanPrefix()
-                                    + "Change img of user " + user.get().getId() + " to default on database");
+                    String fileName = uploadDir.relativize(file).toString().replace("\\", "/");
+                    String fullPath = "auth_services/" + fileName;
+                    
+                    if (!listImgs.contains(fullPath)) {
+                        try {
+                            Files.delete(file);
+                            System.out.println(VariableUtils.getServerScanPrefix() + "Deleted unused file: " + fileName);
+                        } catch (IOException e) {
+                            System.err.println(VariableUtils.getServerScanPrefix() + "Failed to delete file: " + fileName + " - " + e.getMessage());
                         }
                     }
                 }
-                System.out.println(">>>\n" + VariableUtils.getServerStatPrefix()
-                        + "Scan and delete unused user img completed\n<<<");
-
+                
+                System.out.println(VariableUtils.getServerScanPrefix() + "Scan completed successfully");
             } catch (IOException e) {
+                System.err.println(VariableUtils.getServerScanPrefix() + "Error scanning user service images: " + e.getMessage());
                 e.printStackTrace();
             }
         }).start();

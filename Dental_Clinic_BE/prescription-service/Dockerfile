@@ -5,7 +5,10 @@ FROM openjdk:17-jdk-slim
 WORKDIR /app
 
 # Copy file jar từ target vào container
-COPY target/prescription-service-0.0.1-SNAPSHOT.jar app.jar
+COPY target/*.jar app.jar
+
+# Set system property để nhận biết đang chạy trong Docker
+ENV JAVA_OPTS="-Drunning.in.docker=true"
 
 # Mở port (tuỳ cổng bạn dùng)
 EXPOSE 8085

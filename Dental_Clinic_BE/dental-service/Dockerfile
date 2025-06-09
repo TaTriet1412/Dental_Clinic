@@ -5,9 +5,18 @@ FROM openjdk:17-jdk-slim
 WORKDIR /app
 
 # Copy file jar từ target vào container
-COPY target/dental-service-0.0.1-SNAPSHOT.jar app.jar
+COPY target/*.jar app.jar
 
-# Mở port (tuỳ cổng bạn dùng)
+# Tạo cấu trúc thư mục uploads trong container
+RUN mkdir -p /app/uploads/dental_services
+
+# Copy thư mục uploads từ host vào container (nếu tồn tại)
+COPY uploads/ /app/uploads/
+
+# Set system property để nhận biết đang chạy trong Docker
+ENV JAVA_OPTS="-Drunning.in.docker=true"
+
+# Mở port
 EXPOSE 8082
 
 # Lệnh chạy ứng dụng

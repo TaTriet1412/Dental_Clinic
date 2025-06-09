@@ -9,8 +9,8 @@ public class VariableUtils {
     public static final String DEFAULT_MATERIAL = "template/blank_material.png";
     public static final String IMAGE_NA = "template/image_state_not_available.jpg";
 
-    public static final String UPLOAD_DIR_ROOT = "../material-service/uploads";
-    public static final String UPLOAD_DIR_MATERIAL_SERVICE = "../material-service/uploads/material_services/";
+    public static final String UPLOAD_DIR_ROOT = getUploadRoot();
+    public static final String UPLOAD_DIR_MATERIAL_SERVICE = UPLOAD_DIR_ROOT + "/material_services";
     public static final String UPLOAD_DIR_MATERIAL_SERVICE_POSTFIX = "material_services/";
 
     public static final int TYPE_UPLOAD_MATERIAL_SERVICE = 1;
@@ -42,5 +42,16 @@ public class VariableUtils {
 
     public static String getServerStatPrefix() {
         return LocalDateTime.now() + " SERVER STAT --- ";
+    }
+
+    private static String getUploadRoot() {
+        // Kiểm tra nếu đang chạy trong Docker (có thể dùng environment variable)
+        String dockerEnv = System.getProperty("RUNNING_IN_DOCKER");
+        if ("true".equals(dockerEnv) || System.getenv("SPRING_PROFILES_ACTIVE") != null &&
+            System.getenv("SPRING_PROFILES_ACTIVE").contains("docker")) {
+            return "/app/uploads";
+        }
+        // Đường dẫn cho development
+        return "../material-service/uploads";
     }
 }

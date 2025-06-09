@@ -5,7 +5,7 @@ FROM openjdk:23-jdk-slim
 WORKDIR /app
 
 # Copy file jar từ target vào container
-COPY target/dentist-service-0.0.1-SNAPSHOT.jar app.jar
+COPY target/*.jar app.jar
 
 # Mở port (tuỳ cổng bạn dùng)
 EXPOSE 8084

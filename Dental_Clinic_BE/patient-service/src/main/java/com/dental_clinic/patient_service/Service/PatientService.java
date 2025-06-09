@@ -24,6 +24,9 @@ import java.time.chrono.ChronoLocalDate;
 import java.util.List;
 import java.util.Optional;
 
+import static com.dental_clinic.patient_service.Utils.VariableUtils.DEFAULT_PATIENT_SERVICE;
+import static com.dental_clinic.patient_service.Utils.VariableUtils.UPLOAD_DIR_PATIENT_SERVICE;
+
 @Service
 public class PatientService {
     PatientRepository patientRepository;
@@ -67,7 +70,7 @@ public class PatientService {
 
         Patient patient = Patient.builder()
                 .created_at(LocalDateTime.now())
-                .img(VariableUtils.DEFAULT_PATIENT_SERVICE)
+                .img(DEFAULT_PATIENT_SERVICE)
                 .address(request.address())
                 .email(request.email())
                 .name(request.name())
@@ -147,7 +150,7 @@ public class PatientService {
             // Lưu file vào server
             String fileName = ImageUtils.saveFileServer(file, VariableUtils.TYPE_UPLOAD_PATIENT_SERVICE);
             // Xóa file cũ
-            if (!patient.getImg().equals(VariableUtils.DEFAULT_PATIENT_SERVICE)) {
+            if (!patient.getImg().equals(DEFAULT_PATIENT_SERVICE)) {
                 ImageUtils.deleteFileServer(patient.getImg());
             }
             // Cập nhật đường dẫn file mới vào database
@@ -162,44 +165,42 @@ public class PatientService {
     public void SYSTEM_scanAndDeleteUnusedImgs() {
         new Thread(() -> {
             List<String> listImgs = patientRepository.findAllImg().stream()
-                    .filter(img -> img != null && !img.equals(VariableUtils.DEFAULT_PATIENT_SERVICE))
+                    .filter(img -> img != null && !img.equals(DEFAULT_PATIENT_SERVICE))
                     .toList();
-            Path uploadDir = Path.of(VariableUtils.UPLOAD_DIR_PATIENT_SERVICE);
+            
+            Path uploadDir = Path.of(UPLOAD_DIR_PATIENT_SERVICE);
+            
             try {
+                // Tạo thư mục nếu không tồn tại
+                if (!Files.exists(uploadDir)) {
+                    Files.createDirectories(uploadDir);
+                    System.out.println(VariableUtils.getServerScanPrefix() + "Created upload directory: " + uploadDir);
+                    return; // Không có file nào để scan
+                }
+                
                 // Lấy danh sách tất cả các tệp trong thư mục uploads/patient_services
                 List<Path> allFiles = Files.walk(uploadDir)
-                        .filter(Files::isRegularFile) // Chỉ lấy các tệp, không lấy thư mục
+                        .filter(Files::isRegularFile)
                         .toList();
 
                 // Xóa tệp trên server nếu không nằm trong listImgs
                 for (Path file : allFiles) {
-                    String fileName = file.getFileName().toString();
-                    // Kiểm tra xem tệp có nằm trong listImgs không
-                    if (!listImgs.contains(VariableUtils.UPLOAD_DIR_PATIENT_SERVICE_POSTFIX + fileName)) {
-                        Files.delete(file);
-                        System.out.println(VariableUtils.getServerScanPrefix() + "Delete unused patient img " + file);
+                    String fileName = uploadDir.relativize(file).toString().replace("\\", "/");
+                    String fullPath = "patient_services/" + fileName;
+                    
+                    if (!listImgs.contains(fullPath)) {
+                        try {
+                            Files.delete(file);
+                            System.out.println(VariableUtils.getServerScanPrefix() + "Deleted unused file: " + fileName);
+                        } catch (IOException e) {
+                            System.err.println(VariableUtils.getServerScanPrefix() + "Failed to delete file: " + fileName + " - " + e.getMessage());
+                        }
                     }
                 }
-
-                // Đổi tệp trên database nếu không nằm trong server
-                for (String img : listImgs) {
-                    // An toàn hơn khi tách lấy tên file
-                    String fileName = img.substring(img.lastIndexOf("/") + 1);
-                    Path imgPath = uploadDir.resolve(fileName);
-
-                    if (!Files.exists(imgPath)) {
-                        Optional<Patient> patient = patientRepository.findByImg(img);
-                        patient.ifPresent(d -> {
-                            d.setImg(VariableUtils.DEFAULT_PATIENT_SERVICE);
-                            patientRepository.save(d);
-                            System.out.println(VariableUtils.getServerScanPrefix() +
-                                    "Changed img of patient " + d.getId() + " to default in DB");
-                        });
-                    }
-                }
-                System.out.println(">>>\n" + VariableUtils.getServerStatPrefix() + "Scan and delete unused patient img completed\n<<<");
-
+                
+                System.out.println(VariableUtils.getServerScanPrefix() + "Scan completed successfully");
             } catch (IOException e) {
+                System.err.println(VariableUtils.getServerScanPrefix() + "Error scanning patient service images: " + e.getMessage());
                 e.printStackTrace();
             }
         }).start();

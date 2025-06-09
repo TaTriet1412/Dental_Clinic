@@ -1,0 +1,19 @@
+spring:
+  config:
+    import: optional:configserver:http://config-server:8088
+  cloud:
+    config:
+      uri: http://config-server:8088
+  # Docker database (container)
+  datasource:
+    url: jdbc:mysql://dentist_mysql:3306/dentist_db
+    username: root
+    password: rootpassword
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://service-registry:8761/eureka/
+  instance:
+    prefer-ip-address: true
+    hostname: dentist-service

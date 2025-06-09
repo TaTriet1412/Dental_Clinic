@@ -1,10 +1,3 @@
--- Xóa cơ sở dữ liệu nếu đã tồn tại
-DROP DATABASE IF EXISTS payment;
-
--- Tạo cơ sở dữ liệu
-CREATE DATABASE payment CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-USE payment;
-
 CREATE TABLE bill (
     id BIGINT PRIMARY KEY AUTO_INCREMENT, -- ID duy nhất của khoa
     patient_id VARCHAR(100) NOT NULL,

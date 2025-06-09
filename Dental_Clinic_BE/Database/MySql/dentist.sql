@@ -1,10 +1,3 @@
--- Xóa cơ sở dữ liệu nếu đã tồn tại
-DROP DATABASE IF EXISTS dentist;
-
--- Tạo cơ sở dữ liệu
-CREATE DATABASE dentist;
-USE dentist;
-
 -- Bảng faculty (Khoa)
 CREATE TABLE faculty (
     id BIGINT PRIMARY KEY AUTO_INCREMENT, -- ID duy nhất của khoa

@@ -9,8 +9,9 @@ public class VariableUtils {
     public static final String DEFAULT_DENTAL_SERVICE = "template/blank_service.png";
     public static final String IMAGE_NA = "template/image_state_not_available.jpg";
 
-    public static final String UPLOAD_DIR_ROOT = "../dental-service/uploads";
-    public static final String UPLOAD_DIR_DENTAL_SERVICE = "../dental-service/uploads/dental_services";
+    // Thay đổi đường dẫn cho container
+    public static final String UPLOAD_DIR_ROOT = getUploadRoot();
+    public static final String UPLOAD_DIR_DENTAL_SERVICE = UPLOAD_DIR_ROOT + "/dental_services";
     public static final String UPLOAD_DIR_DENTAL_SERVICE_POSTFIX = "dental_services/";
 
     public static final int TYPE_UPLOAD_DENTAL_SERVICE = 1;
@@ -42,5 +43,16 @@ public class VariableUtils {
 
     public static String getServerStatPrefix() {
         return LocalDateTime.now() + " SERVER STAT --- ";
+    }
+
+    private static String getUploadRoot() {
+        // Kiểm tra nếu đang chạy trong Docker (có thể dùng environment variable)
+        String dockerEnv = System.getProperty("RUNNING_IN_DOCKER");
+        if ("true".equals(dockerEnv) || System.getenv("SPRING_PROFILES_ACTIVE") != null &&
+            System.getenv("SPRING_PROFILES_ACTIVE").contains("docker")) {
+            return "/app/uploads";
+        }
+        // Đường dẫn cho development
+        return "../dental-service/uploads";
     }
 }

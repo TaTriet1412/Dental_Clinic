@@ -190,42 +190,40 @@ public class DentalService {
             List<String> listImgs = dentalRepository.findAllImg().stream()
                     .filter(img -> img != null && !img.equals(DEFAULT_DENTAL_SERVICE))
                     .toList();
+            
             Path uploadDir = Path.of(UPLOAD_DIR_DENTAL_SERVICE);
+            
             try {
-                // Lấy danh sách tất cả các tệp trong thư mục uploads/material_services
+                // Tạo thư mục nếu không tồn tại
+                if (!Files.exists(uploadDir)) {
+                    Files.createDirectories(uploadDir);
+                    System.out.println(VariableUtils.getServerScanPrefix() + "Created upload directory: " + uploadDir);
+                    return; // Không có file nào để scan
+                }
+                
+                // Lấy danh sách tất cả các tệp trong thư mục uploads/dental_services
                 List<Path> allFiles = Files.walk(uploadDir)
-                        .filter(Files::isRegularFile) // Chỉ lấy các tệp, không lấy thư mục
+                        .filter(Files::isRegularFile)
                         .toList();
 
                 // Xóa tệp trên server nếu không nằm trong listImgs
                 for (Path file : allFiles) {
-                    String fileName = file.getFileName().toString();
-                    // Kiểm tra xem tệp có nằm trong listImgs không
-                    if (!listImgs.contains(VariableUtils.UPLOAD_DIR_DENTAL_SERVICE_POSTFIX + fileName)) {
-                        Files.delete(file);
-                        System.out.println(VariableUtils.getServerScanPrefix() + "Delete unused material img " + file);
+                    String fileName = uploadDir.relativize(file).toString().replace("\\", "/");
+                    String fullPath = "dental_services/" + fileName;
+                    
+                    if (!listImgs.contains(fullPath)) {
+                        try {
+                            Files.delete(file);
+                            System.out.println(VariableUtils.getServerScanPrefix() + "Deleted unused file: " + fileName);
+                        } catch (IOException e) {
+                            System.err.println(VariableUtils.getServerScanPrefix() + "Failed to delete file: " + fileName + " - " + e.getMessage());
+                        }
                     }
                 }
-
-                // Đổi tệp trên database nếu không nằm trong server
-                for (String img : listImgs) {
-                    // An toàn hơn khi tách lấy tên file
-                    String fileName = img.substring(img.lastIndexOf("/") + 1);
-                    Path imgPath = uploadDir.resolve(fileName);
-
-                    if (!Files.exists(imgPath)) {
-                        Optional<Dental> dental = dentalRepository.findByImg(img);
-                        dental.ifPresent(d -> {
-                            d.setImg(DEFAULT_DENTAL_SERVICE);
-                            dentalRepository.save(d);
-                            System.out.println(VariableUtils.getServerScanPrefix() +
-                                    "Changed img of dental " + d.getId() + " to default in DB");
-                        });
-                    }
-                }
-                System.out.println(">>>\n" + VariableUtils.getServerStatPrefix() + "Scan and delete unused dental img completed\n<<<");
-
+                
+                System.out.println(VariableUtils.getServerScanPrefix() + "Scan completed successfully");
             } catch (IOException e) {
+                System.err.println(VariableUtils.getServerScanPrefix() + "Error scanning dental service images: " + e.getMessage());
                 e.printStackTrace();
             }
         }).start();

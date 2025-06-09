@@ -1,0 +1,621 @@
+services:
+  # Config Server - starts first
+  config-server:
+    build: ./config-server
+    container_name: config_server
+    ports:
+      - "8088:8088"
+    healthcheck:
+      test: ["CMD", "sh", "-c", "curl -f http://localhost:8088/actuator/health || exit 1"]
+      interval: 15s
+      timeout: 10s
+      retries: 5
+      start_period: 20s
+    deploy:
+      resources:
+        limits:
+          cpus: '0.4'
+          memory: 512M
+        reservations:
+          cpus: '0.15'
+          memory: 256M
+
+  # Service Registry - starts after config server
+  service-registry:
+    build: ./service-registry
+    container_name: service_registry
+    depends_on:
+      config-server:
+        condition: service_healthy
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+      SPRING_CLOUD_CONFIG_URI: http://config-server:8088
+    ports:
+      - "8761:8761"
+    healthcheck:
+      test: ["CMD", "sh", "-c", "curl -f http://localhost:8761/actuator/health || exit 1"]
+      interval: 15s
+      timeout: 10s
+      retries: 5
+      start_period: 20s
+    deploy:
+      resources:
+        limits:
+          cpus: '0.4'
+          memory: 512M
+        reservations:
+          cpus: '0.15'
+          memory: 256M
+
+  # Redis for caching/session management
+  redis:
+    image: redis:7.0
+    container_name: redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+    deploy:
+      resources:
+        limits:
+          cpus: '0.2'
+          memory: 128M
+        reservations:
+          cpus: '0.05'
+          memory: 64M
+
+  # Zipkin for distributed tracing
+  zipkin:
+    image: openzipkin/zipkin
+    container_name: zipkin
+    ports:
+      - "9411:9411"
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:9411/health"]
+      interval: 15s
+      timeout: 10s
+      retries: 5
+    deploy:
+      resources:
+        limits:
+          cpus: '0.2'
+          memory: 256M
+        reservations:
+          cpus: '0.05'
+          memory: 128M
+
+  # MySQL database for authentication
+  auth_db:
+    image: mysql:8.0
+    container_name: auth_mysql
+    restart: unless-stopped
+    depends_on:
+      - service-registry
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: auth_db
+    ports:
+      - "3306:3306"
+    volumes:
+      - auth_mysql_data:/var/lib/mysql
+      - ./Database/MySql/auth.sql:/docker-entrypoint-initdb.d/auth.sql
+    command: --default-authentication-plugin=mysql_native_password
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-prootpassword"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 60s
+    deploy:
+      resources:
+        limits:
+          cpus: '0.3'
+          memory: 384M
+        reservations:
+          cpus: '0.1'
+          memory: 128M
+
+  # MySQL database for materials
+  material_db:
+    image: mysql:8.0
+    container_name: material_mysql
+    restart: unless-stopped
+    depends_on:
+      - service-registry
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: material_db
+    ports:
+      - "3308:3306"
+    volumes:
+      - material_mysql_data:/var/lib/mysql
+      - ./Database/MySql/material.sql:/docker-entrypoint-initdb.d/material.sql
+    command: --default-authentication-plugin=mysql_native_password
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-prootpassword"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 60s
+    deploy:
+      resources:
+        limits:
+          cpus: '0.3'
+          memory: 384M
+        reservations:
+          cpus: '0.1'
+          memory: 128M
+
+  # MySQL database for dentist information
+  dentist_db:
+    image: mysql:8.0
+    container_name: dentist_mysql
+    restart: unless-stopped
+    depends_on:
+      - service-registry
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: dentist_db
+    ports:
+      - "3307:3306"
+    volumes:
+      - dentist_mysql_data:/var/lib/mysql
+      - ./Database/MySql/dentist.sql:/docker-entrypoint-initdb.d/dentist.sql
+    command: --default-authentication-plugin=mysql_native_password
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-prootpassword"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 60s
+    deploy:
+      resources:
+        limits:
+          cpus: '0.3'
+          memory: 384M
+        reservations:
+          cpus: '0.1'
+          memory: 128M
+
+  # MySQL database for payment
+  payment_db:
+    image: mysql:8.0
+    container_name: payment_mysql
+    restart: unless-stopped
+    depends_on:
+      - service-registry
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: payment_db
+    ports:
+      - "3309:3306"
+    volumes:
+      - payment_mysql_data:/var/lib/mysql
+      - ./Database/MySql/payment.sql:/docker-entrypoint-initdb.d/payment.sql
+    command: --default-authentication-plugin=mysql_native_password
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-prootpassword"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 60s
+    deploy:
+      resources:
+        limits:
+          cpus: '0.3'
+          memory: 384M
+        reservations:
+          cpus: '0.1'
+          memory: 128M
+
+  # API Gateway
+  api-gateway:
+    build: ./api-gateway
+    container_name: api_gateway
+    depends_on:
+      config-server:
+        condition: service_healthy
+      service-registry:
+        condition: service_healthy
+      zipkin:
+        condition: service_healthy
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://service-registry:8761/eureka/
+      SPRING_CLOUD_CONFIG_URI: http://config-server:8088
+      MANAGEMENT_ZIPKIN_TRACING_ENDPOINT: http://zipkin:9411/api/v2/spans
+      SERVER_PORT: 8060
+      # Spring Cloud Config specific properties
+      SPRING_CONFIG_IMPORT: optional:configserver:http://config-server:8088
+      SPRING_CLOUD_CONFIG_ENABLED: true
+      SPRING_CLOUD_CONFIG_FAILFAST: false
+      # Eureka retry configurations
+      EUREKA_CLIENT_REGISTRY_FETCH_INTERVAL_SECONDS: 5
+      EUREKA_CLIENT_INITIAL_INSTANCE_INFO_REPLICATION_INTERVAL_SECONDS: 5
+      EUREKA_CLIENT_INSTANCE_INFO_REPLICATION_INTERVAL_SECONDS: 30
+    ports:
+      - "8060:8060"
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          cpus: '0.3'
+          memory: 512M
+        reservations:
+          cpus: '0.1'
+          memory: 256M
+
+  # Auth Service
+  auth-service:
+    build: ./auth-service
+    container_name: auth_service
+    depends_on:
+      config-server:
+        condition: service_healthy
+      service-registry:
+        condition: service_healthy
+      auth_db:
+        condition: service_started
+      redis:
+        condition: service_healthy
+      zipkin:
+        condition: service_healthy
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://service-registry:8761/eureka/
+      SPRING_CLOUD_CONFIG_URI: http://config-server:8088
+      # Database configuration for container
+      SPRING_DATASOURCE_URL: jdbc:mysql://auth_mysql:3306/auth_db
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: rootpassword
+      # Redis configuration for container
+      SPRING_REDIS_HOST: redis
+      SPRING_REDIS_PORT: 6379
+      MANAGEMENT_ZIPKIN_TRACING_ENDPOINT: http://zipkin:9411/api/v2/spans
+      SERVER_PORT: 8081
+      # Spring Cloud Config specific properties
+      SPRING_CONFIG_IMPORT: optional:configserver:http://config-server:8088
+      SPRING_CLOUD_CONFIG_ENABLED: true
+      SPRING_CLOUD_CONFIG_FAILFAST: false
+      # Eureka retry configurations
+      EUREKA_CLIENT_REGISTRY_FETCH_INTERVAL_SECONDS: 5
+      EUREKA_CLIENT_INITIAL_INSTANCE_INFO_REPLICATION_INTERVAL_SECONDS: 5
+      EUREKA_CLIENT_INSTANCE_INFO_REPLICATION_INTERVAL_SECONDS: 30
+    ports:
+      - "8081:8081"
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          cpus: '0.2'
+          memory: 384M
+        reservations:
+          cpus: '0.1'
+          memory: 256M
+
+  # Dental Service
+  dental-service:
+    build: ./dental-service
+    container_name: dental_service
+    depends_on:
+      service-registry:
+        condition: service_healthy
+      config-server:
+        condition: service_healthy
+      zipkin:
+        condition: service_healthy
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://service-registry:8761/eureka/
+      SPRING_CLOUD_CONFIG_URI: http://config-server:8088
+      MANAGEMENT_ZIPKIN_TRACING_ENDPOINT: http://zipkin:9411/api/v2/spans
+      SERVER_PORT: 8082
+      # Đánh dấu đang chạy trong Docker
+      RUNNING_IN_DOCKER: true
+      # Spring Cloud Config specific properties
+      SPRING_CONFIG_IMPORT: optional:configserver:http://config-server:8088
+      SPRING_CLOUD_CONFIG_ENABLED: true
+      SPRING_CLOUD_CONFIG_FAILFAST: false
+      # Add additional retry configurations
+      EUREKA_CLIENT_REGISTRY_FETCH_INTERVAL_SECONDS: 5
+      EUREKA_CLIENT_INITIAL_INSTANCE_INFO_REPLICATION_INTERVAL_SECONDS: 5
+      EUREKA_CLIENT_INSTANCE_INFO_REPLICATION_INTERVAL_SECONDS: 30
+    ports:
+      - "8082:8082"
+    volumes:
+      # Mount thư mục uploads từ host vào container để giữ data khi container restart
+      - ./dental-service/uploads:/app/uploads
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          cpus: '0.2'
+          memory: 384M
+        reservations:
+          cpus: '0.1'
+          memory: 256M
+
+  # Patient Service
+  patient-service:
+    build: ./patient-service
+    container_name: patient_service
+    depends_on:
+      service-registry:
+        condition: service_healthy
+      config-server:
+        condition: service_healthy
+      zipkin:
+        condition: service_healthy
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://service-registry:8761/eureka/
+      SPRING_CLOUD_CONFIG_URI: http://config-server:8088
+      MANAGEMENT_ZIPKIN_TRACING_ENDPOINT: http://zipkin:9411/api/v2/spans
+      SERVER_PORT: 8086
+      # Đánh dấu đang chạy trong Docker
+      RUNNING_IN_DOCKER: true
+      # Spring Cloud Config specific properties
+      SPRING_CONFIG_IMPORT: optional:configserver:http://config-server:8088
+      SPRING_CLOUD_CONFIG_ENABLED: true
+      SPRING_CLOUD_CONFIG_FAILFAST: false
+      # Add additional retry configurations
+      EUREKA_CLIENT_REGISTRY_FETCH_INTERVAL_SECONDS: 5
+      EUREKA_CLIENT_INITIAL_INSTANCE_INFO_REPLICATION_INTERVAL_SECONDS: 5
+      EUREKA_CLIENT_INSTANCE_INFO_REPLICATION_INTERVAL_SECONDS: 30
+    ports:
+      - "8086:8086"
+    volumes:
+      # Mount thư mục uploads từ host vào container để giữ data khi container restart
+      - ./patient-service/uploads:/app/uploads
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          cpus: '0.2'
+          memory: 384M
+        reservations:
+          cpus: '0.1'
+          memory: 256M
+
+  # Dentist Service
+  dentist-service:
+    build: ./dentist-service
+    container_name: dentist_service
+    depends_on:
+      config-server:
+        condition: service_healthy
+      service-registry:
+        condition: service_healthy
+      dentist_db:
+        condition: service_healthy
+      zipkin:
+        condition: service_healthy
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://service-registry:8761/eureka/
+      SPRING_CLOUD_CONFIG_URI: http://config-server:8088
+      # Database configuration for container
+      SPRING_DATASOURCE_URL: jdbc:mysql://dentist_mysql:3306/dentist_db
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: rootpassword
+      MANAGEMENT_ZIPKIN_TRACING_ENDPOINT: http://zipkin:9411/api/v2/spans
+      SERVER_PORT: 8084
+      # Đánh dấu đang chạy trong Docker
+      RUNNING_IN_DOCKER: true
+      # Spring Cloud Config specific properties
+      SPRING_CONFIG_IMPORT: optional:configserver:http://config-server:8088
+      SPRING_CLOUD_CONFIG_ENABLED: true
+      SPRING_CLOUD_CONFIG_FAILFAST: false
+      # Eureka retry configurations
+      EUREKA_CLIENT_REGISTRY_FETCH_INTERVAL_SECONDS: 5
+      EUREKA_CLIENT_INITIAL_INSTANCE_INFO_REPLICATION_INTERVAL_SECONDS: 5
+      EUREKA_CLIENT_INSTANCE_INFO_REPLICATION_INTERVAL_SECONDS: 30
+    ports:
+      - "8084:8084"
+    volumes:
+      # Mount thư mục uploads từ host vào container để giữ data khi container restart
+      - ./dentist-service/uploads:/app/uploads
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          cpus: '0.2'
+          memory: 384M
+        reservations:
+          cpus: '0.1'
+          memory: 256M
+
+  # Material Service
+  material-service:
+    build: ./material-service
+    container_name: material_service
+    depends_on:
+      config-server:
+        condition: service_healthy
+      service-registry:
+        condition: service_healthy
+      material_db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      zipkin:
+        condition: service_healthy
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://service-registry:8761/eureka/
+      SPRING_CLOUD_CONFIG_URI: http://config-server:8088
+      # Database configuration for container
+      SPRING_DATASOURCE_URL: jdbc:mysql://material_mysql:3306/material_db
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: rootpassword
+      # Redis configuration for container
+      SPRING_REDIS_HOST: redis
+      SPRING_REDIS_PORT: 6379
+      MANAGEMENT_ZIPKIN_TRACING_ENDPOINT: http://zipkin:9411/api/v2/spans
+      SERVER_PORT: 8083
+      # Đánh dấu đang chạy trong Docker
+      RUNNING_IN_DOCKER: true
+      # Spring Cloud Config specific properties
+      SPRING_CONFIG_IMPORT: optional:configserver:http://config-server:8088
+      SPRING_CLOUD_CONFIG_ENABLED: true
+      SPRING_CLOUD_CONFIG_FAILFAST: false
+      # Eureka retry configurations
+      EUREKA_CLIENT_REGISTRY_FETCH_INTERVAL_SECONDS: 5
+      EUREKA_CLIENT_INITIAL_INSTANCE_INFO_REPLICATION_INTERVAL_SECONDS: 5
+      EUREKA_CLIENT_INSTANCE_INFO_REPLICATION_INTERVAL_SECONDS: 30
+    ports:
+      - "8083:8083"
+    volumes:
+      # Mount thư mục uploads từ host vào container để giữ data khi container restart
+      - ./material-service/uploads:/app/uploads
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          cpus: '0.2'
+          memory: 384M
+        reservations:
+          cpus: '0.1'
+          memory: 256M
+
+  # Payment Service
+  payment-service:
+    build: ./payment-service
+    container_name: payment_service
+    depends_on:
+      service-registry:
+        condition: service_healthy
+      config-server:
+        condition: service_healthy
+      payment_db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      zipkin:
+        condition: service_healthy
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://service-registry:8761/eureka/
+      SPRING_CLOUD_CONFIG_URI: http://config-server:8088
+      # Database configuration for container
+      SPRING_DATASOURCE_URL: jdbc:mysql://payment_mysql:3306/payment_db
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: rootpassword
+      # Redis configuration for container
+      SPRING_REDIS_HOST: redis
+      SPRING_REDIS_PORT: 6379
+      MANAGEMENT_ZIPKIN_TRACING_ENDPOINT: http://zipkin:9411/api/v2/spans
+      SERVER_PORT: 8089
+      # Spring Cloud Config specific properties
+      SPRING_CONFIG_IMPORT: optional:configserver:http://config-server:8088
+      SPRING_CLOUD_CONFIG_ENABLED: true
+      SPRING_CLOUD_CONFIG_FAILFAST: false
+      # Eureka retry configurations
+      EUREKA_CLIENT_REGISTRY_FETCH_INTERVAL_SECONDS: 5
+      EUREKA_CLIENT_INITIAL_INSTANCE_INFO_REPLICATION_INTERVAL_SECONDS: 5
+      EUREKA_CLIENT_INSTANCE_INFO_REPLICATION_INTERVAL_SECONDS: 30
+    ports:
+      - "8089:8089"
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          cpus: '0.2'
+          memory: 384M
+        reservations:
+          cpus: '0.1'
+          memory: 256M
+
+  # Prescription Service
+  prescription-service:
+    build: ./prescription-service
+    container_name: prescription_service
+    depends_on:
+      service-registry:
+        condition: service_healthy
+      config-server:
+        condition: service_healthy
+      zipkin:
+        condition: service_healthy
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://service-registry:8761/eureka/
+      SPRING_CLOUD_CONFIG_URI: http://config-server:8088
+      MANAGEMENT_ZIPKIN_TRACING_ENDPOINT: http://zipkin:9411/api/v2/spans
+      SERVER_PORT: 8085
+      # Đánh dấu đang chạy trong Docker
+      RUNNING_IN_DOCKER: true
+      # Spring Cloud Config specific properties
+      SPRING_CONFIG_IMPORT: optional:configserver:http://config-server:8088
+      SPRING_CLOUD_CONFIG_ENABLED: true
+      SPRING_CLOUD_CONFIG_FAILFAST: false
+      # Add additional retry configurations
+      EUREKA_CLIENT_REGISTRY_FETCH_INTERVAL_SECONDS: 5
+      EUREKA_CLIENT_INITIAL_INSTANCE_INFO_REPLICATION_INTERVAL_SECONDS: 5
+      EUREKA_CLIENT_INSTANCE_INFO_REPLICATION_INTERVAL_SECONDS: 30
+    ports:
+      - "8085:8085"
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          cpus: '0.2'
+          memory: 384M
+        reservations:
+          cpus: '0.1'
+          memory: 256M
+
+  # Schedule Service
+  schedule-service:
+    build: ./schedule-service
+    container_name: schedule_service
+    depends_on:
+      service-registry:
+        condition: service_healthy
+      config-server:
+        condition: service_healthy
+      zipkin:
+        condition: service_healthy
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://service-registry:8761/eureka/
+      SPRING_CLOUD_CONFIG_URI: http://config-server:8088
+      MANAGEMENT_ZIPKIN_TRACING_ENDPOINT: http://zipkin:9411/api/v2/spans
+      SERVER_PORT: 8087
+      # Đánh dấu đang chạy trong Docker
+      RUNNING_IN_DOCKER: true
+      # Spring Cloud Config specific properties
+      SPRING_CONFIG_IMPORT: optional:configserver:http://config-server:8088
+      SPRING_CLOUD_CONFIG_ENABLED: true
+      SPRING_CLOUD_CONFIG_FAILFAST: false
+      # Add additional retry configurations
+      EUREKA_CLIENT_REGISTRY_FETCH_INTERVAL_SECONDS: 5
+      EUREKA_CLIENT_INITIAL_INSTANCE_INFO_REPLICATION_INTERVAL_SECONDS: 5
+      EUREKA_CLIENT_INSTANCE_INFO_REPLICATION_INTERVAL_SECONDS: 30
+    ports:
+      - "8087:8087"
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          cpus: '0.2'
+          memory: 384M
+        reservations:
+          cpus: '0.1'
+          memory: 256M
+
+networks:
+  default:
+    driver: bridge
+
+volumes:
+  auth_mysql_data:
+  dentist_mysql_data:
+  material_mysql_data:
+  payment_mysql_data:
+  redis_data:

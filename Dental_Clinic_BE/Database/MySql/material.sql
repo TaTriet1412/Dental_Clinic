@@ -1,6 +1,3 @@
-CREATE DATABASE material;
-USE material;
-
 CREATE TABLE category
 (
   id BIGINT PRIMARY KEY AUTO_INCREMENT,
