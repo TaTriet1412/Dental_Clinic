@@ -320,3 +320,40 @@ Nếu gặp vấn đề, hãy kiểm tra:
    docker-compose build --no-cache
    docker-compose up -d
    ```
+
+### 8. **Development Mode (Khuyến nghị)**
+
+Để phát triển một service cụ thể với hot reload:
+
+1. **Setup development environment:**
+   ```bash
+   cd Dental_Clinic_BE
+   
+   # Tạo docker-compose.dev.yaml với cấu hình hot reload
+   # Copy từ template được cung cấp
+   ```
+
+2. **Start development mode cho service cụ thể:**
+   ```bash
+   # Ví dụ: phát triển auth-service
+   docker-compose -f docker-compose.yaml -f docker-compose.dev.yaml up -d auth-service
+   ```
+
+3. **Development workflow:**
+   - Mở IntelliJ IDEA/VS Code
+   - Edit code trong `auth-service/src`
+   - Save file (Ctrl+S)
+   - Spring DevTools tự động reload container
+   - Test changes tại http://localhost:8081
+
+4. **Return to production mode:**
+   ```bash
+   docker-compose down
+   docker-compose up -d
+   ```
+
+**Lợi ích:**
+- ✅ Thay đổi code được phản ánh ngay lập tức
+- ✅ Không cần rebuild Docker images
+- ✅ Giữ được consistency với infrastructure
+- ✅ Team có thể làm việc parallel trên các services khác nhau

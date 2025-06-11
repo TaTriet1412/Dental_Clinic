@@ -1,0 +1,28 @@
+FROM openjdk:17-jdk-slim
+
+# Install Maven
+RUN apt-get update && apt-get install -y maven && rm -rf /var/lib/apt/lists/*
+
+WORKDIR /app
+
+# Copy pom.xml first for dependency caching
+COPY pom.xml .
+
+# Download dependencies
+RUN mvn dependency:go-offline -B
+
+# Copy source code
+COPY src ./src
+
+# Create uploads directory
+RUN mkdir -p /app/uploads/material_services
+
+# Enable hot reload
+ENV SPRING_DEVTOOLS_RESTART_ENABLED=true
+ENV SPRING_DEVTOOLS_LIVERELOAD_ENABLED=true
+ENV JAVA_OPTS="-Dspring.devtools.restart.enabled=true -Dfile.encoding=UTF-8"
+
+EXPOSE 8083 35729
+
+# Run with Maven for hot reload
+CMD ["mvn", "spring-boot:run", "-Dspring-boot.run.jvmArguments=-Dfile.encoding=UTF-8 -Dspring.devtools.restart.enabled=true"]

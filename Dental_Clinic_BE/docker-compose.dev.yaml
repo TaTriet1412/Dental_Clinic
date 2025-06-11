@@ -1,0 +1,129 @@
+services:
+  # Auth Service - Development Mode
+  auth-service:
+    build:
+      context: ./auth-service
+      dockerfile: Dockerfile.dev
+    command: ["mvn", "spring-boot:run", "-Dspring-boot.run.jvmArguments=-Dfile.encoding=UTF-8 -Dspring.devtools.restart.enabled=true"]
+    container_name: auth_service_dev
+    volumes:
+      # Mount source code để hot reload
+      - ./auth-service/src:/app/src
+      - ./auth-service/pom.xml:/app/pom.xml
+      - ./auth-service/target:/app/target
+      - ./auth-service/uploads:/app/uploads
+      - ~/.m2:/root/.m2 
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+      SPRING_DEVTOOLS_RESTART_ENABLED: true
+      SPRING_DEVTOOLS_LIVERELOAD_ENABLED: true
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://service-registry:8761/eureka/
+      SPRING_CLOUD_CONFIG_URI: http://config-server:8088
+      MANAGEMENT_ZIPKIN_TRACING_ENDPOINT: http://zipkin:9411/api/v2/spans
+      SERVER_PORT: 8081
+    ports:
+      - "8081:8081"
+      - "35729:35729"  # LiveReload port
+    depends_on:
+      config-server:
+        condition: service_healthy
+      service-registry:
+        condition: service_healthy
+      auth_db:
+        condition: service_started
+      redis:
+        condition: service_healthy
+      zipkin:
+        condition: service_healthy
+
+  # Material Service - Development Mode
+  material-service:
+    build:
+      context: ./material-service
+      dockerfile: Dockerfile.dev
+    container_name: material_service_dev
+    volumes:
+      - ./material-service/src:/app/src
+      - ./material-service/pom.xml:/app/pom.xml
+      - ./material-service/target:/app/target
+      - ./material-service/uploads:/app/uploads
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+      SPRING_DEVTOOLS_RESTART_ENABLED: true
+      SPRING_DEVTOOLS_LIVERELOAD_ENABLED: true
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://service-registry:8761/eureka/
+      SPRING_CLOUD_CONFIG_URI: http://config-server:8088
+      MANAGEMENT_ZIPKIN_TRACING_ENDPOINT: http://zipkin:9411/api/v2/spans
+      SERVER_PORT: 8083
+    ports:
+      - "8083:8083"
+      - "35730:35729"  # LiveReload port (different port)
+    depends_on:
+      config-server:
+        condition: service_healthy
+      service-registry:
+        condition: service_healthy
+      material_db:
+        condition: service_started
+      zipkin:
+        condition: service_healthy
+
+  # Dental Service - Development Mode
+  dental-service:
+    build:
+      context: ./dental-service
+      dockerfile: Dockerfile.dev
+    container_name: dental_service_dev
+    volumes:
+      - ./dental-service/src:/app/src
+      - ./dental-service/pom.xml:/app/pom.xml
+      - ./dental-service/target:/app/target
+      - ./dental-service/uploads:/app/uploads
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+      SPRING_DEVTOOLS_RESTART_ENABLED: true
+      SPRING_DEVTOOLS_LIVERELOAD_ENABLED: true
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://service-registry:8761/eureka/
+      SPRING_CLOUD_CONFIG_URI: http://config-server:8088
+      MANAGEMENT_ZIPKIN_TRACING_ENDPOINT: http://zipkin:9411/api/v2/spans
+      SERVER_PORT: 8082
+    ports:
+      - "8082:8082"
+      - "35731:35729"  # LiveReload port
+    depends_on:
+      config-server:
+        condition: service_healthy
+      service-registry:
+        condition: service_healthy
+      zipkin:
+        condition: service_healthy
+
+  # Patient Service - Development Mode
+  patient-service:
+    build:
+      context: ./patient-service
+      dockerfile: Dockerfile.dev
+    container_name: patient_service_dev
+    volumes:
+      - ./patient-service/src:/app/src
+      - ./patient-service/pom.xml:/app/pom.xml
+      - ./patient-service/target:/app/target
+      - ./patient-service/uploads:/app/uploads
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+      SPRING_DEVTOOLS_RESTART_ENABLED: true
+      SPRING_DEVTOOLS_LIVERELOAD_ENABLED: true
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://service-registry:8761/eureka/
+      SPRING_CLOUD_CONFIG_URI: http://config-server:8088
+      MANAGEMENT_ZIPKIN_TRACING_ENDPOINT: http://zipkin:9411/api/v2/spans
+      SERVER_PORT: 8086
+    ports:
+      - "8086:8086"
+      - "35732:35729"  # LiveReload port
+    depends_on:
+      config-server:
+        condition: service_healthy
+      service-registry:
+        condition: service_healthy
+      zipkin:
+        condition: service_healthy

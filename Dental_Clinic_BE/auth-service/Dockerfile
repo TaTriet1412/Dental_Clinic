@@ -1,5 +1,5 @@
 # Dùng image JDK nhỏ gọn
-FROM openjdk:23-jdk-slim
+FROM openjdk:21-jdk-slim
 
 # Tạo thư mục app bên trong container
 WORKDIR /app
