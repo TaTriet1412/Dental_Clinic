@@ -17,16 +17,32 @@ import com.dental_clinic.payment_service.Entity.BillDental;
 import com.dental_clinic.payment_service.Entity.BillStatus;
 import com.dental_clinic.payment_service.Repository.BillRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.persistence.criteria.Path;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
+import jakarta.persistence.criteria.Predicate;
+
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
+import java.time.LocalDateTime;
+import java.util.*;
+import java.util.stream.Collectors;
 
 import java.math.BigInteger;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
+import java.util.Map;
 
 @Service
 public class BillService {
@@ -59,6 +75,89 @@ public class BillService {
     public Bill getBillById(Long id) {
         return billRepository.findById(id).orElseThrow(() ->
                 new AppException(ErrorCode.NOT_FOUND,"Không tìm thấy hóa đơn có id: " + id));
+    }
+
+    public List<String> getBillStatusList() {
+        return Arrays.stream(BillStatus.values())
+                .map(BillStatus::getStatus)
+                .collect(Collectors.toList());
+    }
+
+    public Page<Bill> getPaginationBills(String filtersJson, int page, int size, String sortFields) {
+        try {
+            int pageIndex = page > 0 ? page - 1 : 0;
+
+            // Parse filters using JsonNode for more flexible handling
+            JsonNode filtersNode = filtersJson != null ?
+                    objectMapper.readTree(filtersJson) : objectMapper.createObjectNode();
+
+            // Create Sort object
+            Sort sort;
+            if (sortFields != null && !sortFields.trim().isEmpty()) {
+                String[] sortParts = URLDecoder.decode(sortFields, StandardCharsets.UTF_8.name()).split(",");
+                String sortField = sortParts[0];
+                Sort.Direction direction = sortParts.length > 1 &&
+                        sortParts[1].equalsIgnoreCase("desc") ?
+                        Sort.Direction.DESC : Sort.Direction.ASC;
+                sort = Sort.by(direction, sortField);
+            } else {
+                sort = Sort.unsorted();
+            }
+
+            Pageable pageable = PageRequest.of(pageIndex, size, sort);
+
+            Specification<Bill> spec = (root, query, cb) -> {
+                List<Predicate> predicates = new ArrayList<>();
+
+                // Handle date range
+                if (filtersNode.has("startCreatedAt") && filtersNode.has("endCreatedAt")) {
+                    LocalDateTime startDate = LocalDateTime.parse(filtersNode.get("startCreatedAt").asText());
+                    LocalDateTime endDate = LocalDateTime.parse(filtersNode.get("endCreatedAt").asText());
+                    predicates.add(cb.between(root.get("createdAt"), startDate, endDate));
+                }
+
+                // Process other filters
+                filtersNode.fields().forEachRemaining(entry -> {
+                    String key = entry.getKey();
+                    JsonNode value = entry.getValue();
+
+                    // Skip date fields
+                    if (key.equals("startCreatedAt") || key.equals("endCreatedAt")) {
+                        return;
+                    }
+
+                    try {
+                        if (value.isArray()) {
+                            // Handle array values (like status)
+                            List<String> values = new ArrayList<>();
+                            value.forEach(v -> values.add(v.asText()));
+                            if (!values.isEmpty()) {
+                                predicates.add(root.get(key).in(values));
+                            }
+                        } else if (!value.isNull() && !value.asText().isBlank()) {
+                            // Handle string values with LIKE
+                            Path<String> path = root.get(key);
+                            predicates.add(cb.like(cb.lower(path),
+                                    "%" + value.asText().toLowerCase() + "%"));
+                        }
+                    } catch (IllegalArgumentException e) {
+                        // Skip if field doesn't exist or type mismatch
+                    }
+                });
+
+                return cb.and(predicates.toArray(new Predicate[0]));
+            };
+
+            // Execute query with specification
+            Page<Bill> result = billRepository.findAll(spec, pageable);
+            if (result.getTotalPages() > 0 && pageIndex >= result.getTotalPages()) {
+                pageable = PageRequest.of(result.getTotalPages() - 1, size, sort);
+                result = billRepository.findAll(spec, pageable);
+            }
+            return result;
+        } catch (Exception e) {
+            throw new RuntimeException("Error processing pagination request: " + e.getMessage(), e);
+        }
     }
 
     // Method to create a new bill

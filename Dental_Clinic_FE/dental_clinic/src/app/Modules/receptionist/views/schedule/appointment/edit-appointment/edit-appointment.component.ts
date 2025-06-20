@@ -7,7 +7,7 @@ import { CommonModule } from '@angular/common';
 import { NameIdPatientResponse } from '../../../../../../share/dto/response/name-id-patient-response';
 import { PatientService } from '../../../../../../core/services/patient.service';
 import { UserService } from '../../../../../../core/services/user.service';
-import { DateSupportService } from '../../../../../../core/services/support/date.service';
+import { DateSupportService } from '../../../../../../share/utils/support/date.service';
 import { AppointmentService } from '../../../../../../core/services/appointment.service';
 import { firstValueFrom } from 'rxjs';
 import { SnackBarService } from '../../../../../../core/services/snack-bar.service';

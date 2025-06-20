@@ -2,6 +2,8 @@
 import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common'; // Import CommonModule for directives like [class]
 import { SnackBarService } from '../../../core/services/snack-bar.service';
+import { Router } from '@angular/router';
+import { ROUTES } from '../../../core/constants/routes.constant';
 
 @Component({
   selector: 'app-server-error-500',
@@ -16,9 +18,14 @@ export class ServerError500Component implements OnInit {
 
   constructor(
     private snackbar: SnackBarService, // Inject SnackBarService
+    private router: Router
   ) {}
 
   ngOnInit(): void {
     this.snackbar.notifyError('Server Error 500 - An error occurred while processing your request. Please try again later.');
+  }
+
+  goHome() {
+    this.router.navigate([ROUTES.HOME.path]);
   }
 }

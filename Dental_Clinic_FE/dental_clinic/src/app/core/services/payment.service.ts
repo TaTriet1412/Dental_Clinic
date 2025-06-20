@@ -9,6 +9,7 @@ import { AuthService } from "./auth.service";
     providedIn: 'root',
 })
 export class PaymentService {
+    
     private apiUrl = 'http://localhost:8060/payment';
     private apiBillUrl = `${this.apiUrl}/bill`;
 
@@ -24,6 +25,33 @@ export class PaymentService {
 
     getBillById(billId: number): Observable<any> {
         return this.http.get<any>(`${this.apiBillUrl}/${billId}`);
+    }
+
+    getBillStatusList(): Observable<any> {
+        return this.http.get<any>(`${this.apiBillUrl}/status`);
+    }
+
+    getPaginationBills(filters: Record<string, any>, page: any, size: any, sortFields: string): Observable<any>  {
+        let params = new HttpParams();
+
+        // Chỉ append filters nếu object có key thực sự
+        if (filters && Object.keys(filters).length > 0) {
+            params = params.append('filters', JSON.stringify(filters));
+        }
+        if (page !== undefined && page !== null) {
+            params = params.append('page', page);
+        }
+        if (size !== undefined && size !== null) {
+            params = params.append('size', size);
+        }
+        if (sortFields && sortFields.length > 0) {
+            params = params.append('sortFields', encodeURIComponent(sortFields));
+        }
+        const token = this.authService.getToken();  // Lấy JWT từ AuthService
+        const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+        const url = `${this.apiBillUrl}/pagination`;
+        console.log('GET', url, params.toString());
+        return this.http.get<any>(`${this.apiBillUrl}/pagination`, { params, headers });
     }
 
     createBill(bill: BillCreateReq): Observable<any> {

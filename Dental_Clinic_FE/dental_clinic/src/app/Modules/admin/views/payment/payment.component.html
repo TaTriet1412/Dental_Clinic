@@ -4,129 +4,117 @@
   <c-row ngPreserveWhitespaces>
     <c-col xs="12">
       <c-card class="mb-4">
-        <c-card-header
-          class="d-flex justify-content-between align-items-center"
-        >
+        <c-card-header class="d-flex justify-content-between align-items-center">
           <strong>Danh sách hóa đơn</strong>
-          <button
-            cButton
-            class="custom-action-btn p-2 ms-auto"
-            (click)="goToCreateBill()"
-            color="success"
-            size="sm"
-          >
+          <button cButton class="custom-action-btn p-2 ms-auto" (click)="goToCreateBill()" color="success" size="sm">
             <i class="fa-solid fa-plus"></i> Thêm mới
           </button>
         </c-card-header>
         <c-card-body>
           @if (props$ | async; as props) {
-          <c-smart-table
-            #smartTable="cSmartTable"
-            [columnFilter]="true"
-            [columnSorter]="true"
-            [columns]="columns"
-            [items]="(data$ | async) ?? []"
-            [itemsPerPageOptions]="[5, 10, 25, 50]"
-            [itemsPerPageSelect]="true"
-            [itemsPerPage]="props.itemsPerPage"
-            [loading]="props.loadingData"
-            (itemsPerPageChange)="handleItemsPerPageChange($event)"
+          <c-smart-table #smartTable="cSmartTable" [columnFilter]="true" [(columnFilterValue)]="columnFilterValue"
+            [columnSorter]="true" [columns]="columns" [items]="(data$ | async) ?? []"
+            [itemsPerPageOptions]="[5, 10, 25, 50]" [itemsPerPageSelect]="true" [itemsPerPage]="props.itemsPerPage"
+            [loading]="props.loadingData" (itemsPerPageChange)="handleItemsPerPageChange($event)"
             (sorterValueChange)="handleSorterValueChange($event)"
-            [tableBodyProps]="{ align: 'middle' }"
-            [tableFootProps]="{ color: 'primary' }"
-            [tableHeadProps]="{ color: 'primary' }"
-            [tableProps]="{ hover: true, striped: true, responsive: true }"
-            clickableRows
-            header
-            footer
-            pagination
-          >
-            <ng-template
-              cTemplateId="tableData"
-              let-columnName="columnName"
-              let-item="item"
-              let-tdContent="tdContent"
-              let-index="index"
-            >
-              <td
-                [cAlign]="
+            (columnFilterValueChange)="handleColumnFilterValueChange($event)" [tableBodyProps]="{ align: 'middle' }"
+            [tableFootProps]="{ color: 'primary' }" [tableHeadProps]="{ color: 'primary' }"
+            [tableProps]="{ hover: true, striped: true, responsive: true }" clickableRows header footer pagination>
+
+            <ng-template cTemplateId="columnFilter_status">
+              <c-multi-select (valueChange)="handleColumnFilterValueChange($event)" [value]="selectedStatus" multiple size="sm">
+                @for (status of statusList; track status) {
+                <c-multi-select-option [value]="status">{{ translateStatus(status) }}</c-multi-select-option>
+                }
+              </c-multi-select>
+            </ng-template>
+
+            <ng-template cTemplateId="columnFilter_createdAt">
+              <c-date-range-picker [(calendarDate)]="calendarDate" [(endDate)]="endDate" [(startDate)]="startDate"
+                [popperOptions]="{strategy: 'fixed'}" calendars="2" closeOnSelect locale="vi-VN" size="sm" />
+            </ng-template>
+
+            <ng-template cTemplateId="tableData" let-columnName="columnName" let-item="item" let-tdContent="tdContent"
+              let-index="index">
+              <td [cAlign]="
                   smartTable.getTableDataCellProps(item, columnName)['align']
-                "
-              >
-                @switch (columnName) { @case ('bill_id') {
+                ">
+                @switch (columnName) {
+
+                @case ('bill_id') {
                 {{ item.bill_id == undefined ? "Chưa có" : item.bill_id }}
-                } @case ('totalPrice') {
+                }
+
+                @case ('bill_id') {
+                {{ item.bill_id == undefined ? "Chưa có" : item.bill_id }}
+                }
+
+                @case ('status') {
+
+                <c-badge [color]="getPaymentStatusBadge(tdContent)">
+                  {{ translateStatus(item.status) }}
+                </c-badge>
+                }
+
+                @case ('totalPrice') {
                 <span class="text-success fw-bold">
                   {{ item.totalPrice | currency : "VND" }}
                 </span>
-                } @case ('prescriptionPrice') {
+                }
+
+                @case ('prescriptionPrice') {
                 <span class="text-success fw-bold">
                   {{ item.prescriptionPrice | currency : "VND" }}
                 </span>
-                } @case ('servicesTotalPrice') {
+                }
+
+                @case ('servicesTotalPrice') {
                 <span class="text-success fw-bold">
                   {{ item.servicesTotalPrice | currency : "VND" }}
                 </span>
-                } @case ('gender') {
+                }
+
+                @case ('gender') {
                 <span>{{ item.gender == false ? "Nữ" : "Nam" }}</span>
-                } @case ('interact') {
+                }
+
+                @case ('interact') {
                 <div class="d-flex justify-content-between">
-                  <button
-                    cButton
-                    [color]="'primary'"
-                    size="sm"
-                    variant="outline"
-                    class="me-2"
-                    (click)="goToDetailBill(item.id)"
-                  >
+                  <button cButton [color]="'primary'" size="sm" variant="outline" class="me-2"
+                    (click)="goToDetailBill(item.id)">
                     <i class="fa fa-eye" aria-hidden="true"></i>
                   </button>
 
-                  <button
-                    cButton
-                    [color]="'primary'"
-                    size="sm"
-                    variant="outline"
-                    class="me-2 p-2"
-                    (click)="goToEditBill(item.id)"
-                  >
+                  <button cButton [color]="'primary'" size="sm" variant="outline" class="me-2 p-2"
+                    (click)="goToEditBill(item.id)">
                     <i class="fa fa-pencil-square" aria-hidden="true"></i>
                   </button>
 
-                  <button
-                    cButton
-                    [color]="item.status == 'confirmed' ? 'danger' : 'primary'"
-                    [disabled]="item.status != 'confirmed'"
-                    size="sm"
-                    variant="outline"
-                    class="p-2 me-2"
-                    (click)="cancelBill(item.id)"
-                  >
-                    <i
-                      [class]="
+                  <button cButton [color]="item.status == 'confirmed' ? 'danger' : 'primary'"
+                    [disabled]="item.status != 'confirmed'" size="sm" variant="outline" class="p-2 me-2"
+                    (click)="cancelBill(item.id)">
+                    <i [class]="
                         item.status == 'confirmed' ? 'fa fa-trash' : 'fa fa-ban'
-                      "
-                      aria-hidden="true"
-                    ></i>
+                      " aria-hidden="true"></i>
                   </button>
                 </div>
 
-                }@default {
+                }
+
+                @default {
                 {{ tdContent }}
-                } }
+                }
+
+                }
               </td>
             </ng-template>
           </c-smart-table>
 
           @if (props.totalPages > 1) {
-          <c-smart-pagination
-            [activePage]="props.activePage"
-            [pages]="props.totalPages"
-            (activePageChange)="handleActivePageChange($event)"
-            class="mt-3"
-          ></c-smart-pagination>
+          <c-smart-pagination [activePage]="props.activePage" [pages]="props.totalPages"
+            (activePageChange)="handleActivePageChange($event)" class="mt-3"></c-smart-pagination>
           } @else if (!props.loadingData && (data$ | async)?.length === 0) {
-          <div class="alert alert-info mt-3">Không tìm thấy toa thuốc nào.</div>
+          <div class="alert alert-info mt-3">Không tìm thấy hóa đơn nào.</div>
           } } @else {
           <div class="text-center p-4">
             <c-spinner aria-hidden="true" size="sm"></c-spinner>

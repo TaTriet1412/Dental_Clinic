@@ -1,10 +1,12 @@
 package com.dental_clinic.payment_service.Controller;
 
+import com.dental_clinic.common_lib.constant.CaseVariableUtils;
 import com.dental_clinic.common_lib.dto.response.ApiResponse;
 import com.dental_clinic.common_lib.exception.AppException;
 import com.dental_clinic.common_lib.exception.ErrorCode;
 import com.dental_clinic.payment_service.DTO.Request.CreateBillReq;
 import com.dental_clinic.payment_service.DTO.Request.UpdateBillReq;
+import com.dental_clinic.payment_service.Entity.Bill;
 import com.dental_clinic.payment_service.Entity.TransactionStatus;
 import com.dental_clinic.payment_service.Service.BillService;
 import com.dental_clinic.payment_service.Service.PaymentTransactionService;
@@ -19,6 +21,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -61,6 +67,40 @@ public class BillController {
                 .result(billService.getBillById(id))
                 .build();
     }
+
+    @GetMapping("/bill/pagination")
+    public ApiResponse<Object> getPaginationBills(
+            @RequestParam(required = false) String filters,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(required = false) String sortFields) {
+        try {
+            Page<Bill> result = billService.getPaginationBills(filters, page, size, sortFields);
+        
+            return ApiResponse.builder()
+                    .apiCode(200)
+                    .message("Lấy danh sách hóa đơn phân trang thành công")
+                    .result(result)
+                    .build();
+        } catch (Exception e) {
+            return ApiResponse.builder()
+                    .apiCode(400)
+                    .message("Lỗi khi lấy danh sách hóa đơn: " + e.getMessage())
+                    .result(null)
+                    .build();
+        }
+    }
+
+    @GetMapping("/bill/status")
+    public ApiResponse<Object> getBillStatusList()
+    {
+        return ApiResponse.builder()
+                .apiCode(200)
+                .message("Lấy danh sách trạng thái hóa đơn thành công")
+                .result(billService.getBillStatusList())
+                .build();
+    }
+
 
     @PostMapping("bill/create")
     @ResponseStatus(HttpStatus.CREATED)

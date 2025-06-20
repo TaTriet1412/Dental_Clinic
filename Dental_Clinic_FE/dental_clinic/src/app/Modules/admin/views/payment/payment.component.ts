@@ -1,15 +1,18 @@
 import { CommonModule, DatePipe } from '@angular/common';
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, inject, LOCALE_ID, OnDestroy, OnInit } from '@angular/core';
-import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AlignDirective, BadgeModule, ButtonDirective, CardModule, ColComponent, ModalModule, RowComponent, SpinnerModule } from '@coreui/angular';
-import { AlertModule, IColumn, ISorterValue, SmartPaginationModule, SmartTableModule, TemplateIdDirective } from '@coreui/angular-pro';
+import { AlertModule, DateRangePickerModule, FormControlDirective, IColumn, ISorterValue, MultiSelectModule, SmartPaginationModule, SmartTableModule, TemplateIdDirective } from '@coreui/angular-pro';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
-import { distinctUntilChanged, map, startWith, takeUntil, tap } from 'rxjs/operators';
+import { distinctUntilChanged, map, startWith, switchMap, takeUntil, tap } from 'rxjs/operators';
 import { ROUTES } from '../../../../core/constants/routes.constant';
 import { SnackBarService } from '../../../../core/services/snack-bar.service';
 import { PaymentService } from '../../../../core/services/payment.service';
+import { endOfDay, format, startOfDay } from 'date-fns';
+import { FormsModule } from '@angular/forms';
+import { translateStatus } from '../../../../share/utils/translator/payment-translator.utils';
+import { getPaymentStatusBadge } from '../../../../share/utils/badge/payment-badge.utils';
 
 @Component({
   selector: 'app-payment',
@@ -28,7 +31,9 @@ import { PaymentService } from '../../../../core/services/payment.service';
     ButtonDirective,
     BadgeModule,
     ModalModule,
-    FormsModule
+    FormsModule,
+    DateRangePickerModule,
+    MultiSelectModule,
   ],
   templateUrl: './payment.component.html',
   styleUrl: './payment.component.scss',
@@ -39,13 +44,81 @@ import { PaymentService } from '../../../../core/services/payment.service';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class PaymentComponent implements OnInit, OnDestroy {
+  // Imports functions
+  translateStatus = translateStatus;
+  getPaymentStatusBadge = getPaymentStatusBadge;
 
+  // Inject services
   private snackbar = inject(SnackBarService);
   private cdr = inject(ChangeDetectorRef);
+
+  // Variable
+  private _columnFilterValue: any = {};
+  statusList: string[] = [];
+  selectedStatus: string[] = [];
+
+  // --- Column Filter Value ---
+  get columnFilterValue() {
+    return this._columnFilterValue;
+  }
+
+  set columnFilterValue(value: any) {
+    this._columnFilterValue = value;
+    this.handleColumnFilterValueChange(value);
+  }
+
+  // --- Set/Get Date ---
+  public calendarDate: Date = new Date();
+  private _endDate: Date | null = new Date();
+  private _startDate: Date | null = new Date(2020, 0, 1, 0, 0, 0); // Default start date
+
+  set startDate(value) {
+    this._startDate = value;
+    if (this.endDate) {
+      this.handleDateRangeChange();
+    }
+  }
+
+  get startDate() {
+    return this._startDate;
+  }
+
+  set endDate(value) {
+    this._endDate = value;
+    this.handleDateRangeChange();
+  }
+
+  private handleDateRangeChange() {
+    const columnFilterValue = { ...this._columnFilterValue };
+    if (this.startDate && this.endDate) {
+      const fromDate = startOfDay(this.startDate);
+      const toDate = endOfDay(this.endDate);
+
+      const filterFunction = (item: any) => {
+        const date = new Date(item);
+        return date >= fromDate && date <= toDate;
+      }
+
+      this._columnFilterValue = {
+        ...columnFilterValue,
+        startCreatedAt: format(fromDate.toISOString(), "yyyy-MM-dd'T'HH:mm:ss"),
+        endCreatedAt: format(toDate.toISOString(), "yyyy-MM-dd'T'HH:mm:ss"),
+      };
+      return;
+    }
+
+    delete columnFilterValue._original_createdAt;
+    this._columnFilterValue = { ...columnFilterValue };
+  }
+
+  get endDate() {
+    return this._endDate;
+  }
 
   // --- State Management ---
   readonly pagination$ = new BehaviorSubject<{ page: number; size: number }>({ page: 1, size: 5 });
   readonly sortFields$ = new BehaviorSubject<ISorterValue>({ column: 'createdAt', state: 'desc' });
+  readonly filter$ = new BehaviorSubject<any>({});
   readonly loading$ = new BehaviorSubject<boolean>(true);
   readonly totalPages$ = new BehaviorSubject<number>(1);
   readonly errorMessage$ = new Subject<string>();
@@ -59,13 +132,12 @@ export class PaymentComponent implements OnInit, OnDestroy {
   // --- Table Columns ---
   readonly columns: (IColumn | string)[] = [
     { key: 'id', label: 'ID' },
-    { key: 'patientId', label: 'ID bệnh nhân' },
-    { key: 'prescriptionId', label: 'ID toa thuốc' },
-    { key: 'note', label: 'Ghi chú' },
     { key: 'totalPrice', label: 'Tổng giá' },
-    { key: 'prescriptionPrice', label: 'Tổng giá toa thuốc'},
-    { key: 'servicesTotalPrice', label: 'Tổng giá dịch vụ'},
+    { key: 'prescriptionPrice', label: 'Giá toa thuốc' },
+    { key: 'servicesTotalPrice', label: 'Giá dịch vụ' },
     { key: 'createdAt', label: 'TG tạo' },
+    { key: 'note', label: 'Ghi chú' },
+    { key: 'status', label: 'Trạng thái', sorter: false },
     { key: 'interact', label: 'Thao tác', sorter: false, filter: false },
   ];
 
@@ -73,14 +145,17 @@ export class PaymentComponent implements OnInit, OnDestroy {
     private paymentService: PaymentService,
     private router: Router,
     private spinner: NgxSpinnerService,
-    private datePipe: DatePipe // Inject DatePipe if not already done implicitly by providers
+    private datePipe: DatePipe
   ) {
     this.spinner.show();
-    this.apiParams$ = combineLatest([this.pagination$, this.sortFields$]).pipe(
-      map(([pagination, sortFields]) => ({
+
+    // Combine filter, pagination, sort
+    this.apiParams$ = combineLatest([this.pagination$, this.sortFields$, this.filter$]).pipe(
+      map(([pagination, sortFields, filter]) => ({
         page: pagination.page,
         size: pagination.size,
-        sort: this.formatSortParam(sortFields)
+        sort: this.formatSortParam(sortFields),
+        filter
       })),
       distinctUntilChanged((prev, curr) => JSON.stringify(prev) === JSON.stringify(curr)),
       takeUntil(this.#destroy$)
@@ -96,69 +171,34 @@ export class PaymentComponent implements OnInit, OnDestroy {
       }))
     );
 
-    // Fetch data based on API parameters
-    this.data$ = combineLatest([
-      this.apiParams$,
-      // Fetch all data once
-      this.paymentService.getAllBill().pipe(
-        map(response => Array.isArray(response?.result) ? response.result : []), // Get the raw data array
-        // Store original date before formatting if needed, or use it directly in sort
-        map(data => data.map((item: { createdAt: string | number | Date; }) => ({ ...item, _original_createdAt: new Date(item.createdAt) }))) // Store original Date
-      )
-    ]).pipe(
+    // Gọi API mỗi khi filter, sort, page thay đổi
+    this.data$ = this.apiParams$.pipe(
       tap(() => {
         this.loading$.next(true);
         this.errorMessage$.next('');
       }),
-      map(([params, allData]) => { // allData now contains _original_createdAt
-
-        let processedData = [...allData]; // Work with the full dataset
-
-        // Áp dụng sắp xếp trên dữ liệu gốc
-        if (params.sort) {
-          const [key, direction] = params.sort.split(',');
-          if (key === 'createdAt') { // Specific handling for date sorting
-            processedData.sort((a: any, b: any) => {
-              // --- Sắp xếp dựa trên đối tượng Date gốc ---
-              const dateA = a._original_createdAt.getTime();
-              const dateB = b._original_createdAt.getTime();
-              if (dateA < dateB) return direction === 'asc' ? -1 : 1;
-              if (dateA > dateB) return direction === 'asc' ? 1 : -1;
-              return 0;
-            });
-          } else {
-            // Sắp xếp các cột khác (nếu có)
-            processedData.sort((a: any, b: any) => {
-              if (a[key] < b[key]) return direction === 'asc' ? -1 : 1;
-              if (a[key] > b[key]) return direction === 'asc' ? 1 : -1;
-              return 0;
-            });
-          }
-        }
-
-        // Định dạng ngày tháng *sau khi* sắp xếp
-        const formattedData = processedData.map((item: any) => ({
-          ...item,
-          // Sử dụng DatePipe hoặc toLocaleString ở đây
-          createdAt: this.datePipe.transform(item._original_createdAt, 'dd/MM/yyyy, HH:mm:ss', 'vi-VN') || '',
-          // Hoặc: createdAt: item._original_createdAt.toLocaleString('vi-VN', { hour12: false }),
-        }));
-
-
-        // Áp dụng phân trang trên dữ liệu đã sắp xếp và định dạng
-        const startIndex = (params.page - 1) * params.size;
-        const endIndex = startIndex + params.size;
-        const paginatedData = formattedData.slice(startIndex, endIndex);
-
-        // Cập nhật tổng số trang
-        const totalPages = Math.ceil(formattedData.length / params.size);
-        this.totalPages$.next(totalPages);
-
-        this.loading$.next(false);
-        this.cdr.markForCheck();
-
-        return paginatedData;
-      }),
+      switchMap((params) =>
+        this.paymentService.getPaginationBills(
+          params.filter,
+          params.page,
+          params.size,
+          params.sort
+        ).pipe(
+          map((response: any) => {
+            // Lấy danh sách hóa đơn từ response.result.content (chuẩn Page Spring Boot)
+            const bills = response.result?.content || [];
+            this.totalPages$.next(response.result?.totalPages || 1);
+            return bills.map((item: any) => ({
+              ...item,
+              createdAt: this.datePipe.transform(item.createdAt, 'dd/MM/yyyy, HH:mm:ss', 'vi-VN') || '',
+            }));
+          }),
+          tap(() => {
+            this.loading$.next(false);
+            this.cdr.markForCheck();
+          })
+        )
+      ),
       startWith([]),
       takeUntil(this.#destroy$)
     );
@@ -166,6 +206,16 @@ export class PaymentComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    this.paymentService.getBillStatusList().subscribe({
+      next: (response: any) => {
+        this.statusList = response.result || [];
+        this.cdr.markForCheck();
+      }
+      ,
+      error: (error: any) => {
+        this.snackbar.notifyError(error?.error?.message || 'Lỗi khi lấy danh sách trạng thái');
+      }
+    });
     console.log('BillComponent initialized.');
   }
 
@@ -187,6 +237,24 @@ export class PaymentComponent implements OnInit, OnDestroy {
 
   handleSorterValueChange(sorterValue: ISorterValue): void {
     this.sortFields$.next(sorterValue);
+  }
+
+  handleColumnFilterValueChange(columnFilterValue: any): void {
+    let filterObj: any;
+    if (Array.isArray(columnFilterValue)) {
+      filterObj = { status: columnFilterValue };
+    } else if (columnFilterValue && Array.isArray(columnFilterValue.status)) {
+      filterObj = columnFilterValue;
+    } else {
+      filterObj = columnFilterValue;
+    }
+    this.filter$.next(filterObj);
+
+    // Reset về trang đầu tiên khi filter thay đổi
+    const currentPagination = this.pagination$.value;
+    if (currentPagination.page !== 1) {
+      this.pagination$.next({ ...currentPagination, page: 1 });
+    }
   }
 
   // --- Utility Methods ---

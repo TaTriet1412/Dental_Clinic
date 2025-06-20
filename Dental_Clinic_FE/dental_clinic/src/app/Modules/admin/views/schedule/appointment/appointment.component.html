@@ -4,92 +4,79 @@
   <c-row ngPreserveWhitespaces>
     <c-col xs="12">
       <c-card class="mb-4">
-        <c-card-header
-          class="d-flex justify-content-between align-items-center"
-        >
+        <c-card-header class="d-flex justify-content-between align-items-center">
           <strong>Danh sách lịch hẹn</strong>
-          <button
-            cButton
-            class="custom-action-btn p-2 ms-auto"
-            (click)="goToCreateAppointment()"
-            color="success"
-            size="sm"
-          >
+          <button cButton class="custom-action-btn p-2 ms-auto" (click)="goToCreateAppointment()" color="success"
+            size="sm">
             <i class="fa-solid fa-plus"></i> Thêm mới
           </button>
         </c-card-header>
         <c-card-body>
           @if (props$ | async; as props) {
-          <c-smart-table
-            #smartTable="cSmartTable"
-            [columnFilter]="true"
-            [columnSorter]="true"
-            [columns]="columns"
-            [items]="(data$ | async) ?? []"
-            [itemsPerPageOptions]="[5, 10, 25, 50]"
-            [itemsPerPageSelect]="true"
-            [itemsPerPage]="props.itemsPerPage"
-            [loading]="props.loadingData"
+          <c-smart-table #smartTable="cSmartTable" [columnFilter]="true" [columnSorter]="true" [columns]="columns"
+            [items]="(data$ | async) ?? []" [itemsPerPageOptions]="[5, 10, 25, 50]" [itemsPerPageSelect]="true"
+            [itemsPerPage]="props.itemsPerPage" [loading]="props.loadingData"
             (itemsPerPageChange)="handleItemsPerPageChange($event)"
-            (sorterValueChange)="handleSorterValueChange($event)"
-            [tableBodyProps]="{ align: 'middle' }"
-            [tableFootProps]="{ color: 'primary' }"
-            [tableHeadProps]="{ color: 'primary' }"
-            [tableProps]="{ hover: true, striped: true, responsive: true }"
-            clickableRows
-            header
-            footer
-            pagination
-          >
-            <ng-template
-              cTemplateId="tableData"
-              let-columnName="columnName"
-              let-item="item"
-              let-tdContent="tdContent"
-              let-index="index"
-            >
-              <td
-                [cAlign]="
+            (sorterValueChange)="handleSorterValueChange($event)" [tableBodyProps]="{ align: 'middle' }"
+            [tableFootProps]="{ color: 'primary' }" [tableHeadProps]="{ color: 'primary' }"
+            [tableProps]="{ hover: true, striped: true, responsive: true }" clickableRows header footer pagination>
+            <ng-template cTemplateId="tableData" let-columnName="columnName" let-item="item" let-tdContent="tdContent"
+              let-index="index">
+              <td [cAlign]="
                   smartTable.getTableDataCellProps(item, columnName)['align']
-                "
-              >
-                @switch (columnName) { @case ('status') {
+                ">
+                @switch (columnName) {
+
+                @case ('status') {
                 <c-badge [color]="getBadge(tdContent)">
                   {{ tdContent }}
                 </c-badge>
-                } @case ('interact') {
+                }
+
+                @case ('id') {
+                <span [cPopoverTrigger]="'hover'" [cPopover]="popoverHtml" cPopoverPlacement="right"
+                  (click)="copyId(item.id)" style="cursor:pointer">
+                  {{ improveUILongId(item.id) }}
+                  <ng-template #popoverHtml>
+                    <h3 class="popover-header">
+                      Bấm để sao chép
+                    </h3>
+                    <div class="popover-body">
+                      {{ item.id }}
+                    </div>
+                  </ng-template>
+                </span>
+                }
+
+                @case ('patId') {
+                <span [cPopoverTrigger]="'hover'" [cPopover]="popoverHtml" cPopoverPlacement="right"
+                  (click)="goToPatientDetail(item.patId)">
+                  {{ improveUILongId(item.patId) }}
+                  <ng-template #popoverHtml>
+                    <h3 class="popover-header">
+                      Bấm để xem chi tiết
+                    </h3>
+                    <div class="popover-body">
+                      {{ item.patId }}
+                    </div>
+                  </ng-template>
+                </span>
+                }
+
+                @case ('interact') {
                 <div class="d-flex justify-content-between">
-                  <button
-                    cButton
-                    [color]="'primary'"
-                    size="sm"
-                    variant="outline"
-                    class="me-2"
-                    (click)="goToDetailAppointment(item.id)"
-                  >
+                  <button cButton [color]="'primary'" size="sm" variant="outline" class="me-2"
+                    (click)="goToDetailAppointment(item.id)">
                     <i class="fa fa-eye" aria-hidden="true"></i>
                   </button>
 
-                  <button
-                    cButton
-                    [color]="'primary'"
-                    size="sm"
-                    variant="outline"
-                    class="me-2 p-2"
-                    (click)="goToEditAppointment(item.id)"
-                  >
+                  <button cButton [color]="'primary'" size="sm" variant="outline" class="me-2 p-2"
+                    (click)="goToEditAppointment(item.id)">
                     <i class="fa fa-pencil-square" aria-hidden="true"></i>
                   </button>
 
-                  <button
-                    [cModalToggle]="staticBackdropModal.id"
-                    cButton
-                    [color]="'primary'"
-                    size="sm"
-                    variant="outline"
-                    class="p-2"
-                    (click)="openChangeStatusModal(item.id, item.status)"
-                  >
+                  <button [cModalToggle]="staticBackdropModal.id" cButton [color]="'primary'" size="sm"
+                    variant="outline" class="p-2" (click)="openChangeStatusModal(item.id, item.status)">
                     <i class="fa fa-outdent" aria-hidden="true"></i>
                   </button>
                 </div>
@@ -102,12 +89,8 @@
           </c-smart-table>
 
           @if (props.totalPages > 1) {
-          <c-smart-pagination
-            [activePage]="props.activePage"
-            [pages]="props.totalPages"
-            (activePageChange)="handleActivePageChange($event)"
-            class="mt-3"
-          ></c-smart-pagination>
+          <c-smart-pagination [activePage]="props.activePage" [pages]="props.totalPages"
+            (activePageChange)="handleActivePageChange($event)" class="mt-3"></c-smart-pagination>
           } @else if (!props.loadingData && (data$ | async)?.length === 0) {
           <div class="alert alert-info mt-3">Không tìm thấy lịch hẹn nào.</div>
           } } @else {
@@ -126,25 +109,12 @@
 <c-modal #staticBackdropModal backdrop="static" id="staticBackdropModal">
   <c-modal-header>
     <h2 cModalTitle>Thay đổi trạng thái</h2>
-    <button
-      [cModalToggle]="staticBackdropModal.id"
-      type="button"
-      class="btn-close"
-      aria-label="Close"
-    ></button>
+    <button [cModalToggle]="staticBackdropModal.id" type="button" class="btn-close" aria-label="Close"></button>
   </c-modal-header>
   <c-modal-body>
     <label for="validationTooltipStatus" class="form-label">Trạng thái</label>
-    <select
-      cSelect
-      cFormControl
-      id="validationTooltipStatus"
-      name="status"
-      required
-      [(ngModel)]="selectedStatus"
-      #status="ngModel"
-      class="mb-2"
-    >
+    <select cSelect cFormControl id="validationTooltipStatus" name="status" required [(ngModel)]="selectedStatus"
+      #status="ngModel" class="mb-2">
       <option value="confirmed">Đã xác nhận</option>
       <option value="not_show">Không đến</option>
       <option value="finished">Hoàn thành</option>
@@ -153,16 +123,8 @@
     </select>
 
     <label for="validationTooltipReason">Lí do hủy</label>
-    <textarea
-      cFormControl
-      id="validationTooltipReason"
-      name="reason"
-      [(ngModel)]="reason"
-      #reasonControl="ngModel"
-      class="form-control"
-      rows="3"
-      placeholder="Nhập lí do hủy (dành cho trạng thái đã hủy, không đến)"
-    ></textarea>
+    <textarea cFormControl id="validationTooltipReason" name="reason" [(ngModel)]="reason" #reasonControl="ngModel"
+      class="form-control" rows="3" placeholder="Nhập lí do hủy (dành cho trạng thái đã hủy, không đến)"></textarea>
   </c-modal-body>
   <c-modal-footer>
     <button [cModalToggle]="staticBackdropModal.id" cButton color="secondary">

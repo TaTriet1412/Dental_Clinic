@@ -1,5 +1,6 @@
 package com.dental_clinic.schedule_service.Service;
 
+import com.dental_clinic.common_lib.constant.CaseVariableUtils;
 import com.dental_clinic.common_lib.dto.response.ApiResponse;
 import com.dental_clinic.common_lib.exception.AppException;
 import com.dental_clinic.common_lib.exception.ErrorCode;
@@ -15,23 +16,32 @@ import com.dental_clinic.schedule_service.Entity.AppointmentStatus;
 import com.dental_clinic.schedule_service.Repository.AppointmentRepository;
 import com.dental_clinic.schedule_service.Utils.StringUtils;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.mail.MessagingException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cglib.core.Local;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.data.domain.*;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 
 import java.lang.reflect.Field;
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.time.LocalTime;
+import java.util.*;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 @Service
 public class AppointmentService {
+    private final MongoTemplate mongoTemplate;
     AppointmentRepository appointmentRepository;
     WorkScheduleService workScheduleService;
     EmailService emailService;
@@ -45,12 +55,13 @@ public class AppointmentService {
             AppointmentRepository appointmentRepository,
             WorkScheduleService workScheduleService,
             EmailService emailService,
-            ObjectMapper objectMapper) {
+            ObjectMapper objectMapper, MongoTemplate mongoTemplate) {
         this.objectMapper = objectMapper;
         this.patientClient = patientClient;
         this.emailService = emailService;
         this.workScheduleService = workScheduleService;
         this.appointmentRepository = appointmentRepository;
+        this.mongoTemplate = mongoTemplate;
     }
 
     public List<Appointment> getAllAppointments() {
@@ -59,66 +70,96 @@ public class AppointmentService {
                 .toList();
     }
 
-    public PageResponse<Appointment> getFilteredAndSortedAppointments(Map<String, Object> filters, int page, int size, Map<String, Boolean> sortFields) {
-        // Step 1: Lấy toàn bộ dữ liệu
-        List<Appointment> allAppointments = appointmentRepository.findAll();
+    public Page<Appointment> getPaginationAppointments(
+            String filtersJson,
+            int page,
+            int size,
+            String sortFields) {
+        try {
+            int pageIndex = page > 0 ? page - 1 : 0;
 
-        // Step 2: Lọc
-        List<Appointment> filteredAppointments = allAppointments.stream()
-                .filter(appointment -> filters.entrySet().stream()
-                        .allMatch(entry -> {
-                            try {
-                                Field declaredField = Appointment.class.getDeclaredField(entry.getKey());
-                                declaredField.setAccessible(true);
-                                Object fieldValue = declaredField.get(appointment);
+            // Parse filters from JSON
+            JsonNode filtersNode = filtersJson != null ?
+                    objectMapper.readTree(filtersJson) :
+                    objectMapper.createObjectNode();
 
-                                if (fieldValue == null) return false;
+            // Build Node
+            Sort sort = Sort.unsorted();
+            if (sortFields != null && !sortFields.trim().isEmpty()) {
+                String[] sortParts = URLDecoder.decode(sortFields, StandardCharsets.UTF_8.name()).split(",");
+                String sortField = sortParts[0].trim();
+                Sort.Direction direction = sortParts.length > 1 &&
+                        sortParts[1].trim().equalsIgnoreCase("asc") ?
+                        Sort.Direction.ASC : Sort.Direction.DESC;
+                sort = Sort.by(direction, sortField);
+            }
 
-                                // Convert filter value (String) to the field type
-                                Class<?> fieldType = declaredField.getType();
-                                String rawValue = entry.getValue().toString();
+            Pageable pageable = PageRequest.of(pageIndex, size, sort);
 
-                                Object convertedValue = StringUtils.convertStringToType(rawValue, fieldType);
+            // Build Criteria
+            List<Criteria> criteriaList = new ArrayList<>();
 
-                                return fieldValue.equals(convertedValue);
-                            } catch (NoSuchFieldException | IllegalAccessException e) {
-                                return false;
-                            }
-                        }))
-                .collect(Collectors.toList());
+            // Date filter
+            String[] dateFields = {"timeStart", "timeEnd", "createdAt"};
+            for (String dateField : dateFields) {
+                if (filtersNode.has(dateField)) {
+                    String dateStr = filtersNode.get(dateField).asText();
+                    LocalDate localDate = LocalDate.parse(dateStr.substring(0, 10));
 
-        // Step 3: Sort
-        Comparator<Appointment> comparator = null;
-        for (Map.Entry<String, Boolean> entry : sortFields.entrySet()) {
-            Comparator<Appointment> fieldComparator = getAppointmentComparator(entry);
-            comparator = (comparator == null) ? fieldComparator : comparator.thenComparing(fieldComparator);
+                    LocalDateTime startOfDay = localDate.atStartOfDay();
+                    LocalDateTime endOfDay = localDate.atTime(LocalTime.MAX);
+
+                    String mongoField = CaseVariableUtils.changeCamelCaseToSnakeCase(dateField);
+
+                    criteriaList.add(Criteria.where(mongoField).gte(startOfDay).lte(endOfDay));
+                }
+            }
+
+            // Other filters
+            filtersNode.fields().forEachRemaining(entry -> {
+                String key = entry.getKey();
+                JsonNode value = entry.getValue();
+
+                if (Arrays.asList(dateFields).contains(key)) {
+                    // Skip date fields as they are already handled above
+                    return;
+                }
+
+                if (value.isArray()) {
+                    List<String> values = new ArrayList<>();
+                    value.forEach(v -> values.add(v.asText()));
+                    if (!values.isEmpty()) {
+                        String mongoField = CaseVariableUtils.changeCamelCaseToSnakeCase(key);
+                        criteriaList.add(Criteria.where(mongoField).in(values));
+                    }
+                } else if (!value.isNull() && !value.asText().isBlank()) {
+                    criteriaList.add(Criteria.where(key).regex(".*" + Pattern.quote(value.asText()) + ".*", "i"));
+                }
+            });
+
+            Criteria criteria = criteriaList.isEmpty() ? new Criteria() : new Criteria().andOperator(criteriaList.toArray(new Criteria[0]));
+            Query query = new Query(criteria).with(pageable);
+
+            // Query MongoDB
+            List<Appointment> appointments = mongoTemplate.find(query, Appointment.class);
+            long count = mongoTemplate.count(Query.of(query).limit(-1).skip(-1), Appointment.class);
+
+            // if page is out of bounds, return last page
+            int totalPages = (int) Math.ceil((double) count / size);
+            if (pageIndex >= totalPages && totalPages > 0) {
+                pageIndex = totalPages - 1;
+                pageable = PageRequest.of(pageIndex, size, sort);
+                query = new Query(criteria).with(pageable);
+                appointments = mongoTemplate.find(query, Appointment.class);
+                count = mongoTemplate.count(Query.of(query).limit(-1).skip(-1), Appointment.class);
+            }
+
+            return new PageImpl<>(appointments, pageable, count);
+        } catch (Exception e) {
+            throw new RuntimeException("Error processing filters or sort fields: " + e.getMessage(), e);
         }
-
-        if (comparator != null) {
-            filteredAppointments = filteredAppointments.stream()
-                    .sorted(comparator)
-                    .collect(Collectors.toList());
-        }
-
-        // Step 4: Phân trang thủ công
-//        int start = Math.min(page * size, filteredAppointments.size());
-//        int end = Math.min(start + size, filteredAppointments.size());
-
-//        return filteredAppointments.subList(start, end);
-
-        // Phân trang thủ công
-        int startPage = page * size;
-        int endPage = Math.min(startPage + size, filteredAppointments.size());
-
-        List<Appointment> pagedAppointments = filteredAppointments.subList(startPage, endPage);
-
-        // Tính tổng số trang và tổng số bản ghi
-        long totalItems = filteredAppointments.size();
-        int totalPages = (int) Math.ceil((double) totalItems / size);
-
-        // Trả về dữ liệu dưới dạng PageResponse
-        return new PageResponse<>(pagedAppointments, totalItems, totalPages, page);
     }
+
     private static Comparator<Appointment> getAppointmentComparator(Map.Entry<String, Boolean> entry) {
         String field = (entry.getKey()); // Ánh xạ tên trường
         boolean ascending = entry.getValue();

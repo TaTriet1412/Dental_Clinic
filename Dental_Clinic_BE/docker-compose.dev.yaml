@@ -127,3 +127,72 @@ services:
         condition: service_healthy
       zipkin:
         condition: service_healthy
+  # Payment Service - Development Mode
+  payment-service:
+    build:
+      context: ./payment-service
+      dockerfile: Dockerfile.dev
+    command: ["mvn", "spring-boot:run","-Dspring-boot.run.jvmArguments=-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005 -Dfile.encoding=UTF-8 -Dspring.devtools.restart.enabled=true"]
+    container_name: payment_service_dev
+    volumes:
+      # Mount source code để hot reload
+      - ./payment-service/src:/app/src
+      - ./payment-service/pom.xml:/app/pom.xml
+      - ./payment-service/target:/app/target
+      - ./payment-service/uploads:/app/uploads
+      - ~/.m2:/root/.m2 
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+      SPRING_DEVTOOLS_RESTART_ENABLED: true
+      SPRING_DEVTOOLS_LIVERELOAD_ENABLED: true
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://service-registry:8761/eureka/
+      SPRING_CLOUD_CONFIG_URI: http://config-server:8088
+      MANAGEMENT_ZIPKIN_TRACING_ENDPOINT: http://zipkin:9411/api/v2/spans
+      SERVER_PORT: 8089
+    ports:
+      - "8089:8089"
+      - "35733:35729"  # LiveReload port
+      - "5005:5005"    # Debug port
+    depends_on:
+      config-server:
+        condition: service_healthy
+      service-registry:
+        condition: service_healthy
+      payment_db:
+        condition: service_started
+      redis:
+        condition: service_healthy
+      zipkin:
+        condition: service_healthy
+  # Schedule Service - Development Mode
+  schedule-service:
+    build:
+      context: ./schedule-service
+      dockerfile: Dockerfile.dev
+    command: ["mvn", "spring-boot:run","-Dspring-boot.run.jvmArguments=-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005 -Dfile.encoding=UTF-8 -Dspring.devtools.restart.enabled=true"]
+    container_name: schedule_service_dev
+    volumes:
+      # Mount source code để hot reload
+      - ./schedule-service/src:/app/src
+      - ./schedule-service/pom.xml:/app/pom.xml
+      - ./schedule-service/target:/app/target
+      - ~/.m2:/root/.m2 
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+      SPRING_DEVTOOLS_RESTART_ENABLED: true
+      SPRING_DEVTOOLS_LIVERELOAD_ENABLED: true
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://service-registry:8761/eureka/
+      SPRING_CLOUD_CONFIG_URI: http://config-server:8088
+      MANAGEMENT_ZIPKIN_TRACING_ENDPOINT: http://zipkin:9411/api/v2/spans
+      SERVER_PORT: 8087
+    ports:
+      - "8087:8087"
+      - "35734:35729"  # LiveReload port
+      - "5006:5006"    # Debug port
+    depends_on:
+      config-server:
+        condition: service_healthy
+      service-registry:
+        condition: service_healthy
+      zipkin:
+        condition: service_healthy

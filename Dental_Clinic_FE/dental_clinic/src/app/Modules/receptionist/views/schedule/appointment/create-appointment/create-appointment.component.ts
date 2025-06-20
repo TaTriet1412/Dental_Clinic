@@ -10,7 +10,7 @@ import { ROUTES } from '../../../../../../core/constants/routes.constant';
 import { AppointmentService } from '../../../../../../core/services/appointment.service';
 import { PatientService } from '../../../../../../core/services/patient.service';
 import { SnackBarService } from '../../../../../../core/services/snack-bar.service';
-import { DateSupportService } from '../../../../../../core/services/support/date.service';
+import { DateSupportService } from '../../../../../../share/utils/support/date.service';
 import { UserService } from '../../../../../../core/services/user.service';
 import { AppointmentCreateReq } from '../../../../../../share/dto/request/appointment-create-req';
 import { NameIdPatientResponse } from '../../../../../../share/dto/response/name-id-patient-response';

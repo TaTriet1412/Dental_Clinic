@@ -4,13 +4,14 @@ import { map, switchMap, tap, takeUntil, startWith, distinctUntilChanged, catchE
 import { AppointmentService } from '../../../../../core/services/appointment.service';
 import { SnackBarService } from '../../../../../core/services/snack-bar.service';
 import { AlignDirective, BadgeModule, ButtonDirective, CardModule, ColComponent, FormSelectDirective, ModalModule, RowComponent, SpinnerModule } from '@coreui/angular';
-import { SmartTableModule, SmartPaginationModule, ISorterValue, IColumn, TemplateIdDirective, AlertModule, IColumnFilterValue } from '@coreui/angular-pro';
+import { SmartTableModule, SmartPaginationModule, ISorterValue, IColumn, TemplateIdDirective, AlertModule, IColumnFilterValue, PopoverModule } from '@coreui/angular-pro';
 import { AppointmentResponse } from '../../../../../share/dto/response/appoiment-response';
 import { CommonModule, DatePipe } from '@angular/common';
 import { Router } from '@angular/router';
 import { ROUTES } from '../../../../../core/constants/routes.constant';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { FormsModule } from '@angular/forms';
+import { improveUILongId } from '../../../../../share/utils/id/id.utils';
 
 @Component({
   selector: 'app-appointment',
@@ -30,7 +31,8 @@ import { FormsModule } from '@angular/forms';
     BadgeModule,
     ModalModule,
     FormsModule,
-    FormSelectDirective
+    FormSelectDirective,
+    PopoverModule
   ],
   templateUrl: './appointment.component.html',
   styleUrls: ['./appointment.component.scss'],
@@ -41,11 +43,12 @@ import { FormsModule } from '@angular/forms';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AppointmentComponent implements OnInit, OnDestroy {
-
+  // --- Inject Services ---
   private appointmentService = inject(AppointmentService);
   private snackbar = inject(SnackBarService);
   private cdr = inject(ChangeDetectorRef);
   private datePipe = inject(DatePipe); // Inject DatePipe
+  improveUILongId = improveUILongId;
 
   // --- State Management ---
   readonly pagination$ = new BehaviorSubject<{ page: number; size: number }>({ page: 1, size: 5 });
@@ -132,23 +135,23 @@ export class AppointmentComponent implements OnInit, OnDestroy {
 
     // --- data$ giờ sẽ lấy từ allAppointmentsData$ và các params ---
     this.data$ = combineLatest([
-        this.apiParams$,
-        this.allAppointmentsData$ // Sử dụng BehaviorSubject chứa dữ liệu gốc
+      this.apiParams$,
+      this.allAppointmentsData$ // Sử dụng BehaviorSubject chứa dữ liệu gốc
     ]).pipe(
       tap(([params, allData]) => { // Thêm allData vào tap để debug nếu cần
         // Nếu allData rỗng (chưa tải xong), không cần làm gì hoặc hiển thị loading
         if (allData.length === 0 && this.loading$.value) {
-            // Có thể đặt loading$.next(true) ở đây nếu muốn spinner cho mỗi lần params thay đổi
+          // Có thể đặt loading$.next(true) ở đây nếu muốn spinner cho mỗi lần params thay đổi
         } else if (allData.length > 0 && this.loading$.value) {
-            // this.loading$.next(false); // Dữ liệu đã có, không còn loading cho việc xử lý client-side
+          // this.loading$.next(false); // Dữ liệu đã có, không còn loading cho việc xử lý client-side
         }
         this.errorMessage$.next('');
       }),
       map(([params, allData]) => {
         if (allData.length === 0) { // Nếu chưa có dữ liệu gốc, trả về mảng rỗng
-            this.totalPages$.next(0);
-            this.loading$.next(false); // Đảm bảo loading là false nếu không có data
-            return [];
+          this.totalPages$.next(0);
+          this.loading$.next(false); // Đảm bảo loading là false nếu không có data
+          return [];
         }
         // this.loading$.next(true); // Bắt đầu xử lý client-side
 
@@ -161,22 +164,22 @@ export class AppointmentComponent implements OnInit, OnDestroy {
           const sortKeyOriginal = `_original_${key}`;
 
           if (processedData.length > 0 && processedData[0].hasOwnProperty(sortKeyOriginal)) {
-              processedData.sort((a: any, b: any) => {
-                  const dateA = a[sortKeyOriginal]?.getTime();
-                  const dateB = b[sortKeyOriginal]?.getTime();
-                  if (isNaN(dateA) && isNaN(dateB)) return 0;
-                  if (isNaN(dateA)) return 1;
-                  if (isNaN(dateB)) return -1;
-                  if (dateA < dateB) return direction === 'asc' ? -1 : 1;
-                  if (dateA > dateB) return direction === 'asc' ? 1 : -1;
-                  return 0;
-              });
+            processedData.sort((a: any, b: any) => {
+              const dateA = a[sortKeyOriginal]?.getTime();
+              const dateB = b[sortKeyOriginal]?.getTime();
+              if (isNaN(dateA) && isNaN(dateB)) return 0;
+              if (isNaN(dateA)) return 1;
+              if (isNaN(dateB)) return -1;
+              if (dateA < dateB) return direction === 'asc' ? -1 : 1;
+              if (dateA > dateB) return direction === 'asc' ? 1 : -1;
+              return 0;
+            });
           } else if (processedData.length > 0 && processedData[0].hasOwnProperty(key)) {
-              processedData.sort((a: any, b: any) => {
-                  if (a[key] < b[key]) return direction === 'asc' ? -1 : 1;
-                  if (a[key] > b[key]) return direction === 'asc' ? 1 : -1;
-                  return 0;
-              });
+            processedData.sort((a: any, b: any) => {
+              if (a[key] < b[key]) return direction === 'asc' ? -1 : 1;
+              if (a[key] > b[key]) return direction === 'asc' ? 1 : -1;
+              return 0;
+            });
           }
         }
 
@@ -316,7 +319,7 @@ export class AppointmentComponent implements OnInit, OnDestroy {
         // For simplicity, let's re-trigger the fetch (though inefficient for large datasets)
         // A better way would be to update the item in the 'allData' array before the map/slice
         const currentParams = this.pagination$.value;
-        this.pagination$.next({...currentParams}); // Re-emit params to trigger data$ pipe again
+        this.pagination$.next({ ...currentParams }); // Re-emit params to trigger data$ pipe again
 
         // Close modal logic
         // this.isModalVisible = false;
@@ -330,5 +333,13 @@ export class AppointmentComponent implements OnInit, OnDestroy {
         this.cdr.markForCheck();
       },
     });
+  }
+
+  goToPatientDetail(id: string): void {
+    this.router.navigate([ROUTES.ADMIN.children.PATIENT.children.DETAIL.fullPath(id)]);
+  }
+
+  copyId(id: string) {
+    navigator.clipboard.writeText(id);
   }
 }

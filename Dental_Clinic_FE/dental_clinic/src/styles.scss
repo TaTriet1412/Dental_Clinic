@@ -1,6 +1,4 @@
-@use "@coreui/coreui/scss/coreui" as * with (
-  $enable-deprecation-messages: false
-);
+@use "@coreui/coreui/scss/coreui" as * with ($enable-deprecation-messages: false);
 
 // Import Chart.js custom tooltips styles
 @use "@coreui/chartjs/scss/coreui-chartjs";
@@ -26,14 +24,26 @@
 
 
 
-html, body { height: 100%; }
-body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; background-color: #f4f7f6; } // Thêm màu nền nhẹ
+html,
+body {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+  background-color: #f4f7f6;
+}
+
+// Thêm màu nền nhẹ
 
 // Tùy chỉnh màu cho Snackbar (dùng panelClass đã thêm trong component)
 .snackbar-success {
   background-color: #4CAF50; // Xanh lá
   color: white;
-  button { // Nút đóng
+
+  button {
+    // Nút đóng
     color: white !important;
     opacity: 0.8;
   }
@@ -42,10 +52,29 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; background-
 .snackbar-error {
   background-color: #f44336; // Đỏ
   color: white;
-   button { // Nút đóng
+
+  button {
+    // Nút đóng
     color: white !important;
     opacity: 0.8;
   }
 }
 
 
+.popover-header {
+  background-color: #0d6efd;
+  color: #fff;
+  font-weight: 600;
+  font-size: 1.2rem;
+}
+
+.popover-body {
+  font-size: 0.9rem;
+  color: #000;
+  padding-top: 0.25rem !important; // Giảm khoảng cách trên body
+}
+
+.popover, .c-popover {
+  border: 1.5px solid #0d6efd !important; /* Viền xanh dương */
+  --cui-popover-border-color: #0d6efd;    /* Nếu CoreUI dùng biến này */
+}

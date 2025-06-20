@@ -8,7 +8,7 @@ import { SnackBarService } from '../../../../../../core/services/snack-bar.servi
 import { NgxSpinnerService } from 'ngx-spinner';
 import { firstValueFrom } from 'rxjs';
 import { ActivatedRoute } from '@angular/router';
-import { AppointmentSupportService } from '../../../../../../core/services/support/appointment-support.service';
+import { AppointmentSupportService } from '../../../../../../share/utils/support/appointment-support.service';
 import { UserService } from '../../../../../../core/services/user.service';
 import { PatientService } from '../../../../../../core/services/patient.service';
 import { jsPDF } from 'jspdf'; // Correct import for jsPDF class
