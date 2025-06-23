@@ -17,6 +17,8 @@ docker-compose up -d config-server service-registry zipkin redis
 # 2. Start databases
 docker-compose up -d auth_db material_db dentist_db payment_db
 
+** docker compose up api-gateway (Sau khi đã up service cần dev)
+
 # 3. Kiểm tra health của infrastructure (Đợi 30-60 giây)
 curl http://localhost:8088/actuator/health  # Config Server
 curl http://localhost:8761/actuator/health  # Service Registry

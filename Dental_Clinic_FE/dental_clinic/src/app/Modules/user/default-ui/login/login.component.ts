@@ -46,7 +46,6 @@ export class LoginComponent implements OnInit { // Implement OnInit if needed, o
 
     this.isLoading = true;
     this.errorMessage = null; // Clear previous errors
-
     this.authService.login(this.loginData.userId, this.loginData.password)
       .subscribe({
         next: (response) => {
@@ -54,7 +53,7 @@ export class LoginComponent implements OnInit { // Implement OnInit if needed, o
           // Navigate to a protected route after successful login
           // You might want to navigate based on the role stored by AuthService
           // For example, check this.authService.getAdminStatus(), etc.
-          this.router.navigate(["/" + this.authService.getRole().toLowerCase()])
+          this.router.navigate(["/" + this.authService.getUserRole().toLowerCase()])
         },
         error: (err) => {
           this.isLoading = false;

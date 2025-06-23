@@ -14,6 +14,8 @@ import org.springframework.stereotype.Component;
 import javax.crypto.spec.SecretKeySpec;
 import java.security.Key;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 @Component
@@ -32,20 +34,55 @@ public class JwtTokenProvider {
             return existingToken; // Trả về token cũ nếu còn thời hạn
         }
 
+        Map<String, Object> claims = new HashMap<>();
+        claims.put("role", user.getRole().getName());
+        claims.put("name", user.getName());
+        claims.put("id", user.getId());
+        claims.put("email", user.getEmail());
+
+
         Key signingKey = new SecretKeySpec(JWT_SECRET.getBytes(),
                 SignatureAlgorithm.HS512.getJcaName());
         String token = Jwts.builder()
                 .setSubject(user.getEmail())
-                .claim("role", user.getRole().getName())
+                .addClaims(claims)
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + JWT_EXP))
                 .signWith(signingKey)
                 .compact();
 
+        System.out.println("Token claims: " + claims);
+
+
         redisTemplate.opsForValue().set("TOKEN_" + user.getEmail(), token, JWT_EXP, TimeUnit.MILLISECONDS);
 
         return token;
     }
+
+    public Claims getAllClaims(String token) {
+        return Jwts.parserBuilder()
+                .setSigningKey(new SecretKeySpec(JWT_SECRET.getBytes(),
+                        SignatureAlgorithm.HS512.getJcaName()))
+                .build()
+                .parseClaimsJws(token)
+                .getBody();
+    }
+
+    // Method helper để lấy bất kỳ claim nào theo key
+    public Object getClaim(String token, String key) {
+        Claims claims = getAllClaims(token);
+        return claims.get(key);
+    }
+
+    // Các method tiện ích
+    public String getName(String token) {
+        return (String) getClaim(token, "name");
+    }
+
+    public Long getId(String token) {
+        return ((Integer) getClaim(token, "id")).longValue();
+    }
+
 
     // Giải mã và kiểm tra token
     public String resolveToken(HttpServletRequest request) {

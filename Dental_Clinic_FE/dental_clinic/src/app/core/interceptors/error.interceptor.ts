@@ -4,6 +4,7 @@ import { HttpEvent, HttpInterceptor, HttpHandler, HttpRequest, HttpErrorResponse
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { Router } from '@angular/router';
+import { ROUTES } from '../constants/routes.constant';
 
 @Injectable()
 export class ErrorInterceptor implements HttpInterceptor {
@@ -14,6 +15,8 @@ export class ErrorInterceptor implements HttpInterceptor {
       catchError((error: HttpErrorResponse) => {
         if (error.status >= 500 && error.status < 600) {
           this.router.navigate(['/server-error']);
+        } else if (error.status === 401) {
+          this.router.navigate([ROUTES.HOME.path]);
         }
         return throwError(() => error);
       })

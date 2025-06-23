@@ -65,6 +65,7 @@ export class DefaultHeaderComponent extends HeaderComponent implements OnInit {
   }
 
   ngOnInit(): void {
+
     this.userService.getUserDetailById(this.authService.getUserId()).subscribe({
       next: (res) => {
         this.user = res.result;
@@ -84,7 +85,6 @@ export class DefaultHeaderComponent extends HeaderComponent implements OnInit {
     if (!userEmail) {
       console.error("Logout error: User email not found.");
       this.snackbarService.notifyError("Không thể lấy thông tin người dùng để đăng xuất.");
-      // Force clear local state and redirect if email is missing
       this.authService.resetDefaultUser();
       this.router.navigate(['']);
       return;

@@ -8,17 +8,17 @@ $stroke-color: black;
   display: block; // Ensure the host element takes up space
   background: $main-color;
   // Add padding or other layout styles as needed
-  padding: 50px 0; // Example padding
   text-align: center; // Center content within the host
 }
 
 // Target elements within the component's template
 .error-container {
   // Styles for the main container if needed
+  padding-top: 100px;
   height: 100vh; // Full viewport height for centering
 
   h1 {
-    margin: 100px auto 0 auto;
+    margin: 0 auto 0 auto;
     color: $stroke-color;
     font-family: 'Encode Sans Semi Condensed', Verdana, sans-serif;
     font-size: 10rem;

@@ -11,4 +11,4 @@ ENV JAVA_OPTS="-Dspring.devtools.restart.enabled=true -Dfile.encoding=UTF-8"
 
 EXPOSE 8087 35729
 
-CMD ["mvn", "spring-boot:run", "-Dspring-boot.run.jvmArguments=-Dfile.encoding=UTF-8 -Dspring.devtools.restart.enabled=true"]
+# CMD ["mvn", "spring-boot:run", "-Dspring-boot.run.jvmArguments=-Dfile.encoding=UTF-8 -Dspring.devtools.restart.enabled=true"]

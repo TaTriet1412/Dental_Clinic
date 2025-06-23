@@ -39,8 +39,6 @@ export class AppointmentService {
         }
         const token = this.authService.getToken();  // Lấy JWT từ AuthService
         const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
-        const url = `${this.apiUrl}/pagination`;
-        console.log('GET', url, params.toString());
         return this.http.get<any>(`${this.apiUrl}/pagination`, { params, headers });
     }
 

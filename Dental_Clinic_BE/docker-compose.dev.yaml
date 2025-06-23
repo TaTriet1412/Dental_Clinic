@@ -4,7 +4,7 @@ services:
     build:
       context: ./auth-service
       dockerfile: Dockerfile.dev
-    command: ["mvn", "spring-boot:run", "-Dspring-boot.run.jvmArguments=-Dfile.encoding=UTF-8 -Dspring.devtools.restart.enabled=true"]
+    command: ["mvn", "spring-boot:run","-Dspring-boot.run.jvmArguments=-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5007 -Dfile.encoding=UTF-8 -Dspring.devtools.restart.enabled=true"]
     container_name: auth_service_dev
     volumes:
       # Mount source code để hot reload
@@ -24,6 +24,7 @@ services:
     ports:
       - "8081:8081"
       - "35729:35729"  # LiveReload port
+      - "5007:5007"    # Debug port
     depends_on:
       config-server:
         condition: service_healthy
@@ -169,7 +170,7 @@ services:
     build:
       context: ./schedule-service
       dockerfile: Dockerfile.dev
-    command: ["mvn", "spring-boot:run","-Dspring-boot.run.jvmArguments=-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005 -Dfile.encoding=UTF-8 -Dspring.devtools.restart.enabled=true"]
+    command: ["mvn", "spring-boot:run","-Dspring-boot.run.jvmArguments=-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5006 -Dfile.encoding=UTF-8 -Dspring.devtools.restart.enabled=true"]
     container_name: schedule_service_dev
     volumes:
       # Mount source code để hot reload

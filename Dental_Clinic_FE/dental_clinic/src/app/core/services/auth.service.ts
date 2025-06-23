@@ -1,5 +1,5 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Injectable, EventEmitter, OnDestroy } from '@angular/core';
+import { Injectable, EventEmitter } from '@angular/core';
 import { Observable, tap } from 'rxjs';
 import { LoginResponse } from '../../share/dto/response/login-response';
 import { CreateAccountReq } from '../../share/dto/request/account-create-req';
@@ -7,8 +7,7 @@ import { CreateAccountReq } from '../../share/dto/request/account-create-req';
 @Injectable({
   providedIn: 'root',
 })
-export class AuthService implements OnDestroy {
-  private userRole: string = 'none';
+export class AuthService {
   authStatusChanged: EventEmitter<string> = new EventEmitter();
 
   private apiUrl = 'http://localhost:8060/auth';
@@ -16,7 +15,6 @@ export class AuthService implements OnDestroy {
   constructor(
     private http: HttpClient,
   ) {
-    this.loadAuthStatus();
   }
 
   saveToken(token: string): void {
@@ -34,66 +32,84 @@ export class AuthService implements OnDestroy {
 
         if (res.token) {
           this.saveToken(res.token);
-          this.saveInfoUser(res.name, res.email, res.userId)
-          this.loadRole(res.role)
-          this.saveAuthStatus();
-          this.authStatusChanged.emit(this.userRole);
         }
       })
     );
-  }
-
-  loadRole(role: string) {
-    this.userRole = role;
   }
 
   logout(email: string): Observable<any> {
     return this.http.post<any>(`${this.apiUrl}/logout`, { email }).pipe(
       tap(() => {
         localStorage.clear();
-        this.resetDefaultUser();
       })
     );
   }
 
-  resetDefaultUser() {
-    this.userRole = 'none';
-    this.saveAuthStatus();
-    this.authStatusChanged.emit(this.userRole);
+  public getTokenPayload(): any {
+    const token = this.getToken();
+    if (!token) return null;
+
+    try {
+      const base64Url = token.split('.')[1];
+      const base64 = base64Url
+        .replace(/-/g, '+')
+        .replace(/_/g, '/')
+        .padEnd(base64Url.length + (4 - base64Url.length % 4) % 4, '=');
+
+      const jsonPayload = decodeURIComponent(
+        escape(window.atob(base64))
+      );
+
+      return JSON.parse(jsonPayload);
+    } catch (error) {
+      return null;
+    }
+  }
+
+  isTokenValid(): boolean {
+    const payload = this.getTokenPayload();
+    if (!payload || !payload.exp) {
+      return false;
+    }
+    const expiration = payload.exp * 1000;
+    const currentTime = Date.now();
+    if (currentTime > expiration) {
+      this.resetDefaultUser();
+      return false;
+    }
+    return true;
+  }
+
+  getUserRole(): string {
+    const payload = this.getTokenPayload();
+    return payload && payload.role ? payload.role : 'none';
   }
 
   getUserId(): number {
-    const userId = localStorage.getItem('userId');
-    return userId ? Number(userId) : -1;
-  }
-
-  getAuthStatus() {
-    return this.userRole !== 'none';
-  }
-
-  getDentistStatus() {
-    return this.userRole === 'DENTIST';
-  }
-
-  getReceptionistStatus() {
-    return this.userRole === 'RECEPTIONIST';
-  }
-
-
-  getAdminStatus() {
-    return this.userRole === 'ADMIN';
-  }
-
-  getRole(): string {
-    return this.userRole;
+    const payload = this.getTokenPayload();
+    return payload && payload.id ? Number(payload.id) : -1;
   }
 
   getEmail(): string {
-    return localStorage.getItem('email')!;
+    const payload = this.getTokenPayload();
+    return payload && payload.email ? payload.email : '';
   }
 
   getName(): string {
-    return localStorage.getItem('name')!;
+    const payload = this.getTokenPayload();
+    return payload && payload.name ? payload.name : '';
+  }
+
+  getAuthStatus() {
+    return this.isTokenValid();
+  }
+
+  resetDefaultUser() {
+    localStorage.removeItem('auth_token');
+  }
+
+  getUserStatus(role: string): boolean {
+    return this.getUserRole() === role;
   }
 
   toggleBanUser(userId: number) {
@@ -116,35 +132,10 @@ export class AuthService implements OnDestroy {
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
 
     return this.http.put<any>(`${this.apiUrl}/change-img`,
-      formData, {headers});
+      formData, { headers });
   }
 
   resetPassword(userId: number) {
     return this.http.put<any>(`${this.apiUrl}/reset_password/${userId}`, {});
-  }
-
-
-  private saveAuthStatus() {
-    localStorage.setItem('userRole', this.userRole);
-  }
-
-  private saveInfoUser(name: string, email: string, userId: number) {
-    localStorage.setItem('name', name)
-    localStorage.setItem('email', email)
-    localStorage.setItem('userId', userId.toString())
-  }
-
-  private loadAuthStatus() {
-    const savedUserRole = localStorage.getItem('userRole') as 'none' | 'RECEPTIONIST' | 'ADMIN' | 'DENTIST';
-    if (savedUserRole) {
-      this.userRole = savedUserRole;
-      this.authStatusChanged.emit(this.userRole);
-    }
-  }
-
-
-
-  ngOnDestroy(): void {
-    localStorage.removeItem('userRole');
   }
 }

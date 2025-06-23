@@ -65,6 +65,8 @@ export class DefaultHeaderComponent extends HeaderComponent implements OnInit {
   }
 
   ngOnInit(): void {
+        console.log("sdfsadf", this.authService.getTokenPayload());
+
     this.userService.getUserDetailById(this.authService.getUserId()).subscribe({
       next: (res) => {
         this.user = res.result;

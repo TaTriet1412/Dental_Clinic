@@ -9,6 +9,6 @@ ENV SPRING_DEVTOOLS_RESTART_ENABLED=true
 ENV SPRING_DEVTOOLS_LIVERELOAD_ENABLED=true
 ENV JAVA_OPTS="-Dspring.devtools.restart.enabled=true -Dfile.encoding=UTF-8"
 
-EXPOSE 8081 35729
+EXPOSE 8089 35729
 
 CMD ["mvn", "spring-boot:run", "-Dspring-boot.run.jvmArguments=-Dfile.encoding=UTF-8 -Dspring.devtools.restart.enabled=true"]

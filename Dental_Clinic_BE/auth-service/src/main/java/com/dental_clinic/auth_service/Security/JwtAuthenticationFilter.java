@@ -1,5 +1,6 @@
 package com.dental_clinic.auth_service.Security;
 
+import io.jsonwebtoken.Claims;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebFilter;
@@ -15,14 +16,12 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 import java.util.Collections;
-
 @Component
 @WebFilter("/*")
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final JwtTokenProvider jwtTokenProvider;
 
-    // Constructor Injection của JwtTokenProvider
     public JwtAuthenticationFilter(JwtTokenProvider jwtTokenProvider) {
         this.jwtTokenProvider = jwtTokenProvider;
     }
@@ -31,32 +30,35 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
 
-        // Lấy token từ header "Authorization"
         String token = jwtTokenProvider.resolveToken(request);
 
-        // Nếu token tồn tại và hợp lệ
-        if (token != null && jwtTokenProvider.validateToken(token)) {
-            // Lấy email từ token
-            String email = jwtTokenProvider.getEmail(token);
-            String role = jwtTokenProvider.getRole(token);
+        try {
+            if (token != null && jwtTokenProvider.validateToken(token)) {
+                Claims claims = jwtTokenProvider.getAllClaims(token);
+                String email = claims.get("email", String.class);
+                String role = claims.get("role", String.class);
 
-            // Nếu email hợp lệ (không null hoặc trống)
-            if (email != null) {
-                GrantedAuthority authority = new SimpleGrantedAuthority("ROLE_" + role);
+                if (email != null) {
+                    GrantedAuthority authority = new SimpleGrantedAuthority("ROLE_" + role);
+                    UsernamePasswordAuthenticationToken authentication =
+                            new UsernamePasswordAuthenticationToken(email, null, Collections.singleton(authority));
 
-                // Tạo đối tượng Authentication với thông tin từ token
-                UsernamePasswordAuthenticationToken authentication =
-                        new UsernamePasswordAuthenticationToken(email, null, Collections.singleton(authority));
+                    // Lưu toàn bộ claims
+                    authentication.setDetails(claims);
 
-                // Cung cấp chi tiết về yêu cầu (có thể là quyền hạn, vai trò nếu cần)
-                authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-
-                // Đặt đối tượng Authentication vào SecurityContext
-                SecurityContextHolder.getContext().setAuthentication(authentication);
+                    SecurityContextHolder.getContext().setAuthentication(authentication);
+                }
+            } else if (token != null) {
+                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                response.getWriter().write("Token is invalid or expired.");
+                return;
             }
+        } catch (Exception e) {
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            response.getWriter().write("Authentication failed.");
+            return;
         }
 
-        // Tiếp tục xử lý chuỗi filter (cho các bộ lọc khác trong Spring Security)
         filterChain.doFilter(request, response);
     }
 }
