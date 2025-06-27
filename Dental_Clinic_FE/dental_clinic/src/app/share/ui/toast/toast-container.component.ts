@@ -6,35 +6,37 @@ import { ToastMessage } from './toast.model';
     selector: 'app-toast-container',
     standalone: false,
     template: `
-    <div class="position-relative">
-      <c-toaster placement="top-end" position="absolute">
-        <ng-container *ngFor="let toast of toasts">
-          <c-toast
-            [autohide]="toast.autohide ?? true"
-            [delay]="(toast.delay ?? 5000) + 500"
-            [visible]="true"
-            (timer)="onTimerChange(toast, $event)"
-            (hidden)="removeToast(toast)"
-            [class.bg-success]="toast.type === 'success'"
-            [class.bg-danger]="toast.type === 'error'"
-            [class.bg-info]="toast.type === 'info'"
-            [class.bg-warning]="toast.type === 'warning'"
-          >
-            <c-toast-header>
-              <strong class="me-auto">{{ toast.title ?? "Teeth Tony"  }}</strong>
-              <small class="text-muted">{{ toast.time || 'Now' }}</small>
-            </c-toast-header>
-            <c-toast-body>
-                <p>{{ toast.body }}</p>
-                <c-progress *ngIf="toast.progress"
-                color="success"
-                animated="true"
-                variant="striped"
-                [value]="progressMap[toast.id ?? ''] || 0" />
-            </c-toast-body>
-        </c-toast>
-        </ng-container>
-      </c-toaster>
+    <div class="toast-wrapper">
+      <div class="position-relative">
+        <c-toaster placement="top-end" position="absolute">
+          <ng-container *ngFor="let toast of toasts">
+            <c-toast
+              [autohide]="toast.autohide ?? true"
+              [delay]="(toast.delay ?? 5000) + 500"
+              [visible]="true"
+              (timer)="onTimerChange(toast, $event)"
+              (hidden)="removeToast(toast)"
+              [class.bg-success]="toast.type === 'success'"
+              [class.bg-danger]="toast.type === 'error'"
+              [class.bg-info]="toast.type === 'info'"
+              [class.bg-warning]="toast.type === 'warning'"
+            >
+              <c-toast-header>
+                <strong class="me-auto">{{ toast.title ?? "Teeth Tony"  }}</strong>
+                <small class="text-muted">{{ toast.time || 'Now' }}</small>
+              </c-toast-header>
+              <c-toast-body>
+                  <p>{{ toast.body }}</p>
+                  <c-progress *ngIf="toast.progress"
+                  color="success"
+                  animated="true"
+                  variant="striped"
+                  [value]="progressMap[toast.id ?? ''] || 0" />
+              </c-toast-body>
+          </c-toast>
+          </ng-container>
+        </c-toaster>
+      </div>
     </div>
     `,
     styles: [`
@@ -42,6 +44,16 @@ import { ToastMessage } from './toast.model';
     c-toast.bg-danger { color: white; }
     c-toast.bg-warning { color: black; }
     c-toast.bg-info { color: white; }
+
+    .toast-wrapper {
+      position: fixed;
+      width: 100%;
+      right: 20px;
+      top: 120px;
+      z-index: 9999;
+      pointer-events: all;
+    }
+    
 `]
 })
 export class ToastContainerComponent {

@@ -8,7 +8,7 @@ import { SnackBarService } from '../../../../../../core/services/snack-bar.servi
 import { NgxSpinnerService } from 'ngx-spinner';
 import { firstValueFrom } from 'rxjs';
 import { ActivatedRoute } from '@angular/router';
-import { AppointmentSupportService } from '../../../../../../share/utils/support/appointment-support.service';
+import { translateStatus } from '../../../../../../share/utils/translator/appointment-translator.utils';
 import { UserService } from '../../../../../../core/services/user.service';
 import { PatientService } from '../../../../../../core/services/patient.service';
 import { jsPDF } from 'jspdf'; // Correct import for jsPDF class
@@ -43,7 +43,6 @@ export class DetailAppointmentComponent  implements OnInit {
     private snackbar: SnackBarService,
     private spinner: NgxSpinnerService,
     private url: ActivatedRoute,
-    private appointmentSupportService: AppointmentSupportService,
   ) {
 
   }
@@ -56,7 +55,7 @@ export class DetailAppointmentComponent  implements OnInit {
       const fetchedAppointment = await firstValueFrom (this.appointmentService.getAppointmentById(this.appointmentId));
       this.appointment = { ...fetchedAppointment.result };
 
-      this.appointment.status = this.appointmentSupportService.translateStatus(this.appointment.status);
+      this.appointment.status = translateStatus(this.appointment.status);
 
       const fetchedNameIdDentist = await firstValueFrom(this.userService.getNameIdUserById(this.appointment.denId));
       this.dentistName = fetchedNameIdDentist.result.name;

@@ -3,3 +3,10 @@
 p-20 {
     padding: 20px;
 }
+
+::ng-deep .form-control[formControlName="startDateInput"],
+::ng-deep .form-control[formControlName="endDateInput"] {
+  width: 1% !important;
+  border: none;
+  padding: 0;
+}

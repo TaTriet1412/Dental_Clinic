@@ -1,6 +1,10 @@
 import { BehaviorSubject } from "rxjs";
 import { ToastMessage } from "./toast.model";
+import { Injectable } from "@angular/core";
 
+@Injectable({
+  providedIn: 'root'
+})
 export class ToastService {
     private _toasts = new BehaviorSubject<ToastMessage[]>([]);
     public toasts$ = this._toasts.asObservable();

@@ -108,6 +108,16 @@ public class AppointmentController {
                 .build();
     }
 
+    @GetMapping("/status")
+    public ApiResponse<Object> getAppointmentStatusList()
+    {
+        return ApiResponse.builder()
+                .apiCode(200)
+                .message("Lấy danh sách trạng thái hóa đơn thành công")
+                .result(appointmentService.getAppointmentStatusList())
+                .build();
+    }
+
     @PutMapping("/update-status")
     public ApiResponse<Object> updateAppointmentStatus(@Valid @RequestBody UpdateAppointStatusReq req) {
         appointmentService.changeStatusAppointment(req);

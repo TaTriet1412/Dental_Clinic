@@ -115,7 +115,7 @@ public class AppointmentService {
             Set<String> arrayFields = new HashSet<>(Arrays.asList("status"));
 
             for (String arrayField : arrayFields) {
-                if (filtersNode.has(arrayField) && !filtersNode.get(arrayField).isNull() && !filtersNode.get(arrayField).asText().isEmpty()) {
+                if (filtersNode.has(arrayField) && !filtersNode.get(arrayField).isNull()) {
                     JsonNode arrayNode = filtersNode.get(arrayField);
                     if (arrayNode.isArray()) {
                         List<String> valueList = new ArrayList<>();
@@ -209,6 +209,12 @@ public class AppointmentService {
         } catch (JsonProcessingException e) {
             throw new RuntimeException("Error parsing filters JSON", e);
         }
+    }
+
+    public List<String> getAppointmentStatusList() {
+        return Arrays.stream(AppointmentStatus.values())
+                .map(AppointmentStatus::toString)
+                .collect(Collectors.toList());
     }
 
     private static Comparator<Appointment> getAppointmentComparator(Map.Entry<String, Boolean> entry) {

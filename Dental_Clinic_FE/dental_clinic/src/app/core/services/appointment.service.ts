@@ -39,6 +39,9 @@ export class AppointmentService {
         }
         const token = this.authService.getToken();  // Lấy JWT từ AuthService
         const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+        const url = `${this.apiUrl}/pagination`;
+        const allParams = params.toString();
+        console.log(`Request URL: ${url}?${allParams}`); // Log URL for debugging
         return this.http.get<any>(`${this.apiUrl}/pagination`, { params, headers });
     }
 
@@ -52,6 +55,10 @@ export class AppointmentService {
 
     getAppointmentsByDentistId(dentistId: number): Observable<any> {
         return this.http.get<any>(`${this.apiUrl}/dentist/${dentistId}`);
+    }
+
+    getAppointmentStatusList(): Observable<any> {
+        return this.http.get<any>(`${this.apiUrl}/status`);
     }
 
     updateStatusAppointment(appointmentId: string, status: string, note: string): Observable<any> {

@@ -21,6 +21,7 @@ import { navItems } from './_nav';
 import { NgScrollbar } from 'ngx-scrollbar';
 import { SidebarModule } from '@coreui/angular-pro';
 import { CommonModule } from '@angular/common';
+import { MyToastModule } from '../../../share/ui/toast/toast.module';
 
 @Component({
   selector: 'app-default-ui',
@@ -43,9 +44,10 @@ import { CommonModule } from '@angular/common';
     ShadowOnScrollDirective,
     ModalModule,
     CommonModule,
+    MyToastModule,
   ],
   templateUrl: './default-ui.component.html',
-  styleUrl: './default-ui.component.scss'
+  styleUrl: './default-ui.component.scss',
 })
 export class DefaultUiComponent {
   public navItems = [...navItems];

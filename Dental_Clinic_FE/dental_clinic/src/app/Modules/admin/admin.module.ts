@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 
 import { AdminRoutingModule } from './admin-routing.module';
 import { provideHttpClient, withFetch } from '@angular/common/http';
+import { MyToastModule } from '../../share/ui/toast/toast.module';
 
 
 @NgModule({
@@ -10,6 +11,7 @@ import { provideHttpClient, withFetch } from '@angular/common/http';
   imports: [
     CommonModule,
     AdminRoutingModule,
+    MyToastModule,
   ],
   providers: [
     provideHttpClient(withFetch()),

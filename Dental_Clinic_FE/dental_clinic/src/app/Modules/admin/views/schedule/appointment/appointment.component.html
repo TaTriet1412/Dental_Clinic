@@ -1,5 +1,4 @@
 <div class="p-20">
-  <app-toast-container></app-toast-container>
   <h1>Danh sách lịch hẹn</h1>
 
   <c-row ngPreserveWhitespaces>
@@ -22,6 +21,32 @@
             (columnFilterValueChange)="handleColumnFilterValueChange($event)" [tableBodyProps]="{ align: 'middle' }"
             [tableFootProps]="{ color: 'primary' }" [tableHeadProps]="{ color: 'primary' }"
             [tableProps]="{ hover: true, striped: true, responsive: true }" clickableRows header footer pagination>
+
+            <ng-template cTemplateId="columnFilter_createdAt">
+              <c-date-picker [(date)]="createdAtDate"
+              [popperOptions]="{strategy: 'fixed'}" closeOnSelect locale="vi-VN" size="sm" inputReadOnly />
+            </ng-template>
+
+            <ng-template cTemplateId="columnFilter_timeStart">
+              <c-date-picker [(date)]="timeStartDate"
+              [popperOptions]="{strategy: 'fixed'}" closeOnSelect locale="vi-VN" size="sm" inputReadOnly />
+            </ng-template>
+
+            <ng-template cTemplateId="columnFilter_timeEnd">
+              <c-date-picker [(date)]="timeEndDate"
+              [popperOptions]="{strategy: 'fixed'}" closeOnSelect locale="vi-VN" size="sm" inputReadOnly />
+        
+            </ng-template>
+
+            <ng-template cTemplateId="columnFilter_status">
+              <c-multi-select (valueChange)="handleColumnFilterValueChange($event)" [value]="selectedStatus" multiple 
+                size="sm">
+                @for (status of statusList; track status) {
+                <c-multi-select-option [value]="status">{{ translateStatus(status) }}</c-multi-select-option>
+                }
+              </c-multi-select>
+            </ng-template>
+
             <ng-template cTemplateId="tableData" let-columnName="columnName" let-item="item" let-tdContent="tdContent"
               let-index="index">
               <td [cAlign]="
@@ -30,8 +55,9 @@
                 @switch (columnName) {
 
                 @case ('status') {
+
                 <c-badge [color]="getBadge(tdContent)">
-                  {{ tdContent }}
+                  {{ translateStatus(item.status) }}
                 </c-badge>
                 }
 
@@ -60,6 +86,36 @@
                     </h3>
                     <div class="popover-body">
                       {{ item.patId }}
+                    </div>
+                  </ng-template>
+                </span>
+                }
+
+                @case ('denId') {
+                <span [cPopoverTrigger]="'hover'" [cPopover]="popoverHtml" cPopoverPlacement="right"
+                  (click)="goToDentistDetail(item.denId)">
+                  {{ (item.denId) }}
+                  <ng-template #popoverHtml>
+                    <h3 class="popover-header">
+                      Bấm để xem chi tiết
+                    </h3>
+                    <div class="popover-body">
+                      {{ item.denId }}
+                    </div>
+                  </ng-template>
+                </span>
+                }
+
+                @case ('assiId') {
+                <span [cPopoverTrigger]="'hover'" [cPopover]="popoverHtml" cPopoverPlacement="right"
+                  (click)="goToAssistantDetail(item.assiId)">
+                  {{ (item.assiId) }}
+                  <ng-template #popoverHtml>
+                    <h3 class="popover-header">
+                      Bấm để xem chi tiết
+                    </h3>
+                    <div class="popover-body">
+                      {{ item.assiId }}
                     </div>
                   </ng-template>
                 </span>

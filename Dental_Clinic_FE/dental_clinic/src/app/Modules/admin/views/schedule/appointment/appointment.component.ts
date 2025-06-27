@@ -4,16 +4,18 @@ import { map, switchMap, tap, takeUntil, startWith, distinctUntilChanged, catchE
 import { AppointmentService } from '../../../../../core/services/appointment.service';
 import { SnackBarService } from '../../../../../core/services/snack-bar.service';
 import { AlignDirective, BadgeModule, ButtonDirective, CardModule, ColComponent, FormSelectDirective, ModalModule, RowComponent, SpinnerModule } from '@coreui/angular';
-import { SmartTableModule, SmartPaginationModule, ISorterValue, IColumn, TemplateIdDirective, AlertModule, IColumnFilterValue, PopoverModule } from '@coreui/angular-pro';
+import { SmartTableModule, SmartPaginationModule, ISorterValue, IColumn, TemplateIdDirective, AlertModule, IColumnFilterValue, PopoverModule, MultiSelectModule, DatePickerModule } from '@coreui/angular-pro';
 import { AppointmentResponse } from '../../../../../share/dto/response/appoiment-response';
 import { CommonModule, DatePipe } from '@angular/common';
+import { translateStatus } from '../../../../../share/utils/translator/appointment-translator.utils';
 import { Router } from '@angular/router';
 import { ROUTES } from '../../../../../core/constants/routes.constant';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { FormsModule } from '@angular/forms';
 import { improveUILongId } from '../../../../../share/utils/id/id.utils';
 import { ToastService } from '../../../../../share/ui/toast/toast.service';
-import { MyToastModule } from "../../../../../share/ui/toast/toast.module";
+import { format } from 'date-fns';
+import { consumerPollProducersForChange } from '@angular/core/primitives/signals';
 
 @Component({
   selector: 'app-appointment',
@@ -35,14 +37,14 @@ import { MyToastModule } from "../../../../../share/ui/toast/toast.module";
     FormsModule,
     FormSelectDirective,
     PopoverModule,
-    MyToastModule,
-],
+    MultiSelectModule,
+    DatePickerModule,
+  ],
   templateUrl: './appointment.component.html',
   styleUrls: ['./appointment.component.scss'],
   providers: [
     DatePipe, // Ensure DatePipe is provided
     { provide: LOCALE_ID, useValue: 'vi-VN' },
-    ToastService
   ],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
@@ -53,6 +55,8 @@ export class AppointmentComponent implements OnInit, OnDestroy {
   private cdr = inject(ChangeDetectorRef);
   private datePipe = inject(DatePipe); // Inject DatePipe
   improveUILongId = improveUILongId;
+  translateStatus = translateStatus;
+  statusList: string[] = [];
 
   // --- State Management ---
   readonly pagination$ = new BehaviorSubject<{ page: number; size: number }>({ page: 1, size: 5 });
@@ -68,6 +72,18 @@ export class AppointmentComponent implements OnInit, OnDestroy {
   selectedStatus: string = '';
   reason: string = '';
 
+  private _columnFilterValue: any = {};
+
+  // --- Column Filter Value ---
+  get columnFilterValue() {
+    return this._columnFilterValue;
+  }
+
+  set columnFilterValue(value: any) {
+    this._columnFilterValue = value;
+    this.handleColumnFilterValueChange(value);
+  }
+
   // --- Data Streams ---
   readonly apiParams$: Observable<any>;
   readonly props$: Observable<any>;
@@ -75,16 +91,57 @@ export class AppointmentComponent implements OnInit, OnDestroy {
 
   // --- Table Columns ---
   readonly columns: (IColumn | string)[] = [
-    { key: 'id', label: 'ID' },
-    { key: 'denId', label: 'Mã bác sĩ' },
-    { key: 'patId', label: 'Mã bệnh nhân' },
-    { key: 'assiId', label: 'Mã phụ tá' },
+    { key: 'id', label: 'ID', _style: { width: '8%' } },
+    { key: 'denId', label: 'Mã bác sĩ', _style: { width: '6%' } },
+    { key: 'patId', label: 'Mã bệnh nhân', _style: { width: '8%' } },
+    { key: 'assiId', label: 'Mã phụ tá', _style: { width: '6%' } },
     { key: 'status', label: 'Trạng thái' },
     { key: 'timeStart', label: 'TG bắt đầu' },
     { key: 'timeEnd', label: 'TG kết thúc' },
     { key: 'createdAt', label: 'TG tạo' }, // Key phải khớp với dữ liệu và sortFields$
     { key: 'interact', label: 'Thao tác', sorter: false, filter: false },
   ];
+
+  // --- Date Fields ---
+  private _createdAtDate: Date  | null = null;
+  private _timeStartDate: Date  | null = null;
+  private _timeEndDate: Date  | null = null;
+
+  set createdAtDate(value: Date  | null) {
+    this._createdAtDate = value;
+    if (value !== null) {
+      this.handleDateChange('createdAt', value);
+      this.handleColumnFilterValueChange(this._columnFilterValue);
+    }
+  }
+
+  get createdAtDate(): Date  | null {
+    return this._createdAtDate;
+  }
+
+  set timeStartDate(value: Date  | null) {
+    this._timeStartDate = value;
+    if (value !== null) {
+      this.handleDateChange('timeStart', value);
+      this.handleColumnFilterValueChange(this._columnFilterValue);
+    }
+  }
+
+  get timeStartDate(): Date  | null {
+    return this._timeStartDate;
+  }
+
+  set timeEndDate(value: Date  | null) {
+    this._timeEndDate = value;
+    if (value !== null) {
+      this.handleDateChange('timeEnd', value);
+      this.handleColumnFilterValueChange(this._columnFilterValue);
+    }
+  }
+
+  get timeEndDate(): Date  | null {
+    return this._timeEndDate;
+  }
 
   // --- BehaviorSubject để giữ toàn bộ dữ liệu gốc từ service ---
   private allAppointmentsData$ = new BehaviorSubject<AppointmentResponse[]>([]);
@@ -152,8 +209,17 @@ export class AppointmentComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    this.appointmentService.getAppointmentStatusList().subscribe({
+      next: (response: any) => {
+        this.statusList = response.result || [];
+        this.cdr.markForCheck();
+      }
+      ,
+      error: (error: any) => {
+        this.snackbar.notifyError(error?.error?.message || 'Lỗi khi lấy danh sách trạng thái');
+      }
+    });
     console.log('AppointmentComponent initialized.');
-    // No need to call spinner.hide() here if it's handled in the stream
   }
 
   ngOnDestroy(): void {
@@ -180,13 +246,25 @@ export class AppointmentComponent implements OnInit, OnDestroy {
   handleColumnFilterValueChange(columnFilterValue: any): void {
     let filterObj: any;
     if (Array.isArray(columnFilterValue)) {
-      filterObj = { status : columnFilterValue };
+      // Lọc bỏ giá trị rỗng, null, null
+      const filteredValues = columnFilterValue.filter(value => value !== '' && value != null);
+      filterObj = filteredValues.length > 0 ? { status: filteredValues } : {};
     } else if (columnFilterValue && Array.isArray(columnFilterValue.status)) {
-      filterObj = columnFilterValue;
-    } else  {
+      // Lọc bỏ giá trị rỗng trong status array
+      const filteredStatus = columnFilterValue.status.filter((value: any) => value !== '' && value != null);
+      filterObj = {
+        ...columnFilterValue,
+        status: filteredStatus.length > 0 ? filteredStatus : null
+      };
+      // Xóa thuộc tính status nếu mảng rỗng
+      if (filteredStatus.length === 0) {
+        delete filterObj.status;
+      }
+    } else {
       filterObj = columnFilterValue;
     }
 
+    this.filter$.next(filterObj);
     this.filter$.next(filterObj);
     // Reset về trang đầu tiên khi filter thay đổi
     const currentPagination = this.pagination$.value;
@@ -228,6 +306,19 @@ export class AppointmentComponent implements OnInit, OnDestroy {
       case 'not_show': return 'warning';
       default: return 'secondary';
     }
+  }
+
+  private handleDateChange(columnName: string, datePicker: Date ): void {
+    const columnFilterValue = { ...this._columnFilterValue };
+
+
+    const date = new Date(datePicker);
+
+    this._columnFilterValue = {
+      ...columnFilterValue,
+      [columnName]: format(date.toISOString(), "yyyy-MM-dd'T'HH:mm:ss"),
+    };
+    return;
   }
 
   // --- Modal and Status Change ---
@@ -295,6 +386,14 @@ export class AppointmentComponent implements OnInit, OnDestroy {
 
   goToPatientDetail(id: string): void {
     this.router.navigate([ROUTES.ADMIN.children.PATIENT.children.DETAIL.fullPath(id)]);
+  }
+
+  goToDentistDetail(id: string): void {
+    this.router.navigate([ROUTES.ADMIN.children.EMPLOYEE.children.DENTIST.children.DETAIL.fullPath(id)]);
+  }
+
+  goToAssistantDetail(id: string): void {
+    this.router.navigate([ROUTES.ADMIN.children.EMPLOYEE.children.ASSISTANT.children.DETAIL.fullPath(id)]);
   }
 
   copyId(id: string) {

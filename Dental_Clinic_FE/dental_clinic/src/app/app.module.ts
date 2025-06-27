@@ -69,8 +69,7 @@ registerLocaleData(localeVi);
     SidebarModule,
     IconModule,
     IconSetModule,
-    HttpClientModule
-
+    HttpClientModule,
   ],
   providers: [
     // MatDatepicker cần MatNativeDateModule hoặc adapter khác
